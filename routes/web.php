@@ -17,4 +17,15 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/home', 'HomeController@index')->name('home');
+
+Route::group(['prefix' => 'enterprises'], function(){
+    Route::get('/', 'Enterprises\EnterpriseController@welcome');
+    Route::get('/registration', 'Enterprises\EnterpriseController@registration');
+    Route::post('/registration', 'Enterprises\EnterpriseController@create');
+});
+
+Route::group(['prefix' => 'security'], function(){
+    Route::post('/login', 'Security\AuthorizationController@login');
+});
+
+Route::get('/e/{namespace}', 'Enterprises\EnterpriseController@showEnterprise');
