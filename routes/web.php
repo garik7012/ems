@@ -28,4 +28,9 @@ Route::group(['prefix' => 'security'], function(){
     Route::post('/login', 'Security\AuthorizationController@login');
 });
 
-Route::get('/e/{namespace}', 'Enterprises\EnterpriseController@showEnterprise');
+Route::group(['prefix' => '/e/{namespace}'], function() {
+    Route::get('/', 'Enterprises\EnterpriseController@showEnterprise');
+    Route::get('/departments/create', 'Enterprises\DepartmentsController@create');
+    Route::get('/branches/create', 'Enterprises\BranchesController@create');
+    Route::get('/security', 'Enterprises\SettingsController@getEnterpriseSecurity');
+});

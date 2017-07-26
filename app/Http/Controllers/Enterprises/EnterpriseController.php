@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\User;
 use App\Enterprise;
+use Auth;
 
 class EnterpriseController extends Controller
 {
@@ -47,6 +48,10 @@ class EnterpriseController extends Controller
 
     public function showEnterprise($namespace){
         $enterprise = Enterprise::where('namespace', $namespace)->first();
+        $user = Auth::user();
+        if($user and $user->enterprise_id != $enterprise->id){
+            return view('enterprise.forbiden');
+        }
         return view('enterprise.show', ['enterprise' => $enterprise]);
     }
 }
