@@ -29,15 +29,15 @@
                                     @endif
                                 </div>
                             </div>
-                            <div class="form-group{{ $errors->has('e_namespace') ? ' has-error' : '' }}">
+                            <div class="form-group{{ $errors->has('namespace') ? ' has-error' : '' }}">
                                 <label for="e_namespace" class="col-md-4 control-label">Namespace</label>
 
                                 <div class="col-md-6">
-                                    <input id="e_namespace" type="text" class="form-control" name="e_namespace" value="{{ old('e_namespace') }}" required autofocus>
+                                    <input id="e_namespace" type="text" class="form-control" name="namespace" value="{{ old('namespace') }}" required autofocus>
 
-                                    @if ($errors->has('e_namespace'))
+                                    @if ($errors->has('namespace'))
                                         <span class="help-block">
-                                        <strong>{{ $errors->first('e_namespace') }}</strong>
+                                        <strong>{{ $errors->first('namespace') }}</strong>
                                     </span>
                                     @endif
                                 </div>

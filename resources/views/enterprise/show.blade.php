@@ -88,11 +88,6 @@
                     </li>
 
                 </ul>
-
-
-
-
-
             @endif
         </div>
     </div>

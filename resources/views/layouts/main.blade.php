@@ -93,7 +93,7 @@
                     <a href="/e/{{$enterprise->namespace}}">Dashboard</a>
                 </li>
                 <li>
-                    <a href="javascript:;" data-toggle="collapse" data-target="#demo"><i class="fa fa-fw fa-arrows-v"></i> Branches <i class="fa fa-fw fa-caret-down"></i></a>
+                    <a href="javascript:;" data-toggle="collapse" data-target="#demo">Branches <i class="fa fa-fw fa-caret-down"></i></a>
                     <ul id="demo" class="collapse">
                         <li>
                             <a href="#">List</a>
@@ -104,7 +104,7 @@
                     </ul>
                 </li>
                 <li>
-                    <a href="javascript:;" data-toggle="collapse" data-target="#demo1"><i class="fa fa-fw fa-arrows-v"></i> Departments <i class="fa fa-fw fa-caret-down"></i></a>
+                    <a href="javascript:;" data-toggle="collapse" data-target="#demo1">Departments <i class="fa fa-fw fa-caret-down"></i></a>
                     <ul id="demo1" class="collapse">
                         <li>
                             <a href="#">List</a>
@@ -125,6 +125,17 @@
                 </li>
                 <li>
                     <a href="/e/{{$enterprise->namespace}}/security">Security</a>
+                </li>
+                <li>
+                    <a href="javascript:;" data-toggle="collapse" data-target="#demo2">Users <i class="fa fa-fw fa-caret-down"></i></a>
+                    <ul id="demo2" class="collapse">
+                        <li>
+                            <a href="#">List</a>
+                        </li>
+                        <li>
+                            <a href="/e/{{$enterprise->namespace}}/user/create">Create</a>
+                        </li>
+                    </ul>
                 </li>
             </ul>
         </div>
