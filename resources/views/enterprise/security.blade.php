@@ -1,4 +1,5 @@
 @extends('layouts.main')
+@section('page_name', 'Security settings')
 @section('content')
     <div class="col-md-8 col-md-offset-2">
         <div class="panel panel-default">

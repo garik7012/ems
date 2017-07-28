@@ -75,16 +75,9 @@
                         <h3>Departments</h3>
                         <h4><a href="{{$enterprise->namespace}}/departments/create">Create new Department</a></h4>
                     </li>
+
                     <li>
-                        <h3>ExternalOrganizations</h3>
-                        <h4><a href="">Create new ExternalOrganization</a></h4>
-                    </li>
-                    <li>
-                        <h3>Positions</h3>
-                        <h4><a href="">Create new Position</a></h4>
-                    </li>
-                    <li>
-                        <h3><a href="">Settings</a></h3>
+                        <h3><a href="{{$enterprise->namespace}}/security">Security settings</a></h3>
                     </li>
 
                 </ul>

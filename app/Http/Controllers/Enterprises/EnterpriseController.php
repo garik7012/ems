@@ -77,9 +77,24 @@ class EnterpriseController extends Controller
             ->where('item_id', $new_user_id)
             ->where('key', 'confirmation_code')
             ->value('value');
+
+        //TODO Send email to user with confirm link
+
         return view('enterprise.user.success', ['confirm'=> "{$_SERVER['SERVER_NAME']}/security/confirm/{$new_user_id}/{$confirm}"]);
     }
 
+    public function showUsers($namespace)
+    {
+        $ent_id = $this->shareEnterpriseToView($namespace);
+        $ent_users = User::where('enterprise_id', $ent_id)->paginate(5);
+        return view('enterprise.user.list', ['ent_users' => $ent_users]);
+    }
+
+    public function loginAsUser($namespace, $id)
+    {
+        Auth::loginUsingId($id);
+        return redirect("/e/{$namespace}");
+    }
 
 
 

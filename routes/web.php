@@ -33,10 +33,14 @@ Route::group(['prefix' => 'security'], function(){
     Route::get('/e/{namespace}/login', 'Enterprises\EnterpriseController@loginEnterprise');
     Route::get('/e/{namespace}', 'Enterprises\EnterpriseController@showEnterprise')->middleware('belong');
 Route::group(['prefix' => '/e/{namespace}', 'middleware' => ['belong', 'is.admin']], function() {
+    Route::get('/departments/list', 'Enterprises\DepartmentsController@showList');
     Route::get('/departments/create', 'Enterprises\DepartmentsController@create');
+    Route::get('/branches/list', 'Enterprises\BranchesController@showList');
     Route::get('/branches/create', 'Enterprises\BranchesController@create');
     Route::get('/security', 'Enterprises\SettingsController@getEnterpriseSecuritySettings');
     Route::post('/security', 'Enterprises\SettingsController@setEnterpriseSecuritySettings');
     Route::get('/user/create', 'Enterprises\EnterpriseController@createUser');
+    Route::get('/user/list', 'Enterprises\EnterpriseController@showUsers');
+    Route::get('/user/login-as-user/{id}', 'Enterprises\EnterpriseController@loginAsUser');
     Route::post('/user/create', 'Enterprises\EnterpriseController@createUserByAdmin');
 });
