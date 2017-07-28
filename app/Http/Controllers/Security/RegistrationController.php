@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Setting;
 use App\User;
+use App\Enterprise;
 
 class RegistrationController extends Controller
 {
@@ -55,7 +56,8 @@ class RegistrationController extends Controller
                 ->where('item_id', $user->id)
                 ->where('key', 'confirmation_code')
                 ->update(['value' => '']);
-            return redirect('/');
+            $ent = Enterprise::where('id', $user->enterprise_id)->value('namespace');
+            return redirect("/e/{$ent}/login");
         }
         abort('403');
     }

@@ -46,6 +46,7 @@ class EnterpriseController extends Controller
         $user->first_name = $request->first_name;
         $user->last_name = $request->last_name;
         $user->is_superadmin = 1;
+        $user->is_active = 1;
         $user->password = bcrypt($request->password);
         $user->save();
 

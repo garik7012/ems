@@ -67,20 +67,7 @@
                 </div>
             @else
                 @if(Auth::user()->is_superadmin)
-                <ul>
-                    <li>
-                        <h3>Branches</h3>
-                        <h4><a href="{{$enterprise->namespace}}/branches/create">Create new Branche</a></h4>
-                    </li>
-                    <li>
-                        <h3>Departments</h3>
-                        <h4><a href="{{$enterprise->namespace}}/departments/create">Create new Department</a></h4>
-                    </li>
 
-                    <li>
-                        <h3><a href="{{$enterprise->namespace}}/security">Security settings</a></h3>
-                    </li>
-                </ul>
                 @else
                     <h4>Current user is {{Auth::user()->first_name}}</h4>
                 @endif

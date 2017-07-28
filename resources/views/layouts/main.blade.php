@@ -46,7 +46,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="/">User management system</a>
+            <a class="navbar-brand" href="/{{$enterprise->namespace}}">User management system <i class="fa fa-long-arrow-right" aria-hidden="true"></i> {{$enterprise->name}}</a>
         </div>
         <!-- Top Menu Items -->
         <ul class="nav navbar-right top-nav">
@@ -56,9 +56,6 @@
                 <ul class="dropdown-menu">
                     <li>
                         <a href="/e/{{$enterprise->namespace}}/user/profile"><i class="fa fa-fw fa-user"></i>Profile</a>
-                    </li>
-                    <li class="disabled">
-                        <a href="#"><i class="fa fa-fw fa-gear"></i> Settings</a>
                     </li>
                     <li class="divider"></li>
                     <li>
@@ -80,10 +77,6 @@
         <!-- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens -->
         <div class="collapse navbar-collapse navbar-ex1-collapse">
             <ul class="nav navbar-nav side-nav">
-
-                <li class="sidebar-brand">
-                    {{Auth::user()->login}}
-                </li>
                 <li>
                     <a href="/e/{{$enterprise->namespace}}">Dashboard</a>
                 </li>
