@@ -79,7 +79,7 @@
                             </div>
 
                             <div class="form-group{{ $errors->has('date_born') ? ' has-error' : '' }}">
-                                <label for="date_born" class="col-md-4 control-label">Last name</label>
+                                <label for="date_born" class="col-md-4 control-label">Date of birth</label>
 
                                 <div class="col-md-6">
                                     <input id="date_born" type="date" class="form-control" name="date_born" value="{{ old('date_born') ? old('date_born'): $user->date_born }}" required autofocus>

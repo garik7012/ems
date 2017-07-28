@@ -54,8 +54,8 @@
             <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i> {{Auth::user()->first_name}} {{Auth::user()->last_name}} <b class="caret"></b></a>
                 <ul class="dropdown-menu">
-                    <li  class="disabled">
-                        <a href="#"><i class="fa fa-fw fa-user"></i>Profile</a>
+                    <li>
+                        <a href="/e/{{$enterprise->namespace}}/user/profile"><i class="fa fa-fw fa-user"></i>Profile</a>
                     </li>
                     <li class="disabled">
                         <a href="#"><i class="fa fa-fw fa-gear"></i> Settings</a>
@@ -93,9 +93,11 @@
                         <li>
                             <a href="/e/{{$enterprise->namespace}}/branches/list">List</a>
                         </li>
+                        @if(Auth::user()->is_superadmin)
                         <li>
                             <a href="/e/{{$enterprise->namespace}}/branches/create">Create</a>
                         </li>
+                        @endif
                     </ul>
                 </li>
                 <li>
@@ -104,36 +106,38 @@
                         <li>
                             <a href="/e/{{$enterprise->namespace}}/departments/list">List</a>
                         </li>
+                        @if(Auth::user()->is_superadmin)
                         <li>
                             <a href="/e/{{$enterprise->namespace}}/departments/create">Create</a>
                         </li>
+                        @endif
                     </ul>
                 </li>
-                <li class="disabled">
-                    <a href="#">External organisations</a>
-                </li>
-                <li class="disabled">
-                    <a href="#">Positions</a>
-                </li>
-                <li class="disabled">
-                    <a href="#">Settings</a>
-                </li>
-                <li>
-                    <a href="/e/{{$enterprise->namespace}}/security">Security</a>
-                </li>
-                <li>
-                    <a href="javascript:;" data-toggle="collapse" data-target="#demo2">Users <i class="fa fa-fw fa-caret-down"></i></a>
-                    <ul id="demo2" class="collapse">
-                        <li>
-                            <a href="/e/{{$enterprise->namespace}}/user/list">List</a>
-                        </li>
-                        <li>
-                            <a href="/e/{{$enterprise->namespace}}/user/create">Create</a>
-                        </li>
-                    </ul>
-                </li>
-
-
+                @if(Auth::user()->is_superadmin)
+                    <li>
+                        <a href="/e/{{$enterprise->namespace}}/security">Security</a>
+                    </li>
+                    <li>
+                        <a href="javascript:;" data-toggle="collapse" data-target="#demo2">Users <i class="fa fa-fw fa-caret-down"></i></a>
+                        <ul id="demo2" class="collapse">
+                            <li>
+                                <a href="/e/{{$enterprise->namespace}}/user/list">List</a>
+                            </li>
+                            <li>
+                                <a href="/e/{{$enterprise->namespace}}/user/create">Create</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="disabled">
+                        <a href="#">External organisations</a>
+                    </li>
+                    <li class="disabled">
+                        <a href="#">Positions</a>
+                    </li>
+                    <li class="disabled">
+                        <a href="#">Settings</a>
+                    </li>
+                @endif
             </ul>
         </div>
         @else

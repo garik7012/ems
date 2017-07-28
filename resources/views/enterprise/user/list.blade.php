@@ -3,7 +3,7 @@
 @section('content')
     <div class="container">
             <div class="col-lg-12">
-                <h2>Bordered with Striped Rows</h2>
+                <h2>Enterprise's users list</h2>
                 <div class="table-responsive">
                     <table class="table table-bordered table-hover table-striped">
                         <thead>
@@ -23,7 +23,13 @@
                                 <td>{{$ent_user->login}}</td>
                                 <td>{{$ent_user->first_name}}</td>
                                 <td>{{$ent_user->last_name}}</td>
-                                <td>{{$ent_user->is_active ? 'active': 'not active'}}</td>
+                                <td width="150">
+                                    @if($ent_user->is_active)
+                                    Yes <a href="/e/{{$enterprise->namespace}}/user/deactivate/{{$ent_user->id}}" class="btn btn-danger">deactivate</a>
+                                    @else
+                                    No &nbsp; <a href="/e/{{$enterprise->namespace}}/user/activate/{{$ent_user->id}}" class="btn btn-primary">activate</a>
+                                    @endif
+                                </td>
                                 <td><a href="/e/{{$enterprise->namespace}}/user/login-as-user/{{$ent_user->id}}">Login</a></td>
                             </tr>
                         @endforeach

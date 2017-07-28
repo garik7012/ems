@@ -28,19 +28,29 @@ Route::group(['prefix' => 'security'], function(){
     Route::post('/login', 'Security\AuthorizationController@login');
     Route::get('/confirm/{id}/{pass}', 'Security\RegistrationController@confirmEmail');
     Route::post('/registration/end', 'Security\RegistrationController@finishRegistration');
+    Route::get('/user-not-active', 'Security\AuthorizationController@userNotActive');
 });
 
-    Route::get('/e/{namespace}/login', 'Enterprises\EnterpriseController@loginEnterprise');
-    Route::get('/e/{namespace}', 'Enterprises\EnterpriseController@showEnterprise')->middleware('belong');
-Route::group(['prefix' => '/e/{namespace}', 'middleware' => ['belong', 'is.admin']], function() {
+
+Route::get('/e/{namespace}/login', 'Enterprises\EnterpriseController@loginEnterprise');
+//Only if user is belong of this enterprise
+Route::group(['prefix' => '/e/{namespace}', 'middleware' => ['belong', 'is.active']], function() {
+    Route::get('/', 'Enterprises\EnterpriseController@showEnterprise');
+    Route::get('/user/profile', 'Enterprises\EnterpriseController@userProfile');
+    Route::post('/user/profile', 'Enterprises\EnterpriseController@editUserProfile');
     Route::get('/departments/list', 'Enterprises\DepartmentsController@showList');
-    Route::get('/departments/create', 'Enterprises\DepartmentsController@create');
     Route::get('/branches/list', 'Enterprises\BranchesController@showList');
-    Route::get('/branches/create', 'Enterprises\BranchesController@create');
-    Route::get('/security', 'Enterprises\SettingsController@getEnterpriseSecuritySettings');
-    Route::post('/security', 'Enterprises\SettingsController@setEnterpriseSecuritySettings');
-    Route::get('/user/create', 'Enterprises\EnterpriseController@createUser');
-    Route::get('/user/list', 'Enterprises\EnterpriseController@showUsers');
-    Route::get('/user/login-as-user/{id}', 'Enterprises\EnterpriseController@loginAsUser');
-    Route::post('/user/create', 'Enterprises\EnterpriseController@createUserByAdmin');
+    //Routes for superadmin only
+    Route::group(['middleware' => 'is.admin'], function (){
+        Route::get('/departments/create', 'Enterprises\DepartmentsController@create');
+        Route::get('/branches/create', 'Enterprises\BranchesController@create');
+        Route::get('/security', 'Enterprises\SettingsController@getEnterpriseSecuritySettings');
+        Route::post('/security', 'Enterprises\SettingsController@setEnterpriseSecuritySettings');
+        Route::get('/user/create', 'Enterprises\EnterpriseController@createUser');
+        Route::get('/user/list', 'Enterprises\EnterpriseController@showUsers');
+        Route::get('/user/login-as-user/{id}', 'Enterprises\EnterpriseController@loginAsUser');
+        Route::get('/user/deactivate/{id}', 'Security\AuthorizationController@deactivateUser');
+        Route::get('/user/activate/{id}', 'Security\AuthorizationController@activateUser');
+        Route::post('/user/create', 'Enterprises\EnterpriseController@createUserByAdmin');
+    });
 });

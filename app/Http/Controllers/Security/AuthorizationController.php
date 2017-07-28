@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Security;
 
+use App\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -141,6 +142,27 @@ class AuthorizationController extends Controller
         $request->session()->regenerate();
 
         return redirect('/');
+    }
+
+    public function activateUser($n,$id)
+    {
+        $user = User::findOrFail($id);
+        $user->is_active = 1;
+        $user->save();
+        return redirect()->back();
+    }
+
+    public function deactivateUser($n,$id)
+    {
+        $user = User::findOrFail($id);
+        $user->is_active = 0;
+        $user->save();
+        return redirect()->back();
+    }
+
+    public function userNotActive()
+    {
+        return view('security.notactive');
     }
 
     /**

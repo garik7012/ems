@@ -25,7 +25,7 @@ class EnterpriseController extends Controller
     public function create(Request $request)
     {
         $this->validate($request, [
-            'namespace' => 'required|max:15|unique:enterprises',
+            'namespace' => 'required|max:25|unique:enterprises',
             'password' => 'required|string|min:6|confirmed',
             'email' => 'unique:users'
         ]);
@@ -86,7 +86,7 @@ class EnterpriseController extends Controller
     public function showUsers($namespace)
     {
         $ent_id = $this->shareEnterpriseToView($namespace);
-        $ent_users = User::where('enterprise_id', $ent_id)->paginate(5);
+        $ent_users = User::where('enterprise_id', $ent_id)->orderBy('id')->paginate(5);
         return view('enterprise.user.list', ['ent_users' => $ent_users]);
     }
 
@@ -96,6 +96,42 @@ class EnterpriseController extends Controller
         return redirect("/e/{$namespace}");
     }
 
+    public function userProfile($namespace)
+    {
+        $this->shareEnterpriseToView($namespace);
+        return view('enterprise.user.profile', ['user'=>Auth::user()]);
+    }
+
+    public function editUserProfile($namespace, Request $request)
+    {
+       $this->shareEnterpriseToView($namespace);
+        $this->validate($request, [
+            'first_name' => 'required|max:50',
+            'last_name' => 'required|max:50',
+            'login' => 'required|max:50',
+            'phone_number' => 'required|max:50',
+            'date_born' => 'required|date',
+            'password' => 'required|string'
+        ]);
+
+        $user = Auth::user();
+        if(bcrypt($request->password) != $user->password){
+            return redirect()->back()->withErrors('password', 5);
+        }
+        $user->first_name = $request->first_name;
+        $user->last_name = $request->last_name;
+        $user->login = $request->login;
+        $user->phone_number = $request->phone_number;
+        $user->password = bcrypt($request->password);
+        $user->date_born = $request->date_born;
+        $user->is_active = 1;
+        $user->save();
+        Setting::where('type', 3)
+            ->where('item_id', $user->id)
+            ->where('key', 'confirmation_code')
+            ->update(['value' => '']);
+        return redirect()->back();
+    }
 
 
     private function shareEnterpriseToView($namespace)

@@ -66,6 +66,7 @@
                  </div>
                 </div>
             @else
+                @if(Auth::user()->is_superadmin)
                 <ul>
                     <li>
                         <h3>Branches</h3>
@@ -79,8 +80,10 @@
                     <li>
                         <h3><a href="{{$enterprise->namespace}}/security">Security settings</a></h3>
                     </li>
-
                 </ul>
+                @else
+                    <h4>Current user is {{Auth::user()->first_name}}</h4>
+                @endif
             @endif
         </div>
     </div>

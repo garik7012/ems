@@ -17,7 +17,7 @@ class DepartmentsController extends Controller
         if($user->enterprise_id != $enterprise->id){
             abort('403');
         }
-        return view('branch.create', ['enterprise' => $enterprise]);
+        return view('department.create', ['enterprise' => $enterprise]);
     }
 
     public function showList($namespace)

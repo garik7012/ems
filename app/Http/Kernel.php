@@ -58,5 +58,6 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'belong' => \App\Http\Middleware\CheckUserEnterprise::class,
         'is.admin' => \App\Http\Middleware\CheckIsAdmin::class,
+        'is.active' => \App\Http\Middleware\CheckIsUserActive::class,
     ];
 }
