@@ -32,7 +32,7 @@ class EnterpriseController extends Controller
         ]);
         $enterprise = new Enterprise;
         $enterprise->name = $request->e_name;
-        $enterprise->namespace = $request->e_namespace;
+        $enterprise->namespace = $request->namespace;
         $enterprise->description = $request->e_description;
         $enterprise->is_active = 1;
         $enterprise->save();
