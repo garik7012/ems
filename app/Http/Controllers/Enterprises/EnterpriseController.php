@@ -8,6 +8,7 @@ use App\User;
 use App\Enterprise;
 use App\Setting;
 use Auth;
+use Hash;
 
 class EnterpriseController extends Controller
 {
@@ -111,26 +112,26 @@ class EnterpriseController extends Controller
             'login' => 'required|max:50',
             'phone_number' => 'required|max:50',
             'date_born' => 'required|date',
-            'password' => 'required|string'
+            'password' => 'required|string|min:6'
         ]);
 
         $user = Auth::user();
-        if(bcrypt($request->password) != $user->password){
-            return redirect()->back()->withErrors('password', 5);
+        if(Hash::check($request->password, $user->password)){
+            $user->first_name = $request->first_name;
+            $user->last_name = $request->last_name;
+            $user->login = $request->login;
+            $user->phone_number = $request->phone_number;
+            $user->password = bcrypt($request->password);
+            $user->date_born = $request->date_born;
+            $user->is_active = 1;
+            $user->save();
+            Setting::where('type', 3)
+                ->where('item_id', $user->id)
+                ->where('key', 'confirmation_code')
+                ->update(['value' => '']);
+            return redirect()->back();
         }
-        $user->first_name = $request->first_name;
-        $user->last_name = $request->last_name;
-        $user->login = $request->login;
-        $user->phone_number = $request->phone_number;
-        $user->password = bcrypt($request->password);
-        $user->date_born = $request->date_born;
-        $user->is_active = 1;
-        $user->save();
-        Setting::where('type', 3)
-            ->where('item_id', $user->id)
-            ->where('key', 'confirmation_code')
-            ->update(['value' => '']);
-        return redirect()->back();
+        return redirect()->back()->withErrors(['password' => 'wrong password']);
     }
 
 
