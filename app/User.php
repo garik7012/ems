@@ -27,22 +27,36 @@ class User extends Authenticatable
         'password', 'remember_token',
     ];
 
-    private function getDefaultUserSettings()
+    private static function getDefaultUserSettings()
     {
         $arr = [
             'is_email_confirmed' => 0,
             'confirmation_code' =>str_random(16),
-            'confirmation_date_end' =>date() + 30,
+            'confirmation_date_end' =>strtotime('+1 days'),
             'date_last_change_password' => 0,
             'date_end_ban' => 0,
             'permission_hash' => 0,
             'auth_type_id' => 0,
             'password_policy_id' => 0,
             'email_frequency_hours' => 1,
-            'last_email_send_at' => date(),
+            'last_email_send_at' => strtotime('now'),
             'auth_category_id' => 0,
         ];
         return $arr;
+    }
+
+    public static function createNewUserByAdmin($request, $ent_id){
+        $user = new User;
+        $user->enterprise_id = $ent_id;
+        $user->login = $request->login;
+        $user->email = $request->email;
+        $user->first_name = $request->first_name;
+        $user->last_name = $request->last_name;
+        $user->is_superadmin = 0;
+        $user->password = bcrypt($request->password);
+        $user->save();
+        self::setDefaultUserSettings($user->id);
+        return $user->id;
     }
 
     public static function setDefaultUserSettings($user_id)

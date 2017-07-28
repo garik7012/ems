@@ -69,10 +69,25 @@ class EnterpriseController extends Controller
         return view('enterprise.user.create');
     }
 
+    public function createUserByAdmin($namespace, Request $request)
+    {
+        $ent_id = $this->shareEnterpriseToView($namespace);
+        $new_user_id = User::createNewUserByAdmin($request, $ent_id);
+        $confirm = Setting::where('type', 3)
+            ->where('item_id', $new_user_id)
+            ->where('key', 'confirmation_code')
+            ->value('value');
+        return view('enterprise.user.success', ['confirm'=> "{$_SERVER['SERVER_NAME']}/security/confirm/{$new_user_id}/{$confirm}"]);
+    }
+
+
+
+
     private function shareEnterpriseToView($namespace)
     {
         $enterprise = Enterprise::where('namespace', $namespace)->first();
         view()->share('enterprise', $enterprise);
+        return $enterprise->id;
     }
 
 }

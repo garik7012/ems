@@ -26,6 +26,8 @@ Route::group(['prefix' => 'enterprises'], function(){
 
 Route::group(['prefix' => 'security'], function(){
     Route::post('/login', 'Security\AuthorizationController@login');
+    Route::get('/confirm/{id}/{pass}', 'Security\RegistrationController@confirmEmail');
+    Route::post('/registration/end', 'Security\RegistrationController@finishRegistration');
 });
 
     Route::get('/e/{namespace}/login', 'Enterprises\EnterpriseController@loginEnterprise');
@@ -36,4 +38,5 @@ Route::group(['prefix' => '/e/{namespace}', 'middleware' => ['belong', 'is.admin
     Route::get('/security', 'Enterprises\SettingsController@getEnterpriseSecuritySettings');
     Route::post('/security', 'Enterprises\SettingsController@setEnterpriseSecuritySettings');
     Route::get('/user/create', 'Enterprises\EnterpriseController@createUser');
+    Route::post('/user/create', 'Enterprises\EnterpriseController@createUserByAdmin');
 });
