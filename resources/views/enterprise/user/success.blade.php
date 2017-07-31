@@ -8,7 +8,7 @@
                 <a href="http://{{$confirm}}"><h4>{{$confirm}}</h4></a>
                 <p>If you want to check how it works: </p>
                 <ul>
-                    <li>please copy this link logout, end then go by the link</li>
+                    <li>please copy this link</li>
                     <li>logout</li>
                     <li>paste the link and go</li>
                 </ul>

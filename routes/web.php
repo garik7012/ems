@@ -40,6 +40,7 @@ Route::group(['prefix' => '/e/{namespace}', 'middleware' => ['belong', 'is.activ
     Route::post('/user/profile', 'Enterprises\EnterpriseController@editUserProfile');
     Route::get('/departments/list', 'Enterprises\DepartmentsController@showList');
     Route::get('/branches/list', 'Enterprises\BranchesController@showList');
+    Route::get('/user/list/gback', 'Enterprises\EnterpriseController@backToAdmin');
     //Routes for superadmin only
     Route::group(['middleware' => 'is.admin'], function (){
         Route::get('/departments/create', 'Enterprises\DepartmentsController@create');
@@ -47,7 +48,7 @@ Route::group(['prefix' => '/e/{namespace}', 'middleware' => ['belong', 'is.activ
         Route::get('/security', 'Enterprises\SettingsController@getEnterpriseSecuritySettings');
         Route::post('/security', 'Enterprises\SettingsController@setEnterpriseSecuritySettings');
         Route::get('/user/create', 'Enterprises\EnterpriseController@createUser');
-        Route::get('/user/list', 'Enterprises\EnterpriseController@showUsers');
+        Route::get('/user/list', 'Enterprises\EnterpriseController@showUsers');        
         Route::get('/user/login-as-user/{id}', 'Enterprises\EnterpriseController@loginAsUser');
         Route::get('/user/deactivate/{id}', 'Security\AuthorizationController@deactivateUser');
         Route::get('/user/activate/{id}', 'Security\AuthorizationController@activateUser');

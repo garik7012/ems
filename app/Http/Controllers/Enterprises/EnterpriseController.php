@@ -9,6 +9,7 @@ use App\Enterprise;
 use App\Setting;
 use Auth;
 use Hash;
+use Session;
 
 class EnterpriseController extends Controller
 {
@@ -92,10 +93,18 @@ class EnterpriseController extends Controller
         return view('enterprise.user.list', ['ent_users' => $ent_users]);
     }
 
-    public function loginAsUser($namespace, $id)
+    public function loginAsUser($namespace, $user_id)
     {
-        Auth::loginUsingId($id);
-        return redirect("/e/{$namespace}");
+        $user = User::findOrFail($user_id);
+
+        if (!$user->is_superadmin)
+        {
+            Session::put('auth_from_admin_asd',Auth::user()->id);
+            Auth::loginUsingId($user_id);
+
+            return redirect("/e/{$namespace}");
+        }
+        abort(403);
     }
 
     public function userProfile($namespace)
@@ -134,6 +143,24 @@ class EnterpriseController extends Controller
         }
         return redirect()->back()->withErrors(['password' => 'wrong password']);
     }
+
+    public function backToAdmin($namespace)
+    {
+        if (!Session::has('auth_from_admin_asd'))
+        {
+            abort(404);
+        }
+        Auth::loginUsingId((int) Session::get('auth_from_admin_asd'));
+        Session::forget('auth_from_admin_asd');
+        if (! Auth::user()->is_superadmin)
+        {
+            Auth::logout();
+            return redirect("/e/$namespace");
+        }
+        $this->shareEnterpriseToView($namespace);
+        return redirect("/e/$namespace/user/list");
+    }
+
 
 
     private function shareEnterpriseToView($namespace)
