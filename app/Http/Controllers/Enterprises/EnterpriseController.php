@@ -167,7 +167,7 @@ class EnterpriseController extends Controller
 
     private function shareEnterpriseToView($namespace)
     {
-        $enterprise = Enterprise::where('namespace', $namespace)->first();
+        $enterprise = Enterprise::where('namespace', $namespace)->firstOrFail();
         view()->share('enterprise', $enterprise);
         return $enterprise->id;
     }

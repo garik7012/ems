@@ -1,4 +1,7 @@
 @extends('layouts.app')
+@section('title', "404 - page not found")
 @section('content')
-    <h2>page not found</h2>
+    <div class="container">
+    <h2>Error 404. Page not found</h2>
+    </div>
 @endsection
