@@ -29,6 +29,7 @@ Route::group(['prefix' => 'security'], function(){
     Route::get('/confirm/{id}/{pass}', 'Security\RegistrationController@confirmEmail');
     Route::post('/registration/end', 'Security\RegistrationController@finishRegistration');
     Route::get('/user-not-active', 'Security\AuthorizationController@userNotActive');
+    Route::post('/confirm/code', 'Security\AuthorizationController@checkConfirmCode');
 });
 
 

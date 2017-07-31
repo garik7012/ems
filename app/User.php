@@ -36,11 +36,29 @@ class User extends Authenticatable
             'date_last_change_password' => 0,
             'date_end_ban' => 0,
             'permission_hash' => 0,
-            'auth_type_id' => 0,
-            'password_policy_id' => 0,
+            'auth_type_id' => 1,
+            'password_policy_id' => 1,
             'email_frequency_hours' => 1,
             'last_email_send_at' => strtotime('now'),
             'auth_category_id' => 0,
+        ];
+        return $arr;
+    }
+
+    private static function getDefaultAdminSettings()
+    {
+        $arr = [
+            'is_email_confirmed' => 1,
+            'confirmation_code' =>"",
+            'confirmation_date_end' =>strtotime('+1 days'),
+            'date_last_change_password' => 0,
+            'date_end_ban' => 0,
+            'permission_hash' => 0,
+            'auth_type_id' => 1,
+            'password_policy_id' => 1,
+            'email_frequency_hours' => 1,
+            'last_email_send_at' => strtotime('now'),
+            'auth_category_id' => 1,
         ];
         return $arr;
     }
@@ -62,6 +80,18 @@ class User extends Authenticatable
     public static function setDefaultUserSettings($user_id)
     {
         foreach (self::getDefaultUserSettings() as $key=>$value) {
+            $default = new Setting();
+            $default->type = 3;
+            $default->item_id = $user_id;
+            $default->key = $key;
+            $default->value = $value;
+            $default->save();
+        }
+    }
+
+    public static function setDefaultAdminSettings($user_id)
+    {
+        foreach (self::getDefaultAdminSettings() as $key=>$value) {
             $default = new Setting();
             $default->type = 3;
             $default->item_id = $user_id;

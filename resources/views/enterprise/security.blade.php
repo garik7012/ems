@@ -12,10 +12,21 @@
                         <label for="Auth_type" class="col-md-4 control-label">Auth type</label>
                         <div class="col-md-6">
                             <select id="Auth_type" class="form-control" name="auth_type_id">
-                                <option value="0" {{$enSec['auth_type_id']==0 ? 'selected': ''}}>2 factor</option>
-                                <option value="1" {{$enSec['auth_type_id']==1 ? 'selected': ''}}>2 factor with “trusted devices”</option>
-                                <option value="2" {{$enSec['auth_type_id']==2 ? 'selected': ''}}>1 factor (uname/pass)</option>
+                                @foreach($auth_types as $auth_type)
+                                <option value={{$auth_type->id}} {{$enSec['auth_type_id']==$auth_type->id ? 'selected': ''}}>{{$auth_type->name}}</option>
+                                @endforeach
                             </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-6 col-md-offset-4">
+                            <div class="checkbox">
+                                <label>
+                                    <input type="hidden" name="is_sms_allow" value="0">
+                                    <input type="checkbox" name="is_sms_allow" {{$enSec['is_sms_allow']  ? 'checked' : '' }}> Is SMS allow?
+                                </label>
+                            </div>
                         </div>
                     </div>
 
@@ -43,16 +54,23 @@
                             <input id="password_change_days" type="number" class="form-control" name="password_change_days" value="{{$enSec['password_change_days']}}">
                         </div>
                     </div>
-                    <input type="hidden" name="password_policy_id" value="0">
+                    <div class="form-group">
+                        <label for="password_min" class="col-md-4 control-label">Password min length</label>
+                        <div class="col-md-6">
+                            <input id="password_min" type="number" class="form-control" name="password_min" value="{{$password_min}}">
+                        </div>
+                    </div>
 
                     <div class="form-group">
-                        <div class="col-md-6 col-md-offset-4">
-                            <div class="checkbox">
-                                <label>
-                                    <input type="hidden" name="is_sms_allow" value="0">
-                                    <input type="checkbox" name="is_sms_allow" {{$enSec['is_sms_allow']  ? 'checked' : '' }}> Is SMS allow?
-                                </label>
-                            </div>
+                        <label for="pwd_policy" class="col-md-4 control-label">Password policy</label>
+                        <div class="col-md-6">
+                            <select id="pwd_policy" class="form-control" name="password_policy_id">
+                                @foreach($password_policies as $password_policy)
+                                    <option value={{$password_policy->id}} {{$enSec['password_policy_id']==$password_policy->id ? 'selected': ''}}>
+                                        {{$password_policy->name}}({{$password_policy->description}})
+                                    </option>
+                                @endforeach
+                            </select>
                         </div>
                     </div>
 

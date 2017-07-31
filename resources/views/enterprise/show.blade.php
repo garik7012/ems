@@ -65,9 +65,38 @@
                 </div>
                  </div>
                 </div>
+            @elseif(session('security_code'))
+
+                <div class="col-md-8 col-md-offset-2">
+                    {{ session('security_code') }}
+                    <div class="panel panel-default">
+                        <div class="panel-heading">Enter security code</div>
+                        <div class="panel-body">
+                            <form class="form-horizontal" method="POST" action="/security/confirm/code">
+                                {{ csrf_field() }}
+
+                                <div class="form-group">
+                                    <label for="confirm" class="col-md-4 control-label">Confirmation code</label>
+
+                                    <div class="col-md-6">
+                                        <input id="confirm" type="text" class="form-control" name="confirm" required>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="col-md-8 col-md-offset-4">
+                                        <button type="submit" class="btn btn-primary">
+                                            Confirm
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
             @else
                 @if(Auth::user()->is_superadmin)
-
+                    You are admin!
                 @else
                     <h4>Current user is {{Auth::user()->first_name}}</h4>
                 @endif

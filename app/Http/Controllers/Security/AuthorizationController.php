@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers\Security;
 
+use App\Enterprise;
 use App\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use App\Setting;
 
 class AuthorizationController extends Controller
 {
@@ -92,10 +94,27 @@ class AuthorizationController extends Controller
 
         $this->clearLoginAttempts($request);
 
+        
         return $this->authenticated($request, $this->guard()->user())
-            ?: redirect()->back();
+            ?: $this->authorizationFactor();
     }
 
+    protected function authorizationFactor()
+    {
+        $auth_type = Setting::where('type',2)
+            ->where('item_id', Auth::user()->enterprise_id)
+            ->where('key', 'auth_type_id')
+            ->value('value');
+        if($auth_type != 1){
+            $security_code = str_random(8);
+            Setting::where('type',3)
+                ->where('item_id', Auth::user()->id)
+                ->where('key', 'confirmation_code')
+                ->update(['value'=>$security_code]);
+            return redirect()->back()->with('security_code', $security_code);
+        }
+        return redirect()->back();
+    }
 
 
     /**
@@ -157,6 +176,27 @@ class AuthorizationController extends Controller
         $user = User::findOrFail($id);
         $user->is_active = 0;
         $user->save();
+        return redirect()->back();
+    }
+
+    public function checkConfirmCode(Request $request)
+    {
+        $security_code = Setting::where('type',3)
+            ->where('item_id', Auth::user()->id)
+            ->where('key', 'confirmation_code')
+            ->value('value');
+        if($request->confirm == $security_code) {
+            Setting::where('type',3)
+                ->where('item_id', Auth::user()->id)
+                ->where('key', 'confirmation_code')
+                ->update(['value'=>""]);
+
+            $namespace = Enterprise::where('id', Auth::user()->enterprise_id)->value('namespace');
+
+            return redirect("/e/{$namespace}");
+        }
+        //TODO log not confirm attempts
+        Auth::logout();
         return redirect()->back();
     }
 

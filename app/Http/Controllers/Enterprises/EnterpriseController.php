@@ -51,6 +51,8 @@ class EnterpriseController extends Controller
         $user->password = bcrypt($request->password);
         $user->save();
 
+        User::setDefaultAdminSettings($user->id);
+        Auth::logout();
         return redirect('/enterprises');
     }
 
