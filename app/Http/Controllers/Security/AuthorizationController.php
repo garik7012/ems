@@ -105,13 +105,26 @@ class AuthorizationController extends Controller
             ->where('item_id', Auth::user()->enterprise_id)
             ->where('key', 'auth_type_id')
             ->value('value');
+
         if($auth_type != 1){
             $security_code = str_random(8);
             Setting::where('type',3)
                 ->where('item_id', Auth::user()->id)
                 ->where('key', 'confirmation_code')
                 ->update(['value'=>$security_code]);
-            return redirect()->back()->with('security_code', $security_code);
+
+            $is_sms = Setting::where('type',2)
+                ->where('item_id', Auth::user()->enterprise_id)
+                ->where('key', 'is_sms_allow')
+                ->value('value');
+
+            if($is_sms) {
+                //TODO send sms
+                return redirect()->back()->with('security_code', "SMS. Code: $security_code");
+            } else {
+                //TODO send email
+                return redirect()->back()->with('security_code', "Email. Code: $security_code");
+            }
         }
         return redirect()->back();
     }
