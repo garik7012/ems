@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Auth;
 use App\Setting;
+use Session;
 
 class CheckIsUserActive
 {
@@ -17,6 +18,9 @@ class CheckIsUserActive
      */
     public function handle($request, Closure $next)
     {
+        if(Session::has('auth_from_admin_asd')){
+            return $next($request);
+        }
         $security_code = Setting::where('type',3)
             ->where('item_id', Auth::user()->id)
             ->where('key', 'confirmation_code')

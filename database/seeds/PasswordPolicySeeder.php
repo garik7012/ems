@@ -12,24 +12,19 @@ class PasswordPolicySeeder extends Seeder
     public function run()
     {
         DB::table('password_policies')->insert([
-            'name' => 'upper',
-            'description' => 'At least two uppercase',
-            'pattern' => "(?=(?:[^A-Z]*[A-Z]){2})"
+            'name' => 'simple',
+            'description' => 'At least 8 symbols',
+            'pattern' => "^(?=.*[a-z]).{8,}$"
         ]);
         DB::table('password_policies')->insert([
-            'name' => 'special',
-            'description' => "At least one \"special\"",
-            'pattern' => "(?=[^!@#$&*]*[!@#$&*])"
+            'name' => 'stronger',
+            'description' => "At least one \"special\", min 8 length",
+            'pattern' => "^(?=.*[a-z])(?=.*[!@#$&*]).{8,}$"
         ]);
         DB::table('password_policies')->insert([
-            'name' => 'digit',
-            'description' => "At least two digit",
-            'pattern' => "(?=[^!@#$&*]*[!@#$&*])"
-        ]);
-        DB::table('password_policies')->insert([
-            'name' => 'min',
-            'description' => "Password length is",
-            'pattern' => "8"
+            'name' => 'strong',
+            'description' => "Must have letter in upper and lower case, special character, min 12 length ",
+            'pattern' => "^(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$&*]).{12,}$"
         ]);
     }
 }

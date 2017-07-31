@@ -46,6 +46,9 @@
                             {{--<li><a href="{{ route('login') }}">Login</a></li>--}}
                             {{--<li><a href="{{ route('register') }}">Register</a></li>--}}
                         @else
+                            @if (Auth::check() && Session::has('auth_from_admin_asd'))
+                                <li><a href = "/e/{{$enterprise->namespace}}/user/list/gback">Go back to my profile</a></li>
+                            @endif
                             <li class="dropdown">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
                                     {{ Auth::user()->name }} <span class="caret"></span>

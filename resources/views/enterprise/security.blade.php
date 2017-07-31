@@ -54,12 +54,6 @@
                             <input id="password_change_days" type="number" class="form-control" name="password_change_days" value="{{$enSec['password_change_days']}}">
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label for="password_min" class="col-md-4 control-label">Password min length</label>
-                        <div class="col-md-6">
-                            <input id="password_min" type="number" class="form-control" name="password_min" value="{{$password_min}}">
-                        </div>
-                    </div>
 
                     <div class="form-group">
                         <label for="pwd_policy" class="col-md-4 control-label">Password policy</label>

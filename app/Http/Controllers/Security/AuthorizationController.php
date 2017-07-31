@@ -99,6 +99,12 @@ class AuthorizationController extends Controller
             ?: $this->authorizationFactor();
     }
 
+    /**
+     * Check enterprise auth type settings
+     * if not single authorization - send sms or email
+     * according to is_sms_allow
+     * @return \Illuminate\Http\RedirectResponse
+     */
     protected function authorizationFactor()
     {
         $auth_type = Setting::where('type',2)
@@ -191,6 +197,7 @@ class AuthorizationController extends Controller
         $user->save();
         return redirect()->back();
     }
+
 
     public function checkConfirmCode(Request $request)
     {

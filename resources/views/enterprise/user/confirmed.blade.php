@@ -97,12 +97,12 @@
 
                                 <div class="col-md-6">
                                     <input id="password" type="password" class="form-control" name="password" required>
-
                                     @if ($errors->has('password'))
                                         <span class="help-block">
                                         <strong>{{ $errors->first('password') }}</strong>
                                     </span>
                                     @endif
+                                    <span>{{$password_policy->description}}</span>
                                 </div>
                             </div>
 
@@ -113,6 +113,7 @@
                                     <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required>
                                 </div>
                             </div>
+
                             <input type="hidden" name="user_id" value="{{$user->id}}">
                             <input type="hidden" name="pass" value="{{$pass}}">
 

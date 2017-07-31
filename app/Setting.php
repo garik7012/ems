@@ -10,7 +10,7 @@ class Setting extends Model
 
     const enterpriseSettings  = [
             'auth_type_id' => 1,
-            'password_policy_id' =>0,
+            'password_policy_id' =>1,
             'is_sms_allow' =>0,
             'max_login_attempts' => 10,
             'max_login_period' =>30,
