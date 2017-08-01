@@ -61,13 +61,13 @@
                         </li>
                         <li class="divider"></li>
                         <li>
-                            <a href="{{ route('logout') }}"
+                            <a href="{{ route('logout', ['namespace'=>$enterprise->namespace]) }}"
                                onclick="event.preventDefault();
                                                          document.getElementById('logout-form').submit();">
                                 <i class="fa fa-fw fa-power-off"></i> Logout
                             </a>
 
-                            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                            <form id="logout-form" action="{{ route('logout', ['namespace'=>$enterprise->namespace]) }}" method="POST" style="display: none;">
                                 {{ csrf_field() }}
                             </form>
                         </li>
@@ -87,7 +87,7 @@
                             @foreach($menu_items as $menu_child)
                                 @if($menu_child->parent_id == $menu_item->id)
                             <li>
-                                <a href="/e/{{$enterprise->namespace . $menu_child->description}}">{{$menu_child->name}}</a>
+                                <a href="/e/{{$enterprise->namespace . $menu_child->link}}">{{$menu_child->name}}</a>
                             </li>
                                 @endif
                             @endforeach
@@ -95,11 +95,11 @@
                         </li>
                     @elseif($menu_item->parent_id == null and $menu_item->is_active)
                     <li>
-                        <a href="/e/{{$enterprise->namespace}}{{$menu_item->description}}">{{$menu_item->name}}</a>
+                        <a href="/e/{{$enterprise->namespace}}{{$menu_item->link}}">{{$menu_item->name}}</a>
                     </li>
                         @elseif(!$menu_item->is_active and !$menu_item->parent_id)
                         <li class="disabled">
-                            <a href="404">{{$menu_item->name}}</a>
+                            <a>{{$menu_item->name}}</a>
                         </li>
                     @endif
                 @endforeach

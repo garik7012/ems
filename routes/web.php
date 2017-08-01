@@ -11,51 +11,75 @@
 |
 */
 
-Auth::routes();
-
-Route::get('/', function () {
-    return view('welcome');
-});
-
-
+Route::get('/', 'CoreUmsController@index');
 Route::group(['prefix' => 'enterprises'], function(){
-    Route::get('/', 'Enterprises\EnterpriseController@welcome');
-    Route::get('/registration', 'Enterprises\EnterpriseController@registration');
-    Route::post('/registration', 'Enterprises\EnterpriseController@create');
+    Route::get('/', 'CoreUmsController@welcome');
+    Route::get('/registration', 'CoreUmsController@registration');
+    Route::post('/registration', 'CoreUmsController@create');
 });
+Route::post('/logout', 'Auth\LoginController@logout');
 
-Route::group(['prefix' => 'security'], function(){
-    Route::post('/login', 'Security\AuthorizationController@login');
-    Route::get('/confirm/{id}/{pass}', 'Security\RegistrationController@confirmEmail');
-    Route::post('/registration/end', 'Security\RegistrationController@finishRegistration');
-    Route::get('/user-not-active', 'Security\AuthorizationController@userNotActive');
-    Route::post('/confirm/code', 'Security\AuthorizationController@checkConfirmCode');
-});
+//Enterprise's routes
+Route::group(['prefix' => '/e/{namespace}'], function() {
+    //Auth
+    Route::any('/logout', 'Security\AuthorizationController@logout')->name('logout');
+    Route::get('/login', 'Security\AuthorizationController@showLoginForm');
 
-
-Route::get('/e/{namespace}/login', 'Enterprises\EnterpriseController@loginEnterprise')->middleware('menu');
-//Only if user is belong of this enterprise
-Route::group(['prefix' => '/e/{namespace}', 'middleware' => ['belong', 'is.active', 'menu']], function() {
-    Route::group(['prefix' => '/users'], function (){
-        Route::get('/dashboard/show', 'Users\DashboardController@show');
+    //email confirmation, finish registration, 2 factor authorization check confirm code
+    Route::group(['prefix' => 'security'], function(){
+        Route::get('/confirm/{id}/{pass}', 'Security\RegistrationController@confirmEmail');
+        Route::post('/registration/end', 'Security\RegistrationController@finishRegistration');
+        Route::get('/user-not-active', 'Security\AuthorizationController@userNotActive');
+        Route::post('/confirm/code', 'Security\AuthorizationController@checkConfirmCode');
+        Route::post('/authorization/login', 'Security\AuthorizationController@login');
+        Route::post('/registration/usercreate', 'Security\RegistrationController@createUserByAdmin')->middleware(['is.admin', 'menu']);
     });
-    Route::get('/', 'Enterprises\EnterpriseController@showEnterprise');
-    Route::get('/user/profile', 'Enterprises\EnterpriseController@userProfile');
-    Route::post('/user/profile', 'Enterprises\EnterpriseController@editUserProfile');
-    Route::get('/departments/list', 'Enterprises\DepartmentsController@showList');
-    Route::get('/branches/list', 'Enterprises\BranchesController@showList');
-    Route::get('/user/list/gback', 'Enterprises\EnterpriseController@backToAdmin');
-    //Routes for superadmin only
-    Route::group(['middleware' => 'is.admin'], function (){
-        Route::get('/departments/create', 'Enterprises\DepartmentsController@create');
-        Route::get('/branches/create', 'Enterprises\BranchesController@create');
-        Route::get('/security', 'Enterprises\SettingsController@getEnterpriseSecuritySettings');
-        Route::post('/security', 'Enterprises\SettingsController@setEnterpriseSecuritySettings');
-        Route::get('/user/create', 'Enterprises\EnterpriseController@createUser');
-        Route::get('/user/list', 'Enterprises\EnterpriseController@showUsers');        
-        Route::get('/user/login-as-user/{id}', 'Enterprises\EnterpriseController@loginAsUser');
-        Route::get('/user/deactivate/{id}', 'Security\AuthorizationController@deactivateUser');
-        Route::get('/user/activate/{id}', 'Security\AuthorizationController@activateUser');
-        Route::post('/user/create', 'Enterprises\EnterpriseController@createUserByAdmin');
+
+    //check is user belong to this enterprise, is user active, share menu according to role
+    Route::group(['middleware' => ['belong', 'is.active', 'menu']], function() {
+        Route::group(['prefix' => '/users'], function (){
+            Route::get('/dashboard/show', 'Users\DashboardController@show');
+        });
+
+        Route::get('/', 'Enterprises\EnterpriseController@showEnterprise');
+        Route::get('/user/profile', 'Enterprises\EnterpriseController@userProfile');
+        Route::post('/user/profile', 'Enterprises\EnterpriseController@editUserProfile');
+        Route::get('/enterprises/departments/showlist', 'Enterprises\DepartmentsController@showList');
+        Route::get('/enterprises/branches/showlist', 'Enterprises\BranchesController@showList');
+        Route::get('/enterprises/positions/showlist', 'Enterprises\PositionsController@showList');
+
+        Route::get('/user/list/gback', 'Enterprises\EnterpriseController@backToAdmin');
+        //Routes for superadmin only
+        Route::group(['middleware' => 'is.admin'], function (){
+            Route::get('/enterprises/departments/create', 'Enterprises\DepartmentsController@create');
+            Route::get('enterprises/branches/create', 'Enterprises\BranchesController@create');
+            Route::get('enterprises/positions/create', 'Enterprises\PositionsController@create');
+            Route::get('/enterprises/settings/securitysettings', 'Enterprises\SettingsController@getEnterpriseSecuritySettings');
+            Route::post('/enterprises/settings/securitysettings', 'Enterprises\SettingsController@setEnterpriseSecuritySettings');
+            Route::get('/enterprises/enterprise/createuser', 'Enterprises\EnterpriseController@createUser');
+            Route::get('/enterprises/enterprise/showusers', 'Enterprises\EnterpriseController@showUsers');
+            Route::get('/user/login-as-user/{id}', 'Enterprises\EnterpriseController@loginAsUser');
+            Route::get('/user/deactivate/{id}', 'Security\AuthorizationController@deactivateUser');
+            Route::get('/user/activate/{id}', 'Security\AuthorizationController@activateUser');
+        });
     });
 });
+
+
+//Auth::routes();
+/*
+      // Authentication Routes...
+        $this->get('login', 'Auth\LoginController@showLoginForm')->name('login');
+        $this->post('login', 'Auth\LoginController@login');
+
+
+        // Registration Routes...
+        $this->get('register', 'Auth\RegisterController@showRegistrationForm')->name('register');
+        $this->post('register', 'Auth\RegisterController@register');
+
+        // Password Reset Routes...
+        $this->get('password/reset', 'Auth\ForgotPasswordController@showLinkRequestForm')->name('password.request');
+        $this->post('password/email', 'Auth\ForgotPasswordController@sendResetLinkEmail')->name('password.email');
+        $this->get('password/reset/{token}', 'Auth\ResetPasswordController@showResetForm')->name('password.reset');
+        $this->post('password/reset', 'Auth\ResetPasswordController@reset');
+ */

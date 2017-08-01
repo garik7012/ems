@@ -75,7 +75,7 @@ class ActionsSeeder extends Seeder
         //security
         DB::table('actions')->insert([
             'controller_id' => 6,
-            'name' => 'getEnterpriseSecuritySettings',
+            'name' => 'securitySetting',
             'is_active' => 1,
         ]);
         //setting

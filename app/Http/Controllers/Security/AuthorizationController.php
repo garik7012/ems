@@ -13,6 +13,13 @@ use App\Setting;
 class AuthorizationController extends Controller
 {
     use AuthenticatesUsers;
+
+    public function showLoginForm($namespace)
+    {
+        $this->shareEnterpriseToView($namespace);
+        return view('enterprise.login');
+    }
+
     /**
      * Handle a login request to the application.
      *
@@ -96,7 +103,7 @@ class AuthorizationController extends Controller
 
         
         return $this->authenticated($request, $this->guard()->user())
-            ?: $this->authorizationFactor();
+            ?: $this->authorizationFactor($request);
     }
 
     /**
@@ -105,7 +112,7 @@ class AuthorizationController extends Controller
      * according to is_sms_allow
      * @return \Illuminate\Http\RedirectResponse
      */
-    protected function authorizationFactor()
+    protected function authorizationFactor($request)
     {
         $auth_type = Setting::where('type',2)
             ->where('item_id', Auth::user()->enterprise_id)
@@ -132,7 +139,7 @@ class AuthorizationController extends Controller
                 return redirect()->back()->with('security_code', "Email. Code: $security_code");
             }
         }
-        return redirect()->back();
+        return redirect("/e/{$request->route('namespace')}");
     }
 
 
@@ -171,7 +178,7 @@ class AuthorizationController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function logout(Request $request)
+    public function logout($namespace, Request $request)
     {
         $this->guard()->logout();
 
@@ -179,7 +186,7 @@ class AuthorizationController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect('/');
+        return redirect("/e/{$namespace}");
     }
 
     public function activateUser($n,$id)
@@ -233,5 +240,12 @@ class AuthorizationController extends Controller
     protected function guard()
     {
         return Auth::guard();
+    }
+
+    private function shareEnterpriseToView($namespace)
+    {
+        $enterprise = Enterprise::where('namespace', $namespace)->firstOrFail();
+        view()->share('enterprise', $enterprise);
+        return $enterprise->id;
     }
 }

@@ -7,6 +7,9 @@ use Auth;
 use App\Enterprise;
 use \Illuminate\Support\Facades\View;
 use App\Menu;
+use App\Action;
+use App\Controller;
+use App\Module;
 
 class ShowSideMenu
 {
@@ -23,16 +26,31 @@ class ShowSideMenu
             View::share(['menu_items'=>""]);
             return $next($request);
         }
-        $ent_id = Enterprise::where('namespace', $request->route('namespace'))->firstOrFail()->id;
-        if(Auth::user()->enterprise_id == $ent_id) {
-            if(Auth::user()->is_superadmin){
-                $menu_items = Menu::orderBy('position')->get();
-            } else {
-                $menu_items = Menu::where('is_for_all_users', 1)->orderBy('position')->get();
-            }
 
-            View::share(['menu_items'=>$menu_items]);
-            return $next($request);
+        if(Auth::user()->is_superadmin){
+            $menu_items = Menu::orderBy('position')->where('is_active', 1)->get();
+        } else {
+            $menu_items = Menu::where('is_for_all_users', 1)->orderBy('position')->get();
+        }
+        $this->createMenuLinks($menu_items);
+
+        View::share(['menu_items'=>$menu_items]);
+        return $next($request);
+    }
+
+    private function createMenuLinks(&$menu_items)
+    {
+        foreach ($menu_items as &$menuItem){
+            if($menuItem->action_id != false) {
+                 $action =  Action::where('id', $menuItem->action_id)->first();
+                 $controller = Controller::where('id', $action->controller_id)->first();
+                 $module = Module::where('id', $controller->module_id)->value('name');
+                 $link = '/'. $module . '/' . $controller->name . '/' . $action->name;
+                $menuItem->link = strtolower($link);
+            }
+            else{
+                $menuItem->link = null;
+            }
         }
     }
 }

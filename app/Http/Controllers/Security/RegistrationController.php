@@ -11,7 +11,21 @@ use App\PasswordPolicy;
 
 class RegistrationController extends Controller
 {
-    public function confirmEmail($user_id, $pass)
+    public function createUserByAdmin($namespace, Request $request)
+    {
+        $ent_id = $this->shareEnterpriseToView($namespace);
+        $new_user_id = User::createNewUserByAdmin($request, $ent_id);
+        $confirm = Setting::where('type', 3)
+            ->where('item_id', $new_user_id)
+            ->where('key', 'confirmation_code')
+            ->value('value');
+
+        //TODO Send email to user with confirm link
+
+        return view('enterprise.user.success', ['confirm'=> "{$_SERVER['SERVER_NAME']}/e/$namespace/security/confirm/{$new_user_id}/{$confirm}"]);
+    }
+
+    public function confirmEmail($namespace, $user_id, $pass)
     {
         $user_pass = Setting::where('type', 3)
             ->where('item_id', $user_id)
@@ -29,6 +43,7 @@ class RegistrationController extends Controller
                 ->where('key', 'password_policy_id')
                 ->value('value');
             $password_policy = PasswordPolicy::find($password_policy_id);
+            $this->shareEnterpriseToView($namespace);
             return view('enterprise.user.confirmed', array(
                 'user' => $user,
                 'password_policy' => $password_policy,
@@ -77,5 +92,12 @@ class RegistrationController extends Controller
             return redirect("/e/{$ent}/login");
         }
         abort('403');
+    }
+
+    private function shareEnterpriseToView($namespace)
+    {
+        $enterprise = Enterprise::where('namespace', $namespace)->firstOrFail();
+        view()->share('enterprise', $enterprise);
+        return $enterprise->id;
     }
 }

@@ -6,7 +6,7 @@
                 <div class="panel panel-default">
                     <div class="panel-heading">Create new user</div>
                     <div class="panel-body">
-                        <form class="form-horizontal" method="post" action="/e/{{$enterprise->namespace}}/user/create">
+                        <form class="form-horizontal" method="post" action="/e/{{$enterprise->namespace}}/security/registration/usercreate">
                             {{ csrf_field() }}
 
 
