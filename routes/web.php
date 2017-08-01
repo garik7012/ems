@@ -36,6 +36,9 @@ Route::group(['prefix' => 'security'], function(){
 Route::get('/e/{namespace}/login', 'Enterprises\EnterpriseController@loginEnterprise')->middleware('menu');
 //Only if user is belong of this enterprise
 Route::group(['prefix' => '/e/{namespace}', 'middleware' => ['belong', 'is.active', 'menu']], function() {
+    Route::group(['prefix' => '/users'], function (){
+        Route::get('/dashboard/show', 'Users\DashboardController@show');
+    });
     Route::get('/', 'Enterprises\EnterpriseController@showEnterprise');
     Route::get('/user/profile', 'Enterprises\EnterpriseController@userProfile');
     Route::post('/user/profile', 'Enterprises\EnterpriseController@editUserProfile');

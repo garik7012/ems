@@ -14,7 +14,7 @@ class MenuSeeder extends Seeder
         DB::table('menu')->insert([
             'name' => 'Dashboard',
             'is_for_all_users' => 1,
-            'action_id' => 2,
+            'action_id' => 1,
             'position' => 1,
             'is_active' => 1,
             'description' => '/'
@@ -27,14 +27,14 @@ class MenuSeeder extends Seeder
         DB::table('menu')->insert([
             'name' => 'List',
             'parent_id' => 2,
-            'action_id' => 4,
+            'action_id' => 2,
             'is_active' => 1,
             'description' => '/branches/list'
         ]);
         DB::table('menu')->insert([
             'name' => 'Add',
             'parent_id' => 2,
-            'action_id' => 5,
+            'action_id' => 3,
             'is_active' => 1,
             'description' => '/branches/create'
         ]);
@@ -46,14 +46,14 @@ class MenuSeeder extends Seeder
         DB::table('menu')->insert([
             'name' => 'List',
             'parent_id' => 5,
-            'action_id' => 7,
+            'action_id' => 4,
             'is_active' => 1,
             'description' => '/departments/list'
         ]);
         DB::table('menu')->insert([
             'name' => 'Add',
             'parent_id' => 5,
-            'action_id' => 8,
+            'action_id' => 5,
             'is_active' => 1,
             'description' => '/departments/create'
         ]);
@@ -65,13 +65,13 @@ class MenuSeeder extends Seeder
         DB::table('menu')->insert([
             'name' => 'List',
             'parent_id' => 8,
-            'action_id' => 10,
+            'action_id' => 6,
             'is_active' => 1,
         ]);
         DB::table('menu')->insert([
             'name' => 'Add',
             'parent_id' => 8,
-            'action_id' => 11,
+            'action_id' => 7,
             'is_active' => 1,
         ]);
         DB::table('menu')->insert([
@@ -82,14 +82,14 @@ class MenuSeeder extends Seeder
         DB::table('menu')->insert([
             'name' => 'List',
             'parent_id' => 11,
-            'action_id' => 13,
+            'action_id' => 8,
             'is_active' => 1,
             'description' => '/positions/list'
         ]);
         DB::table('menu')->insert([
             'name' => 'Add',
             'parent_id' => 11,
-            'action_id' => 14,
+            'action_id' => 9,
             'is_active' => 1,
             'description' => '/positions/create'
         ]);
@@ -101,27 +101,27 @@ class MenuSeeder extends Seeder
         DB::table('menu')->insert([
             'name' => 'List',
             'parent_id' => 14,
-            'action_id' => 16,
+            'action_id' => 10,
             'is_active' => 1,
             'description' => '/user/list'
         ]);
         DB::table('menu')->insert([
             'name' => 'Add',
             'parent_id' => 14,
-            'action_id' => 17,
+            'action_id' => 11,
             'is_active' => 1,
             'description' => '/user/create'
         ]);
         DB::table('menu')->insert([
             'name' => 'Security',
-            'action_id' => 18,
+            'action_id' => 12,
             'position' => 7,
             'is_active' => 1,
             'description' => '/security'
         ]);
         DB::table('menu')->insert([
             'name' => 'Setting',
-            'action_id' => 19,
+            'action_id' => 13,
             'position' => 8,
         ]);
 

@@ -26,9 +26,9 @@ class ShowSideMenu
         $ent_id = Enterprise::where('namespace', $request->route('namespace'))->firstOrFail()->id;
         if(Auth::user()->enterprise_id == $ent_id) {
             if(Auth::user()->is_superadmin){
-                $menu_items = Menu::all();
+                $menu_items = Menu::orderBy('position')->get();
             } else {
-                $menu_items = Menu::where('is_for_all_users', 1)->get();
+                $menu_items = Menu::where('is_for_all_users', 1)->orderBy('position')->get();
             }
 
             View::share(['menu_items'=>$menu_items]);

@@ -152,10 +152,15 @@ ul.alert-dropdown {
     color: #999;
 }
 
-.side-nav>li>ul>li>a:hover {
+.side-nav>li>ul>li>a:hover{
     color: #fff;
 }
-
+.side-nav .current_link {
+    background-color: #080808;
+}
+.navbar-inverse .navbar-nav li.current_link>a{
+    color: #fff;
+}
 /* Flot Chart Containers */
 
 .flot-chart {

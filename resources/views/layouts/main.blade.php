@@ -80,8 +80,8 @@
         <div class="collapse navbar-collapse navbar-ex1-collapse">
             <ul class="nav navbar-nav side-nav">
                 @foreach($menu_items as $menu_item)
-                    @if(!$menu_item->action_id and !$menu_item->parrent_id)
-                        <li class={{$menu_item->is_active ? "": "disabled"  }}>
+                    @if(!$menu_item->action_id and !$menu_item->parrent_id and $menu_item->is_active)
+                        <li>
                         <a href="javascript:;" data-toggle="collapse" data-target="#demo_{{$menu_item->id}}">{{$menu_item->name}} <i class="fa fa-fw fa-caret-down"></i></a>
                         <ul id="demo_{{$menu_item->id}}" class="collapse">
                             @foreach($menu_items as $menu_child)
@@ -93,10 +93,14 @@
                             @endforeach
                         </ul>
                         </li>
-                    @elseif($menu_item->parent_id == null)
-                    <li class={{$menu_item->is_active ? "": "disabled"  }}>
-                        <a href="/e/{{$enterprise->namespace}}{{$menu_item->description}}">{{$menu_item->name}} {{$menu_item->parent_id}}</a>
+                    @elseif($menu_item->parent_id == null and $menu_item->is_active)
+                    <li>
+                        <a href="/e/{{$enterprise->namespace}}{{$menu_item->description}}">{{$menu_item->name}}</a>
                     </li>
+                        @elseif(!$menu_item->is_active and !$menu_item->parent_id)
+                        <li class="disabled">
+                            <a href="404">{{$menu_item->name}}</a>
+                        </li>
                     @endif
                 @endforeach
             </ul>
@@ -145,7 +149,20 @@
 
 <!-- Bootstrap Core JavaScript -->
 <script src="{{ asset('js/bootstrap.min.js') }}"></script>
-
+<script>
+    $(document).ready(function () {
+        $('ul.side-nav a').each(function(){
+            if($(this))
+            if (this.href == document.URL) {
+                $(this).parent().addClass('current_link');
+                $(this).parent().parent().addClass('in');
+            }
+        });
+        $('ul.side-nav>li').click(function () {
+            $('ul.side-nav .in').removeClass('in');
+        })
+    });
+</script>
 </body>
 
 </html>
