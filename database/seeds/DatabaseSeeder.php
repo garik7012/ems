@@ -15,5 +15,10 @@ class DatabaseSeeder extends Seeder
       // $this->call(EnterpriseSecuritySeeder::class);
         $this->call(AuthTypesSeeder::class);
         $this->call(PasswordPolicySeeder::class);
+        $this->call(ActionSeeder::class);
+        $this->call(MenuSeeder::class);
+        $this->call(ControllersTableSeeder::class);
+        $this->call(ModulesTableSeeder::class);
+        
     }
 }

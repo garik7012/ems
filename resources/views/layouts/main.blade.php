@@ -35,7 +35,6 @@
 <body>
 
 <div id="wrapper">
-
     <!-- Navigation -->
     <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
         <!-- Brand and toggle get grouped for better mobile display -->
@@ -80,60 +79,26 @@
         <!-- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens -->
         <div class="collapse navbar-collapse navbar-ex1-collapse">
             <ul class="nav navbar-nav side-nav">
-                <li>
-                    <a href="/e/{{$enterprise->namespace}}">Dashboard</a>
-                </li>
-                <li>
-                    <a href="javascript:;" data-toggle="collapse" data-target="#demo">Branches <i class="fa fa-fw fa-caret-down"></i></a>
-                    <ul id="demo" class="collapse">
-                        <li>
-                            <a href="/e/{{$enterprise->namespace}}/branches/list">List</a>
-                        </li>
-                        @if(Auth::user()->is_superadmin)
-                        <li>
-                            <a href="/e/{{$enterprise->namespace}}/branches/create">Create</a>
-                        </li>
-                        @endif
-                    </ul>
-                </li>
-                <li>
-                    <a href="javascript:;" data-toggle="collapse" data-target="#demo1">Departments <i class="fa fa-fw fa-caret-down"></i></a>
-                    <ul id="demo1" class="collapse">
-                        <li>
-                            <a href="/e/{{$enterprise->namespace}}/departments/list">List</a>
-                        </li>
-                        @if(Auth::user()->is_superadmin)
-                        <li>
-                            <a href="/e/{{$enterprise->namespace}}/departments/create">Create</a>
-                        </li>
-                        @endif
-                    </ul>
-                </li>
-                @if(Auth::user()->is_superadmin)
-                    <li>
-                        <a href="/e/{{$enterprise->namespace}}/security">Security</a>
-                    </li>
-                    <li>
-                        <a href="javascript:;" data-toggle="collapse" data-target="#demo2">Users <i class="fa fa-fw fa-caret-down"></i></a>
-                        <ul id="demo2" class="collapse">
+                @foreach($menu_items as $menu_item)
+                    @if(!$menu_item->action_id and !$menu_item->parrent_id)
+                        <li class={{$menu_item->is_active ? "": "disabled"  }}>
+                        <a href="javascript:;" data-toggle="collapse" data-target="#demo_{{$menu_item->id}}">{{$menu_item->name}} <i class="fa fa-fw fa-caret-down"></i></a>
+                        <ul id="demo_{{$menu_item->id}}" class="collapse">
+                            @foreach($menu_items as $menu_child)
+                                @if($menu_child->parent_id == $menu_item->id)
                             <li>
-                                <a href="/e/{{$enterprise->namespace}}/user/list">List</a>
+                                <a href="/e/{{$enterprise->namespace . $menu_child->description}}">{{$menu_child->name}}</a>
                             </li>
-                            <li>
-                                <a href="/e/{{$enterprise->namespace}}/user/create">Create</a>
-                            </li>
+                                @endif
+                            @endforeach
                         </ul>
+                        </li>
+                    @elseif($menu_item->parent_id == null)
+                    <li class={{$menu_item->is_active ? "": "disabled"  }}>
+                        <a href="/e/{{$enterprise->namespace}}{{$menu_item->description}}">{{$menu_item->name}} {{$menu_item->parent_id}}</a>
                     </li>
-                    <li class="disabled">
-                        <a href="#">External organisations</a>
-                    </li>
-                    <li class="disabled">
-                        <a href="#">Positions</a>
-                    </li>
-                    <li class="disabled">
-                        <a href="#">Settings</a>
-                    </li>
-                @endif
+                    @endif
+                @endforeach
             </ul>
         </div>
         @else

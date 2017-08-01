@@ -2,6 +2,7 @@
 
 namespace App\Http;
 
+use App\Http\Middleware\ShowSideMenu;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel
@@ -59,5 +60,6 @@ class Kernel extends HttpKernel
         'belong' => \App\Http\Middleware\CheckUserEnterprise::class,
         'is.admin' => \App\Http\Middleware\CheckIsAdmin::class,
         'is.active' => \App\Http\Middleware\CheckIsUserActive::class,
+        'menu' =>  \App\Http\Middleware\ShowSideMenu::class
     ];
 }
