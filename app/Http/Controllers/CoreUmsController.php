@@ -8,6 +8,7 @@ use App\User;
 use App\Enterprise;
 use App\Setting;
 use Auth;
+use App;
 
 class CoreUmsController extends Controller
 {
@@ -57,5 +58,10 @@ class CoreUmsController extends Controller
         User::setDefaultAdminSettings($user->id);
         Auth::logout();
         return redirect("/e/$request->namespace");
+    }
+
+    public function callActionUrl($namespace, $module, $controller, $action, Request $request)
+    {
+        return App::make("\App\Http\Controllers\\" . ucfirst($module) . "\\" . ucfirst($controller) ."Controller")->callAction($action, [$namespace, $request]);
     }
 }

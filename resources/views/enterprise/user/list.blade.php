@@ -31,7 +31,7 @@
                             @endif
                         </td>
                         <td width="130">{{$ent_user->is_superadmin ? "Yes": ""}}</td>
-                        <td><a href="/e/{{$enterprise->namespace}}/user/login-as-user/{{$ent_user->id}}">Login</a></td>
+                        <td><a href="/e/{{$enterprise->namespace}}/user/loginAsUser/{{$ent_user->id}}">Login</a></td>
                     </tr>
                 @endforeach
                 </tbody>

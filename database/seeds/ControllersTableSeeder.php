@@ -12,72 +12,72 @@ class ControllersTableSeeder extends Seeder
     public function run()
     {
         DB::table('controllers')->insert([
-            'name' => 'registration',
+            'name' => 'Registration',
             'module_id' => 1,
             'is_active' => 1,
         ]);
         DB::table('controllers')->insert([
-            'name' => 'authorization',
+            'name' => 'Authorization',
             'module_id' => 1,
             'is_active' => 1,
         ]);
         DB::table('controllers')->insert([
-            'name' => 'branches',
+            'name' => 'Branches',
             'module_id' => 2,
             'is_active' => 1,
         ]);
         DB::table('controllers')->insert([
-            'name' => 'departments',
+            'name' => 'Departments',
             'module_id' => 2,
             'is_active' => 1,
         ]);
         DB::table('controllers')->insert([
-            'name' => 'positions',
+            'name' => 'Positions',
             'module_id' => 2,
             'is_active' => 1,
         ]);
         DB::table('controllers')->insert([
-            'name' => 'settings',
+            'name' => 'Settings',
             'module_id' => 2,
             'is_active' => 1,
         ]);
         DB::table('controllers')->insert([
-            'name' => 'externalorganisations',
+            'name' => 'Externalorganisations',
             'module_id' => 2,
             'is_active' => 1,
         ]);
         DB::table('controllers')->insert([
-            'name' => 'dashboard',
+            'name' => 'Dashboard',
             'module_id' => 3,
             'is_active' => 1,
         ]);
         DB::table('controllers')->insert([
-            'name' => 'roles',
+            'name' => 'Roles',
             'module_id' => 3,
             'is_active' => 1,
         ]);
         DB::table('controllers')->insert([
-            'name' => 'settings',
+            'name' => 'Settings',
             'module_id' => 3,
             'is_active' => 1,
         ]);
         DB::table('controllers')->insert([
-            'name' => 'files',
+            'name' => 'Files',
             'module_id' => 4,
             'is_active' => 1,
         ]);
         DB::table('controllers')->insert([
-            'name' => 'users',
+            'name' => 'Users',
             'module_id' => 5,
             'is_active' => 1,
         ]);
         DB::table('controllers')->insert([
-            'name' => 'emails',
+            'name' => 'Emails',
             'module_id' => 5,
             'is_active' => 1,
         ]);
         DB::table('controllers')->insert([
-            'name' => 'enterprise',
+            'name' => 'Enterprise',
             'module_id' => 2,
             'is_active' => 1,
         ]);

@@ -12,7 +12,7 @@ use App\User;
 
 class SettingsController extends Controller
 {
-    public function getEnterpriseSecuritySettings($namespace)
+    public function getSecurity($namespace)
     {
         $enterprise = Enterprise::where('namespace', $namespace)->first();
         $enterpriseSecurity = Setting::where('type', 2)->where('item_id', $enterprise->id)->pluck('value', 'key');
@@ -26,11 +26,11 @@ class SettingsController extends Controller
         );
     }
 
-    public function setEnterpriseSecuritySettings($namespace, Request $request)
+    public function setSecurity($namespace, Request $request)
     {
         $enterprise = Enterprise::where('namespace', $namespace)->first();
         Setting::setEnterpriseSecurity($enterprise->id, $request);
-        return $this->getEnterpriseSecuritySettings($namespace);
+        return $this->getSecurity($namespace);
     }
 
 }

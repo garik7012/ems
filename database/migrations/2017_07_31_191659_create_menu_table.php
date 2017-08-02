@@ -17,11 +17,11 @@ class CreateMenuTable extends Migration
             $table->increments('id');
             $table->string('name');
             $table->string('description')->nullable();
-            $table->integer('parent_id')->nullable();
+            $table->smallInteger('parent_id')->nullable();
             $table->integer('action_id')->nullable();
-            $table->smallInteger('is_for_all_users')->nullable();
-            $table->smallInteger('position')->nullable();
-            $table->smallInteger('is_active')->nullable();
+            $table->smallInteger('is_for_all_users')->default(0);
+            $table->smallInteger('position')->default(50);
+            $table->smallInteger('is_active')->default(1);
         });
     }
 

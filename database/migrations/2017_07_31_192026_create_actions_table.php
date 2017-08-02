@@ -17,7 +17,7 @@ class CreateActionsTable extends Migration
             $table->increments('id');
             $table->integer('controller_id');
             $table->string('name');
-            $table->smallInteger('is_active')->nullable();
+            $table->smallInteger('is_active')->default(1);
         });
     }
 

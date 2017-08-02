@@ -12,23 +12,23 @@ class ModulesTableSeeder extends Seeder
     public function run()
     {
         DB::table('modules')->insert([
-            'name' => 'security',
+            'name' => 'Security',
             'is_active' => 1,
         ]);
         DB::table('modules')->insert([
-            'name' => 'enterprises',
+            'name' => 'Enterprises',
             'is_active' => 1,
         ]);
         DB::table('modules')->insert([
-            'name' => 'users',
+            'name' => 'Users',
             'is_active' => 1,
         ]);
         DB::table('modules')->insert([
-            'name' => 'tools',
+            'name' => 'Tools',
             'is_active' => 1,
         ]);
         DB::table('modules')->insert([
-            'name' => 'logs',
+            'name' => 'Logs',
             'is_active' => 1,
         ]);
     }
