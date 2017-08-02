@@ -85,5 +85,34 @@ class ActionsSeeder extends Seeder
             'is_active' => 1,
         ]);
 
+        //roles
+        DB::table('actions')->insert([
+            'controller_id' => 9,
+            'name' => 'listUsersAndRoles',
+            'is_active' => 1,
+        ]);
+        DB::table('actions')->insert([
+            'controller_id' => 9,
+            'name' => 'addNewRole',
+            'is_active' => 1,
+        ]);
+        DB::table('actions')->insert([
+            'controller_id' => 9,
+            'name' => 'showRolesOfUser',
+            'is_active' => 1,
+        ]);
+        DB::table('actions')->insert([
+            'controller_id' => 9,
+            'name' => 'addRoleToUser',
+            'is_active' => 1,
+        ]);
+        DB::table('actions')->insert([
+            'controller_id' => 9,
+            'name' => 'deleteUsersRole',
+            'is_active' => 1,
+        ]);
+
+
+
     }
 }

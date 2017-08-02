@@ -125,6 +125,23 @@ class MenuSeeder extends Seeder
             'position' => 18,
             'is_active' => 0,
         ]);
+        DB::table('menu')->insert([
+            'name' => 'Roles',
+            'position' => 19,
+        ]);
+        DB::table('menu')->insert([
+            'name' => 'Users and roles',
+            'action_id' => 14,
+            'position' => 20,
+            'parent_id' => 19,
+        ]);
+        DB::table('menu')->insert([
+            'name' => 'Add new role',
+            'action_id' => 15,
+            'position' => 21,
+            'parent_id' => 19,
+        ]);
+
 
     }
 }

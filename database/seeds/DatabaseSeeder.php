@@ -19,6 +19,7 @@ class DatabaseSeeder extends Seeder
         $this->call(ControllersTableSeeder::class);
         $this->call(ModulesTableSeeder::class);
         $this->call(ActionsSeeder::class);
+        $this->call(TestRoles::class);
         
     }
 }

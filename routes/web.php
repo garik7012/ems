@@ -37,16 +37,15 @@ Route::group(['prefix' => '/e/{namespace}'], function() {
 
     //check is user belong to this enterprise, is user active, share menu according to role
     Route::group(['middleware' => ['belong', 'is.active', 'menu']], function() {
-
         Route::get('/', 'Enterprises\EnterpriseController@showEnterprise');
         Route::get('/user/profile', 'Enterprises\EnterpriseController@userProfile');
         Route::post('/user/profile', 'Enterprises\EnterpriseController@editUserProfile');
 
-        Route::get('/user/loginAsUser/{id}', 'Enterprises\EnterpriseController@loginAsUser');
+        Route::get('/user/loginAsUser/{id}', 'Enterprises\EnterpriseController@loginAsUser')->middleware('is.admin');
         Route::get('/user/list/gback', 'Enterprises\EnterpriseController@backToAdmin');
 
-        //
-        Route::any('/{module}/{controller}/{action}', 'CoreUmsController@callActionUrl');
+        //call module\controller->action according to route /{module}/{controller}/{action}
+        Route::any('/{module}/{controller}/{action}/{parametr?}', 'CoreUmsController@callActionUrl');
 
 //        Route::get('/enterprises/departments/showlist', 'Enterprises\DepartmentsController@showList');
 //        Route::get('/enterprises/branches/showlist', 'Enterprises\BranchesController@showList');
