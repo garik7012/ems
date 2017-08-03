@@ -26,7 +26,7 @@
 
                         <td>@foreach($item['roles'] as $role)
                             @if($role)
-                                <span class="text-primary" title="{{$role['description']}}">{{$role['name']}}; </span>
+                                <span class="text-primary users-roles" title="{{$role['description']}}">{{$role['name']}}; </span>
                             @endif
                             @endforeach
                         </td>

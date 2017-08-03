@@ -141,7 +141,11 @@ class MenuSeeder extends Seeder
             'position' => 21,
             'parent_id' => 19,
         ]);
-
-
+        DB::table('menu')->insert([
+            'name' => 'Show roles',
+            'action_id' => 17,
+            'position' => 22,
+            'parent_id' => 19,
+        ]);
     }
 }

@@ -15,6 +15,30 @@ use Illuminate\Support\Facades\DB;
 
 class RolesController extends Controller
 {
+    public function showRoles($namespace)
+    {
+        $ent_id = $this->shareEnterpriseToView($namespace);
+        $roles = Role::all();
+        foreach ($roles as &$role){
+            $action_ids = RolesAndActions::where('role_id', $role->id)
+                ->where('enterprise_id', $ent_id)
+                ->select('action_id')
+                ->get()
+                ->toArray();
+            $actions_arr = [];
+            foreach ($action_ids as $actionId){
+                $action = Action::where('is_active', 1)->find($actionId['action_id']);
+                $controller = DB::table('controllers')->find($action->controller_id);
+                $module = DB::table('modules')->where('id',$controller->module_id)->value('name');
+                $actions_arr[] = ['action_id' => $action->id,
+                    'full_path' => $module . '\\' . $controller->name . '\\' . $action->name];
+            }
+            $role->actions = $actions_arr;
+        }
+
+        return view('roles.show', ["roles" => $roles]);
+    }
+
     public function listUsersAndRoles($namespace)
     {
         //TODO make sql request
@@ -38,6 +62,7 @@ class RolesController extends Controller
 
     public function addNewRole($namespace, Request $request)
     {
+        //save new role
         if($request->isMethod('post')){
             $ent_id = $this->shareEnterpriseToView($namespace);
             $role = new Role;
@@ -45,7 +70,7 @@ class RolesController extends Controller
             $role->description = $request->description;
             $role->enterprise_id = $ent_id;
             $role->save();
-            foreach ($request->action as $action){
+            foreach ($request->actions as $action){
                 $role_action = new RolesAndActions;
                 $role_action->role_id = $role->id;
                 $role_action->enterprise_id = $ent_id;
@@ -53,6 +78,8 @@ class RolesController extends Controller
                 $role_action->save();
             }
         }
+
+        //show creation form;
         $actions = Action::where('is_active', 1)->get();
         $actions_arr = [];
         foreach ($actions as $action){
@@ -95,6 +122,22 @@ class RolesController extends Controller
         $new_role->save();
 
         return redirect("/e/{$namespace}/Users/Roles/showRolesOfUser/{$request->user_id}");
+    }
+
+    public function deactivate($namespace, $role_id)
+    {
+        $role = Role::findOrFail($role_id);
+        $role->is_active = 0;
+        $role->save();
+        return redirect("/e/{$namespace}/Users/Roles/showRoles");
+    }
+
+    public function activate($namespace, $role_id)
+    {
+        $role = Role::findOrFail($role_id);
+        $role->is_active = 1;
+        $role->save();
+        return redirect("/e/{$namespace}/Users/Roles/showRoles");
     }
 
     private function shareEnterpriseToView($namespace)

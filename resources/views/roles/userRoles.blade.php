@@ -9,7 +9,7 @@
                 <tr>
                     <th>Role</th>
                     <th>Description</th>
-                    <th>Add/Delete role</th>
+                    <th>Add/Delete user's role</th>
                 </tr>
                 </thead>
                 <tbody>

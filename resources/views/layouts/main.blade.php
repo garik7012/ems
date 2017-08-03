@@ -117,7 +117,7 @@
 
     <div id="page-wrapper">
 
-        <div class="container-fluid">
+        <div class={{Auth::user() && (!Session::has('security_code')) ? "container-fluid": "container"}}>
 
             <!-- Page Heading -->
             <div class="row">
@@ -158,9 +158,9 @@
                 $(this).parent().parent().addClass('in');
             }
         });
-        $('ul.side-nav>li').click(function () {
-            $('ul.side-nav .in').removeClass('in');
-        })
+//        $('ul.side-nav>li').click(function () {
+//            $('ul.side-nav .in').removeClass('in');
+//        })
     });
 </script>
 </body>

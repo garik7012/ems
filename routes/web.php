@@ -45,7 +45,8 @@ Route::group(['prefix' => '/e/{namespace}'], function() {
         Route::get('/user/list/gback', 'Enterprises\EnterpriseController@backToAdmin');
 
         //call module\controller->action according to route /{module}/{controller}/{action}
-        Route::any('/{module}/{controller}/{action}/{parametr?}', 'CoreUmsController@callActionUrl');
+        Route::any('/{module}/{controller}/{action}/{parametr?}', 'CoreUmsController@callActionUrl')
+            ->where(['module' => 'Users|Enterprises|Security|Tools|Logs']);
 
 //        Route::get('/enterprises/departments/showlist', 'Enterprises\DepartmentsController@showList');
 //        Route::get('/enterprises/branches/showlist', 'Enterprises\BranchesController@showList');

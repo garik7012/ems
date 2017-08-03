@@ -46,7 +46,7 @@
                             {{--<li><a href="{{ route('login') }}">Login</a></li>--}}
                             {{--<li><a href="{{ route('register') }}">Register</a></li>--}}
                         @else
-                            @if (Auth::check() && Session::has('auth_from_admin_asd'))
+                            @if (Auth::check() && Session::has('auth_from_admin_asd') && isset($enterprise))
                                 <li><a href = "/e/{{$enterprise->namespace}}/user/list/gback">Go back to my profile</a></li>
                             @endif
                             <li class="dropdown">
