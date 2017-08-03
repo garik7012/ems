@@ -81,7 +81,7 @@ class ActionsSeeder extends Seeder
         //setting
         DB::table('actions')->insert([
             'controller_id' => 6,
-            'name' => 'getEnterpriseSettings',
+            'name' => 'setSecurity',
             'is_active' => 1,
         ]);
 
@@ -126,8 +126,21 @@ class ActionsSeeder extends Seeder
             'name' => 'activate',
             'is_active' => 1,
         ]);
-
-
+        DB::table('actions')->insert([
+            'controller_id' => 1,
+            'name' => 'createUserByAdmin',
+            'is_active' => 1,
+        ]);
+        DB::table('actions')->insert([
+            'controller_id' => 10,
+            'name' => 'activate',
+            'is_active' => 1,
+        ]);
+        DB::table('actions')->insert([
+            'controller_id' => 10,
+            'name' => 'deactivate',
+            'is_active' => 1,
+        ]);
 
     }
 }

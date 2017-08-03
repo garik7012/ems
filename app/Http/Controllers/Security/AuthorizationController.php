@@ -189,22 +189,6 @@ class AuthorizationController extends Controller
         return redirect("/e/{$namespace}");
     }
 
-    public function activateUser($n,$id)
-    {
-        $user = User::findOrFail($id);
-        $user->is_active = 1;
-        $user->save();
-        return redirect()->back();
-    }
-
-    public function deactivateUser($n,$id)
-    {
-        $user = User::findOrFail($id);
-        $user->is_active = 0;
-        $user->save();
-        return redirect()->back();
-    }
-
 
     public function checkConfirmCode(Request $request)
     {

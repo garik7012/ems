@@ -36,6 +36,6 @@ class CheckIsUserActive
         if(Auth::user()->is_active) {
             return $next($request);
         }
-        return redirect("/security/user-not-active");
+        return redirect("/e/{$request->route('namespace')}/security/user-not-active");
     }
 }

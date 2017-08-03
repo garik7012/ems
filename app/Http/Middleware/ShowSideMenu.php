@@ -25,7 +25,7 @@ class ShowSideMenu
     public function handle($request, Closure $next)
     {
         if(Auth::guest()){
-            View::share(['menu_items'=>""]);
+            View::share(['menu_items'=>[]]);
             return $next($request);
         }
 
@@ -37,8 +37,13 @@ class ShowSideMenu
 
             $menu_items = Menu::where('is_for_all_users', 1)->orderBy('position')->get();
             foreach ($menu_items as $menu_item){
+                if($menu_item->parent_id and !in_array($menu_item->parent_id, $menu_items_id)){
+                    $menu_items->prepend(Menu::find($menu_item->parent_id));
+                    $menu_items_id[] = $menu_item->parent_id;
+                }
                 $menu_items_id[] = $menu_item->id;
             }
+            //TODO if role is not active. Sort menu list order by position
             $user_roles_ids = UsersAndRoles::where('user_id', Auth::user()->id)->select('role_id')->get()->toArray();
             foreach ($user_roles_ids as $role_id){
                 $actions = RolesAndActions::where('role_id',$role_id['role_id'])->select('action_id')->get();

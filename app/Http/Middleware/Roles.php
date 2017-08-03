@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Menu;
 use App\UsersAndRoles;
 use Closure;
 use App\Controller;
@@ -29,9 +30,9 @@ class Roles
             ->get()->toArray();
         $all_paths = [];
         foreach ($all_paths_raw as $path_raw){
-            $all_paths[] = $path_raw->module.'\\'.$path_raw->controller.'\\'.$path_raw->action;
+            $all_paths[] = strtolower($path_raw->module.'\\'.$path_raw->controller.'\\'.$path_raw->action);
         }
-        if(!in_array($current_path, $all_paths)) abort('404');
+        if(!in_array(strtolower($current_path), $all_paths)) abort('404');
 
         if(!Auth::user()->is_superadmin) {
             $actions = DB::table('users_and_roles')->where('users_and_roles.user_id', Auth::user()->id)
@@ -43,13 +44,23 @@ class Roles
                 ->get();
 
             $permission_paths = [];
-            foreach ($actions as $action) {
-                $controller = DB::table('controllers')->find($action->controller_id);
-                $module = DB::table('modules')->where('id', $controller->module_id)->value('name');
-                $permission_paths[] = $module.'\\'.$controller->name.'\\'.$action->name;
-            }
+            $this->addToPermissionPath($actions, $permission_paths);
+            $menu_for_all_user = DB::table('menu')->where('menu.is_for_all_users',1)
+                ->join('actions', 'actions.id', '=', 'menu.action_id')->where('actions.is_active',1)
+                ->select('actions.name', 'actions.controller_id')
+                ->get()->toArray();
+            $this->addToPermissionPath($menu_for_all_user, $permission_paths);
             if(!in_array($current_path, $permission_paths)) abort('403');
         }
         return $next($request);
+    }
+
+    private function addToPermissionPath($actions, &$permission_paths)
+    {
+        foreach ($actions as $action) {
+            $controller = DB::table('controllers')->find($action->controller_id);
+            $module = DB::table('modules')->where('id', $controller->module_id)->value('name');
+            $permission_paths[] = $module.'\\'.$controller->name.'\\'.$action->name;
+        }
     }
 }

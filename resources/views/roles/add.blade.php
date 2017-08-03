@@ -23,7 +23,7 @@
                     <div class="form-group">
                         <label for="action" class="col-md-4 control-label">Module/Controller/Action.</br> You can add several actions.</br> Just hold Ctrl button</label>
                         <div class="col-md-6">
-                            <select size="17" name="actions[]" id="action" class="form-control" multiple="">
+                            <select size="17" name="actions[]" id="action" class="form-control" multiple="" required>
                                 @foreach($action_arr as $item)
                                 <option value="{{$item['action_id']}}">{{$item['full_path']}}</option>
                                     @endforeach

@@ -143,7 +143,7 @@ class MenuSeeder extends Seeder
         ]);
         DB::table('menu')->insert([
             'name' => 'Show roles',
-            'action_id' => 17,
+            'action_id' => 19,
             'position' => 22,
             'parent_id' => 19,
         ]);

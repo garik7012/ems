@@ -158,9 +158,9 @@
                 $(this).parent().parent().addClass('in');
             }
         });
-//        $('ul.side-nav>li').click(function () {
-//            $('ul.side-nav .in').removeClass('in');
-//        })
+        $('ul.side-nav>li').click(function () {
+            $('ul.side-nav .in').removeClass('in');
+        })
     });
 </script>
 </body>

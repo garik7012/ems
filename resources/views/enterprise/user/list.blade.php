@@ -25,9 +25,9 @@
                         <td>{{$ent_user->last_name}}</td>
                         <td width="150">
                             @if($ent_user->is_active)
-                            Yes <a href="/e/{{$enterprise->namespace}}/user/deactivate/{{$ent_user->id}}" class="btn btn-danger">deactivate</a>
+                            Yes <a href="/e/{{$enterprise->namespace}}/Users/Settings/deactivate/{{$ent_user->id}}" class="btn btn-danger">deactivate</a>
                             @else
-                            No &nbsp; <a href="/e/{{$enterprise->namespace}}/user/activate/{{$ent_user->id}}" class="btn btn-primary">activate</a>
+                            No &nbsp; <a href="/e/{{$enterprise->namespace}}/Users/Settings/activate/{{$ent_user->id}}" class="btn btn-primary">activate</a>
                             @endif
                         </td>
                         <td width="130">{{$ent_user->is_superadmin ? "Yes": ""}}</td>

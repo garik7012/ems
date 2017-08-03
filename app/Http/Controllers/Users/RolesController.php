@@ -41,7 +41,6 @@ class RolesController extends Controller
 
     public function listUsersAndRoles($namespace)
     {
-        //TODO make sql request
         $users = User::where('is_active', 1)->get();
         $user_and_roles = [];
         $i = 0;

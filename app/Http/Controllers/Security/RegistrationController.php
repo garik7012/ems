@@ -8,6 +8,7 @@ use App\Setting;
 use App\User;
 use App\Enterprise;
 use App\PasswordPolicy;
+use Auth;
 
 class RegistrationController extends Controller
 {
@@ -27,6 +28,7 @@ class RegistrationController extends Controller
 
     public function confirmEmail($namespace, $user_id, $pass)
     {
+        if(Auth::user()) Auth::logout();
         $user_pass = Setting::where('type', 3)
             ->where('item_id', $user_id)
             ->where('key', 'confirmation_code')
