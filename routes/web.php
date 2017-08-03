@@ -19,9 +19,7 @@ Route::group(['prefix' => 'enterprises'], function(){
 });
 Route::post('/logout', 'Auth\LoginController@logout');
 
-
-
-//Enterprise's routes
+//--------------------------------   Enterprise's routes   ---------------------------------------
 Route::group(['prefix' => '/e/{namespace}'], function() {
     //Auth
     Route::any('/logout', 'Security\AuthorizationController@logout')->name('logout');
@@ -34,7 +32,6 @@ Route::group(['prefix' => '/e/{namespace}'], function() {
         Route::post('/confirm/code', 'Security\AuthorizationController@checkConfirmCode');
         Route::post('/authorization/login', 'Security\AuthorizationController@login');
     });
-
     //check is user belong to this enterprise, is user active, share menu according to role
     Route::group(['middleware' => ['belong', 'is.active', 'menu']], function() {
         Route::get('/', 'Enterprises\EnterpriseController@showEnterprise');
@@ -44,9 +41,8 @@ Route::group(['prefix' => '/e/{namespace}'], function() {
         Route::get('/user/loginAsUser/{id}', 'Enterprises\EnterpriseController@loginAsUser')->middleware('is.admin');
         Route::get('/user/list/gback', 'Enterprises\EnterpriseController@backToAdmin');
 
-        //call module\controller->action according to route /{module}/{controller}/{action}
-        Route::any('/{module}/{controller}/{action}/{parametr?}', 'CoreUmsController@callActionUrl')
-            ->where(['module' => 'Users|Enterprises|Security|Tools|Logs']);
+    //call module\controller->action according to route /{module}/{controller}/{action}
+        Route::any('/{module}/{controller}/{action}/{parametr?}', 'CoreUmsController@callActionUrl')->middleware('roles');
 
 //        Route::get('/enterprises/departments/showlist', 'Enterprises\DepartmentsController@showList');
 //        Route::get('/enterprises/branches/showlist', 'Enterprises\BranchesController@showList');
