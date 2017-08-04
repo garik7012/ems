@@ -10,7 +10,7 @@ use App\Setting;
 use Auth;
 use App;
 
-class CoreUmsController extends Controller
+class CoreController extends Controller
 {
 
     public function index()

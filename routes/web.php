@@ -11,12 +11,12 @@
 |
 */
 
-Route::get('/', 'CoreUmsController@index');
+Route::get('/', 'CoreController@index');
 Route::group(['prefix' => 'enterprises'], function(){
-    Route::get('/', 'CoreUmsController@welcome');
-    Route::get('/registration', 'CoreUmsController@registration');
-    Route::post('/registration', 'CoreUmsController@create');
-    Route::get('/goToEnterprise/{enterprise_id}', 'CoreUmsController@goToEnterprise');
+    Route::get('/', 'CoreController@welcome');
+    Route::get('/registration', 'CoreController@registration');
+    Route::post('/registration', 'CoreController@create');
+    Route::get('/goToEnterprise/{enterprise_id}', 'CoreController@goToEnterprise');
 });
 Route::post('/logout', 'Auth\LoginController@logout');
 
@@ -46,45 +46,6 @@ Route::group(['prefix' => '/e/{namespace}'], function() {
         Route::get('/user/list/gback', 'Enterprises\EnterpriseController@backToAdmin');
 
     //call module\controller->action according to route /{module}/{controller}/{action}
-        Route::any('/{module}/{controller}/{action}/{parametr?}', 'CoreUmsController@callActionUrl')->middleware(['roles', 'pwd.change']);
-
-//        Route::get('/enterprises/departments/showlist', 'Enterprises\DepartmentsController@showList');
-//        Route::get('/enterprises/branches/showlist', 'Enterprises\BranchesController@showList');
-//        Route::get('/enterprises/positions/showlist', 'Enterprises\PositionsController@showList');
-        //        Route::group(['prefix' => '/users'], function (){
-//            Route::get('/dashboard/show', 'Users\DashboardController@show');
-//        });
-        //Routes for superadmin only
-//        Route::group(['middleware' => 'is.admin'], function (){
-//            Route::post('security/registration/usercreate', 'Security\RegistrationController@createUserByAdmin')->middleware(['is.admin', 'menu']);
-//            Route::get('/enterprises/departments/create', 'Enterprises\DepartmentsController@create');
-//            Route::get('enterprises/branches/create', 'Enterprises\BranchesController@create');
-//            Route::get('enterprises/positions/create', 'Enterprises\PositionsController@create');
-//            Route::get('/enterprises/settings/getsecurity', 'Enterprises\SettingsController@getEnterpriseSecuritySettings');
-//            Route::post('/enterprises/settings/setSecurity', 'Enterprises\SettingsController@setEnterpriseSecuritySettings');
-//            Route::get('/enterprises/enterprise/createuser', 'Enterprises\EnterpriseController@createUser');
-//            Route::get('/enterprises/enterprise/showusers', 'Enterprises\EnterpriseController@showUsers');//
-//            Route::get('/user/deactivate/{id}', 'Security\AuthorizationController@deactivateUser');
-//            Route::get('/user/activate/{id}', 'Security\AuthorizationController@activateUser');
-//        });
+        Route::any('/{module}/{controller}/{action}/{parametr?}', 'CoreController@callActionUrl')->middleware(['roles', 'pwd.change']);
     });
 });
-
-
-//Auth::routes();
-/*
-      // Authentication Routes...
-        $this->get('login', 'Auth\LoginController@showLoginForm')->name('login');
-        $this->post('login', 'Auth\LoginController@login');
-
-
-        // Registration Routes...
-        $this->get('register', 'Auth\RegisterController@showRegistrationForm')->name('register');
-        $this->post('register', 'Auth\RegisterController@register');
-
-        // Password Reset Routes...
-        $this->get('password/reset', 'Auth\ForgotPasswordController@showLinkRequestForm')->name('password.request');
-        $this->post('password/email', 'Auth\ForgotPasswordController@sendResetLinkEmail')->name('password.email');
-        $this->get('password/reset/{token}', 'Auth\ResetPasswordController@showResetForm')->name('password.reset');
-        $this->post('password/reset', 'Auth\ResetPasswordController@reset');
- */
