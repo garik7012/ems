@@ -11,6 +11,7 @@
                     <th>Description</th>
                     <th>Action path</th>
                     <th>Activate/Deactivate role</th>
+                    <th>Edit role</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -30,6 +31,7 @@
                                 No &nbsp; <a href="/e/{{$enterprise->namespace}}/Users/Roles/activate/{{$role->id}}" class="btn btn-primary">activate</a>
                             @endif
                         </td>
+                        <td><a href="/e/{{$enterprise->namespace}}/Users/Roles/edit/{{$role->id}}" class="btn btn-primary">edit role</a></td>
                     </tr>
                 @endforeach
                 </tbody>

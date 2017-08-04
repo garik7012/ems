@@ -1,10 +1,11 @@
 @extends('layouts.main')
+@section('page_name', "Add a new user")
 @section('content')
     <div class="container">
         <div class="row">
             <div class="col-md-8 col-md-offset-2">
                 <div class="panel panel-default">
-                    <div class="panel-heading">Create new user</div>
+                    <div class="panel-heading">Create a new user</div>
                     <div class="panel-body">
                         <form class="form-horizontal" method="post" action="/e/{{$enterprise->namespace}}/security/registration/createUserByAdmin">
                             {{ csrf_field() }}

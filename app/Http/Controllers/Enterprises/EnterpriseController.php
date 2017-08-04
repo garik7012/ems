@@ -67,7 +67,7 @@ class EnterpriseController extends Controller
         ]);
 
         $user = Auth::user();
-        if(Hash::check($request->password, $user->password)){
+        if (Hash::check($request->password, $user->password)) {
             $user->first_name = $request->first_name;
             $user->last_name = $request->last_name;
             $user->login = $request->login;
@@ -87,14 +87,12 @@ class EnterpriseController extends Controller
 
     public function backToAdmin($namespace)
     {
-        if (!Session::has('auth_from_admin_asd'))
-        {
+        if (!Session::has('auth_from_admin_asd')) {
             abort(404);
         }
         Auth::loginUsingId((int) Session::get('auth_from_admin_asd'));
         Session::forget('auth_from_admin_asd');
-        if (! Auth::user()->is_superadmin)
-        {
+        if (! Auth::user()->is_superadmin) {
             Auth::logout();
             return redirect("/e/$namespace");
         }

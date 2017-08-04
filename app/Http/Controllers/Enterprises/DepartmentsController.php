@@ -14,7 +14,7 @@ class DepartmentsController extends Controller
     {
         $enterprise = Enterprise::where('namespace', $namespace)->first();
         $user = Auth::user();
-        if($user->enterprise_id != $enterprise->id){
+        if ($user->enterprise_id != $enterprise->id) {
             abort('403');
         }
         return view('department.create', ['enterprise' => $enterprise]);
@@ -24,7 +24,7 @@ class DepartmentsController extends Controller
     {
         $enterprise = Enterprise::where('namespace', $namespace)->first();
         $user = Auth::user();
-        if($user->enterprise_id != $enterprise->id){
+        if ($user->enterprise_id != $enterprise->id) {
             abort('403');
         }
         return view('department.list', ['enterprise' => $enterprise]);

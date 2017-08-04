@@ -9,6 +9,7 @@ use App\User;
 use App\Enterprise;
 use App\PasswordPolicy;
 use Auth;
+use Illuminate\Support\Facades\Hash;
 
 class RegistrationController extends Controller
 {
@@ -28,7 +29,7 @@ class RegistrationController extends Controller
 
     public function confirmEmail($namespace, $user_id, $pass)
     {
-        if(Auth::user()) Auth::logout();
+        if (Auth::user()) Auth::logout();
         $user_pass = Setting::where('type', 3)
             ->where('item_id', $user_id)
             ->where('key', 'confirmation_code')
@@ -39,18 +40,9 @@ class RegistrationController extends Controller
                 ->where('item_id', $user_id)
                 ->where('key', 'is_email_confirmed')
                 ->update(['value' => 1]);
-            //get enterprise's password policy
-            $password_policy_id = Setting::where('type', 2)
-                ->where('item_id', $user->enterprise_id)
-                ->where('key', 'password_policy_id')
-                ->value('value');
-            $password_policy = PasswordPolicy::find($password_policy_id);
+            $password_policy = $this->getPasswordPolicy($user);
             $this->shareEnterpriseToView($namespace);
-            return view('enterprise.user.confirmed', array(
-                'user' => $user,
-                'password_policy' => $password_policy,
-                'pass'=>$user_pass)
-            );
+            return view('enterprise.user.confirmed', compact('user','password_policy', 'pass'));
         }
         abort('404');
     }
@@ -62,13 +54,10 @@ class RegistrationController extends Controller
             ->where('item_id', $user_id)
             ->where('key', 'confirmation_code')
             ->value('value');
-        if($user_pass and $user_pass == $request->pass){
+        if ($user_pass and $user_pass == $request->pass) {
             $user = User::findOrFail($request->user_id);
-            $password_policy_id = Setting::where('type', 2)
-                ->where('item_id', $user->enterprise_id)
-                ->where('key', 'password_policy_id')
-                ->value('value');
-            $password_pattern = PasswordPolicy::find($password_policy_id)->pattern;
+            $password_policy = $this->getPasswordPolicy($user);
+            $password_pattern = $password_policy->pattern;
             $this->validate($request, [
                 'first_name' => 'required|max:50',
                 'last_name' => 'required|max:50',
@@ -90,10 +79,44 @@ class RegistrationController extends Controller
                 ->where('item_id', $user->id)
                 ->where('key', 'confirmation_code')
                 ->update(['value' => '']);
+            Setting::where('type', 3)
+                ->where('item_id', $user->id)
+                ->where('key', 'date_last_change_password')
+                ->update(['value' => strtotime('now')]);
             $ent = Enterprise::where('id', $user->enterprise_id)->value('namespace');
             return redirect("/e/{$ent}/login");
         }
         abort('403');
+    }
+
+    public function showChangePasswordForm($namespace)
+    {
+        $this->shareEnterpriseToView($namespace);
+        $password_policy = $this->getPasswordPolicy(Auth::user());
+        return view('security.changePassword', ['password_policy' => $password_policy]);
+    }
+
+    public function changePassword($namespace, Request $request)
+    {
+        $user = User::find(Auth::user()->id);
+        if (Hash::check($request->old_password, $user->password)) {
+            $password_policy = $this->getPasswordPolicy($user);
+            $password_pattern = $password_policy->pattern;
+            $this->validate($request, [
+                'password' => "required|string|regex:/${password_pattern}/|confirmed"
+            ]);
+            $user->password = bcrypt($request->password);
+            $user->save();
+            Setting::where('type', 3)
+                ->where('item_id', $user->id)
+                ->where('key', 'date_last_change_password')
+                ->update(['value' => strtotime('now')]);
+
+            $request->session()->forget('password_need_to_change');
+            $this->shareEnterpriseToView($namespace);
+            return redirect("/e/{$namespace}/");
+        }
+        return redirect()->back()->withErrors(['old_password' => 'wrong password']);
     }
 
     private function shareEnterpriseToView($namespace)
@@ -101,5 +124,17 @@ class RegistrationController extends Controller
         $enterprise = Enterprise::where('namespace', $namespace)->firstOrFail();
         view()->share('enterprise', $enterprise);
         return $enterprise->id;
+    }
+
+    private function getPasswordPolicy($user)
+    {
+        //get enterprise's password policy
+        $password_policy_id = Setting::where('type', 2)
+            ->where('item_id', $user->enterprise_id)
+            ->where('key', 'password_policy_id')
+            ->value('value');
+        $password_policy = PasswordPolicy::find($password_policy_id);
+        //TODO get user's password policy
+        return $password_policy;
     }
 }

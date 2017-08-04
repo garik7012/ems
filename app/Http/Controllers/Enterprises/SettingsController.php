@@ -15,15 +15,10 @@ class SettingsController extends Controller
     public function getSecurity($namespace)
     {
         $enterprise = Enterprise::where('namespace', $namespace)->first();
-        $enterpriseSecurity = Setting::where('type', 2)->where('item_id', $enterprise->id)->pluck('value', 'key');
+        $enSec = Setting::where('type', 2)->where('item_id', $enterprise->id)->pluck('value', 'key');
         $auth_types = AuthType::all();
         $password_policies = PasswordPolicy::orderBy('id')->get();
-        return view('enterprise.security', array(
-            'enterprise'=> $enterprise,
-            'enSec' => $enterpriseSecurity,
-            'auth_types' => $auth_types,
-            'password_policies' => $password_policies)
-        );
+        return view('enterprise.security', compact('enterprise','enSec', 'auth_types', 'password_policies'));
     }
 
     public function setSecurity($namespace, Request $request)

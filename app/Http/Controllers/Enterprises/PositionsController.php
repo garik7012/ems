@@ -14,7 +14,7 @@ class PositionsController extends Controller
     {
         $enterprise = Enterprise::where('namespace', $namespace)->first();
         $user = Auth::user();
-        if($user->enterprise_id != $enterprise->id){
+        if ($user->enterprise_id != $enterprise->id) {
             abort('403');
         }
         return view('position.create', ['enterprise' => $enterprise]);
@@ -24,7 +24,7 @@ class PositionsController extends Controller
     {
         $enterprise = Enterprise::where('namespace', $namespace)->first();
         $user = Auth::user();
-        if($user->enterprise_id != $enterprise->id){
+        if ($user->enterprise_id != $enterprise->id) {
             abort('403');
         }
         return view('position.list', ['enterprise' => $enterprise]);

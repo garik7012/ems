@@ -4,7 +4,7 @@
     <div class="container">
         <div class="row">
             <div class="col-md-12">
-                <h3>Welcome! To finish registration, please fill information about yourself, and set new password</h3>
+                <h3>Welcome! To finish registration, please fill in information about yourself, and set a new password</h3>
             </div>
         </div>
         <div class="row">

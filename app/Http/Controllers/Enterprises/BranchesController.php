@@ -15,7 +15,7 @@ class BranchesController extends Controller
     {
         $enterprise = Enterprise::where('namespace', $namespace)->first();
         $user = Auth::user();
-        if($user->enterprise_id != $enterprise->id){
+        if ($user->enterprise_id != $enterprise->id) {
             abort('403');
         }
         return view('branch.create', ['enterprise' => $enterprise]);
@@ -25,7 +25,7 @@ class BranchesController extends Controller
     {
         $enterprise = Enterprise::where('namespace', $namespace)->first();
         $user = Auth::user();
-        if($user->enterprise_id != $enterprise->id){
+        if ($user->enterprise_id != $enterprise->id) {
             abort('403');
         }
         return view('branch.list', ['enterprise' => $enterprise]);

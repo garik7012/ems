@@ -3,8 +3,8 @@
     <div class="container">
         <div class="row">
             <div class="col-md-8 col-md-offset-2">
-                <h2>Email was sent to user</h2>
-                <p>User will receive confirm link</p>
+                <h2>The email was sent to the user</h2>
+                <p>User will receive confirmation link</p>
                 <a href="http://{{$confirm}}"><h4>{{$confirm}}</h4></a>
                 <p>If you want to check how it works: </p>
                 <ul>

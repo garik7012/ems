@@ -17,11 +17,11 @@ class CheckUserEnterprise
      */
     public function handle($request, Closure $next)
     {
-        if(Auth::guest()){
+        if (Auth::guest()) {
             return redirect("/e/{$request->route('namespace')}/login");
         };
         $ent_id = Enterprise::where('namespace', $request->route('namespace'))->firstOrFail()->id;
-        if(Auth::user()->enterprise_id == $ent_id) {
+        if (Auth::user()->enterprise_id == $ent_id) {
             return $next($request);
         }
         abort(403);

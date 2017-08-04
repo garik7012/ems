@@ -131,14 +131,22 @@ class ActionsSeeder extends Seeder
             'name' => 'createUserByAdmin',
             'is_active' => 1,
         ]);
+        //Activate user
         DB::table('actions')->insert([
             'controller_id' => 10,
             'name' => 'activate',
             'is_active' => 1,
         ]);
+        //Deactivate user
         DB::table('actions')->insert([
             'controller_id' => 10,
             'name' => 'deactivate',
+            'is_active' => 1,
+        ]);
+        //edit role
+        DB::table('actions')->insert([
+            'controller_id' => 9,
+            'name' => 'edit',
             'is_active' => 1,
         ]);
 

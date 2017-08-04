@@ -19,12 +19,12 @@ class ShowSideMenu
      */
     public function handle($request, Closure $next)
     {
-        if(Auth::guest()){
+        if (Auth::guest()) {
             View::share(['menu_items'=>[]]);
             return $next($request);
         }
 
-        if(Auth::user()->is_superadmin){
+        if (Auth::user()->is_superadmin) {
             $menu_items = Menu::orderBy('position')->where('is_active', 1)->get();
         } else {
             $menu_items = DB::table('users_and_roles')->where('users_and_roles.user_id', '=', Auth::user()->id)
@@ -44,16 +44,16 @@ class ShowSideMenu
             // $menu_items = collect($menu_items)->map(function($x){ return (array) $x; })->toArray();
             //all menu id we will show;
             $menu_id = [];
-            foreach ($menu_items as $menuItem){
+            foreach ($menu_items as $menuItem) {
                 $menu_id[] = $menuItem->id;
-                if(!$menuItem->parent_id) continue;
+                if (!$menuItem->parent_id) continue;
                 $menu_id[] = $menuItem->parent_id;
             }
             $menu_items = Menu::whereIn('id', $menu_id)
                 ->orderBy('position')
                 ->get();
             //if was no roles of user we have empty array. But we need to show is_for_all_users;
-            if(!count($menu_items)){
+            if (!count($menu_items)) {
                 $menu_items = Menu::where('is_active', 1)->where('is_for_all_users',1)->get();
             }
         }
@@ -66,8 +66,8 @@ class ShowSideMenu
 
     private function createMenuLinks(&$menu_items)
     {
-        foreach ($menu_items as &$menuItem){
-            if($menuItem->action_id != false) {
+        foreach ($menu_items as &$menuItem) {
+            if ($menuItem->action_id != false) {
                 $link_raw = DB::table('actions')->where('actions.id', $menuItem->action_id)
                     ->join('controllers', 'controllers.id', '=', 'actions.controller_id')
                     ->join('modules', 'modules.id', '=', 'controllers.module_id')
@@ -76,7 +76,7 @@ class ShowSideMenu
                  $link = '/'. $link_raw->module . '/' . $link_raw->controller . '/' . $link_raw->action;
                 $menuItem->link = $link;
             }
-            else{
+            else {
                 $menuItem->link = null;
             }
         }

@@ -3,9 +3,8 @@
 namespace App\Http\Middleware;
 
 use Closure;
-use Auth;
 
-class CheckIsAdmin
+class CheckPasswordChange
 {
     /**
      * Handle an incoming request.
@@ -16,10 +15,9 @@ class CheckIsAdmin
      */
     public function handle($request, Closure $next)
     {
-        $is_admin = Auth::user()->is_superadmin;
-        if ($is_admin) {
-            return $next($request);
+        if (session()->has('password_need_to_change')) {
+            return redirect("/e/{$request->route('namespace')}/user/changePassword");
         }
-        abort('403');
+        return $next($request);
     }
 }

@@ -24,7 +24,7 @@
                             <div class="checkbox">
                                 <label>
                                     <input type="hidden" name="is_sms_allow" value="0">
-                                    <input type="checkbox" name="is_sms_allow" {{$enSec['is_sms_allow']  ? 'checked' : '' }}> Is SMS allow?
+                                    <input type="checkbox" name="is_sms_allow" {{$enSec['is_sms_allow']  ? 'checked' : '' }}> Is SMS allowed?
                                 </label>
                             </div>
                         </div>
@@ -49,7 +49,7 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="password_change_days" class="col-md-4 control-label">Password change days</label>
+                        <label for="password_change_days" class="col-md-4 control-label">Password change after (days)</label>
                         <div class="col-md-6">
                             <input id="password_change_days" type="number" class="form-control" name="password_change_days" value="{{$enSec['password_change_days']}}">
                         </div>

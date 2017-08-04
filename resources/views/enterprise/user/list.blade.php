@@ -2,7 +2,7 @@
 @section('page_name', 'List of users')
 @section('content')
     <div class="col-lg-12">
-        <h2>Enterprise's users list</h2>
+        <h2>Enterprise's user list</h2>
         <div class="table-responsive">
             <table class="table table-bordered table-hover table-striped">
                 <thead>

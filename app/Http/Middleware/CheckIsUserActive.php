@@ -18,14 +18,14 @@ class CheckIsUserActive
      */
     public function handle($request, Closure $next)
     {
-        if(Session::has('auth_from_admin_asd')){
+        if (Session::has('auth_from_admin_asd')) {
             return $next($request);
         }
         $security_code = Setting::where('type',3)
             ->where('item_id', Auth::user()->id)
             ->where('key', 'confirmation_code')
             ->value('value');
-        if($security_code){
+        if ($security_code) {
             Setting::where('type',3)
                 ->where('item_id', Auth::user()->id)
                 ->where('key', 'confirmation_code')
@@ -33,7 +33,7 @@ class CheckIsUserActive
             Auth::logout();
             return redirect()->back();
         }
-        if(Auth::user()->is_active) {
+        if (Auth::user()->is_active) {
             return $next($request);
         }
         return redirect("/e/{$request->route('namespace')}/security/user-not-active");

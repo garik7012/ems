@@ -29,12 +29,14 @@ class Roles
             ->select('actions.name as action', 'controllers.name as controller', 'modules.name as module')
             ->get()->toArray();
         $all_paths = [];
-        foreach ($all_paths_raw as $path_raw){
+        foreach ($all_paths_raw as $path_raw) {
             $all_paths[] = strtolower($path_raw->module.'\\'.$path_raw->controller.'\\'.$path_raw->action);
         }
-        if(!in_array(strtolower($current_path), $all_paths)) abort('404');
+        if (!in_array(strtolower($current_path), $all_paths)) {
+            abort('404');
+        }
 
-        if(!Auth::user()->is_superadmin) {
+        if (!Auth::user()->is_superadmin) {
             $actions = DB::table('users_and_roles')->where('users_and_roles.user_id', Auth::user()->id)
                 ->join('roles', 'roles.id', '=', 'users_and_roles.role_id')->where('roles.is_active', 1)
                 ->join('roles_and_actions', 'users_and_roles.role_id', '=', 'roles_and_actions.role_id')

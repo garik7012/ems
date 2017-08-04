@@ -60,11 +60,19 @@ class CoreUmsController extends Controller
         return redirect("/e/$request->namespace");
     }
 
+    public function goToEnterprise($ent_id)
+    {
+        $namespace = Enterprise::where('id', $ent_id)->value('namespace');
+        return redirect("/e/{$namespace}");
+    }
+
     public function callActionUrl($namespace, $module, $controller, $action, $parametr=false, Request $request)
     {
-        if($parametr){
-            return App::make("\App\Http\Controllers\\" . ucfirst($module) . "\\" . ucfirst($controller) ."Controller")->callAction($action, [$namespace, $parametr, $request]);
+        if ($parametr) {
+            return App::make("\App\Http\Controllers\\" . ucfirst($module) . "\\" . ucfirst($controller) ."Controller")
+                ->callAction($action, [$namespace, $parametr, $request]);
         }
-        return App::make("\App\Http\Controllers\\" . ucfirst($module) . "\\" . ucfirst($controller) ."Controller")->callAction($action, [$namespace, $request]);
+        return App::make("\App\Http\Controllers\\" . ucfirst($module) . "\\" . ucfirst($controller) ."Controller")
+            ->callAction($action, [$namespace, $request]);
     }
 }
