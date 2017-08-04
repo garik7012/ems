@@ -59,6 +59,9 @@
                         <li>
                             <a href="/e/{{$enterprise->namespace}}/user/profile"><i class="fa fa-fw fa-user"></i>Profile</a>
                         </li>
+                        <li>
+                            <a href="/e/{{$enterprise->namespace}}/user/changePassword"><i class="fa fa-fw fa-key"></i>Change password</a>
+                        </li>
                         <li class="divider"></li>
                         <li>
                             <a href="{{ route('logout', ['namespace'=>$enterprise->namespace]) }}"
