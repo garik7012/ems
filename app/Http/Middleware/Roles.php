@@ -47,12 +47,14 @@ class Roles
 
             $permission_paths = [];
             $this->addToPermissionPath($actions, $permission_paths);
-            $menu_for_all_user = DB::table('menu')->where('menu.is_for_all_users',1)
-                ->join('actions', 'actions.id', '=', 'menu.action_id')->where('actions.is_active',1)
+            $menu_for_all_user = DB::table('menu')->where('menu.is_for_all_users', 1)
+                ->join('actions', 'actions.id', '=', 'menu.action_id')->where('actions.is_active', 1)
                 ->select('actions.name', 'actions.controller_id')
                 ->get()->toArray();
             $this->addToPermissionPath($menu_for_all_user, $permission_paths);
-            if(!in_array($current_path, $permission_paths)) abort('403');
+            if (!in_array($current_path, $permission_paths)) {
+                abort('403');
+            }
         }
         return $next($request);
     }

@@ -8,7 +8,7 @@ class Setting extends Model
 {
     public $timestamps = false;
 
-    const enterpriseSettings  = [
+    const ENTERPRISESETTINGS  = [
             'auth_type_id' => 1,
             'password_policy_id' =>1,
             'is_sms_allow' =>0,
@@ -20,18 +20,17 @@ class Setting extends Model
 
     public static function setEnterpriseSecurity($ent_id, $request)
     {
-        foreach (self::enterpriseSettings as $key=>$value) {
+        foreach (self::ENTERPRISESETTINGS as $key => $value) {
             Setting::where('type', 2)
                 ->where('item_id', $ent_id)
                 ->where('key', $key)
                 ->update(['value' => $request[$key]]);
         }
-
     }
 
     public static function setDefaultEnterpriseSettings($ent_id)
     {
-        foreach (self::enterpriseSettings as $key=>$value) {
+        foreach (self::ENTERPRISESETTINGS as $key => $value) {
             $default = new Setting();
             $default->type = 2;
             $default->item_id = $ent_id;
@@ -40,5 +39,4 @@ class Setting extends Model
             $default->save();
         }
     }
-
 }

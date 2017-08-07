@@ -8,7 +8,7 @@ use App\User;
 
 class SettingsController extends Controller
 {
-    public function activate($n,$id)
+    public function activate($n, $id)
     {
         $user = User::findOrFail($id);
         $user->is_active = 1;
@@ -16,7 +16,7 @@ class SettingsController extends Controller
         return redirect()->back();
     }
 
-    public function deactivate($n,$id)
+    public function deactivate($n, $id)
     {
         $user = User::findOrFail($id);
         $user->is_active = 0;

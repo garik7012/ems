@@ -8,7 +8,7 @@
             <div class="panel panel-default">
                 <div class="panel-heading">User panel</div>
                 <div class="panel-body">
-                    <form class="form-horizontal" method="post" action="/e/{{$enterprise->namespace}}/user/profile">
+                    <form class="form-horizontal" method="post" action="{{config('ems.prefix') . $enterprise->namespace}}/user/profile">
                         {{ csrf_field() }}
 
                         <div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">

@@ -45,22 +45,22 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="/e/{{$enterprise->namespace}}">Enterprise management system <i class="fa fa-long-arrow-right" aria-hidden="true"></i> {{$enterprise->name}}</a>
+            <a class="navbar-brand" href="{{config('ems.prefix') . $enterprise->namespace}}">Enterprise management system <i class="fa fa-long-arrow-right" aria-hidden="true"></i> {{$enterprise->name}}</a>
         </div>
         <!-- Top Menu Items -->
         <ul class="nav navbar-right top-nav">
             @if(Auth::user())
                 @if (Auth::check() && Session::has('auth_from_admin_asd'))
-                    <li><a href = "/e/{{$enterprise->namespace}}/user/list/gback">Go back to my profile</a></li>
+                    <li><a href = "{{config('ems.prefix') . $enterprise->namespace}}/user/list/gback">Go back to my profile</a></li>
                 @endif
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i> {{Auth::user()->first_name}} {{Auth::user()->last_name}} <b class="caret"></b></a>
                     <ul class="dropdown-menu">
                         <li>
-                            <a href="/e/{{$enterprise->namespace}}/user/profile"><i class="fa fa-fw fa-user"></i>Profile</a>
+                            <a href="{{config('ems.prefix') . $enterprise->namespace}}/user/profile"><i class="fa fa-fw fa-user"></i>Profile</a>
                         </li>
                         <li>
-                            <a href="/e/{{$enterprise->namespace}}/user/changePassword"><i class="fa fa-fw fa-key"></i>Change password</a>
+                            <a href="{{config('ems.prefix') . $enterprise->namespace}}/user/changePassword"><i class="fa fa-fw fa-key"></i>Change password</a>
                         </li>
                         <li class="divider"></li>
                         <li>
@@ -90,7 +90,7 @@
                             @foreach($menu_items as $menu_child)
                                 @if($menu_child->parent_id == $menu_item->id)
                             <li>
-                                <a href="/e/{{$enterprise->namespace . $menu_child->link}}">{{$menu_child->name}}</a>
+                                <a href="{{config('ems.prefix') . $enterprise->namespace . $menu_child->link}}">{{$menu_child->name}}</a>
                             </li>
                                 @endif
                             @endforeach
@@ -98,7 +98,7 @@
                         </li>
                     @elseif($menu_item->parent_id == null and $menu_item->is_active)
                     <li>
-                        <a href="/e/{{$enterprise->namespace}}{{$menu_item->link}}">{{$menu_item->name}}</a>
+                        <a href="{{config('ems.prefix') . $enterprise->namespace}}{{$menu_item->link}}">{{$menu_item->name}}</a>
                     </li>
                         @elseif(!$menu_item->is_active and !$menu_item->parent_id)
                         <li class="disabled">

@@ -12,7 +12,7 @@
 */
 
 Route::get('/', 'CoreController@index');
-Route::group(['prefix' => 'enterprises'], function(){
+Route::group(['prefix' => 'enterprises'], function () {
     Route::get('/', 'CoreController@welcome');
     Route::get('/registration', 'CoreController@registration');
     Route::post('/registration', 'CoreController@create');
@@ -21,12 +21,12 @@ Route::group(['prefix' => 'enterprises'], function(){
 Route::post('/logout', 'Auth\LoginController@logout');
 
 //--------------------------------   Enterprise's routes   ---------------------------------------
-Route::group(['prefix' => '/e/{namespace}'], function() {
+Route::group(['prefix' => config('ems.prefix') . "{namespace}"], function () {
     //Auth
     Route::any('/logout', 'Security\AuthorizationController@logout')->name('logout');
     Route::get('/login', 'Security\AuthorizationController@showLoginForm');
     //email confirmation, finish registration, 2 factor authorization, check confirm code, force change password
-    Route::group(['prefix' => 'security'], function(){
+    Route::group(['prefix' => 'security'], function () {
         Route::get('/confirm/{id}/{pass}', 'Security\RegistrationController@confirmEmail');
         Route::post('/registration/end', 'Security\RegistrationController@finishRegistration');
         Route::get('/user-not-active', 'Security\AuthorizationController@userNotActive');
@@ -35,7 +35,7 @@ Route::group(['prefix' => '/e/{namespace}'], function() {
     });
 
     //check is user belong to this enterprise, is user active, share menu according to role
-    Route::group(['middleware' => ['belong', 'is.active', 'menu']], function() {
+    Route::group(['middleware' => ['belong', 'is.active', 'menu']], function () {
         Route::get('/', 'Enterprises\EnterpriseController@showEnterprise')->middleware('pwd.change');
         Route::get('/user/profile', 'Enterprises\EnterpriseController@userProfile');
         Route::post('/user/profile', 'Enterprises\EnterpriseController@editUserProfile');

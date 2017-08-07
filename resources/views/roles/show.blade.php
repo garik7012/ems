@@ -26,12 +26,12 @@
                         </td>
                         <td>
                             @if($role->is_active)
-                                Yes <a href="/e/{{$enterprise->namespace}}/Users/Roles/deactivate/{{$role->id}}" class="btn btn-danger">deactivate</a>
+                                Yes <a href="{{config('ems.prefix') . $enterprise->namespace}}/Users/Roles/deactivate/{{$role->id}}" class="btn btn-danger">deactivate</a>
                             @else
-                                No &nbsp; <a href="/e/{{$enterprise->namespace}}/Users/Roles/activate/{{$role->id}}" class="btn btn-primary">activate</a>
+                                No &nbsp; <a href="{{config('ems.prefix') . $enterprise->namespace}}/Users/Roles/activate/{{$role->id}}" class="btn btn-primary">activate</a>
                             @endif
                         </td>
-                        <td><a href="/e/{{$enterprise->namespace}}/Users/Roles/edit/{{$role->id}}" class="btn btn-primary">edit role</a></td>
+                        <td><a href="{{config('ems.prefix') . $enterprise->namespace}}/Users/Roles/edit/{{$role->id}}" class="btn btn-primary">edit role</a></td>
                     </tr>
                 @endforeach
                 </tbody>

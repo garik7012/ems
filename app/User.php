@@ -63,7 +63,8 @@ class User extends Authenticatable
         return $arr;
     }
 
-    public static function createNewUserByAdmin($request, $ent_id){
+    public static function createNewUserByAdmin($request, $ent_id)
+    {
         $user = new User;
         $user->enterprise_id = $ent_id;
         $user->login = $request->login;
@@ -79,7 +80,7 @@ class User extends Authenticatable
 
     public static function setDefaultUserSettings($user_id)
     {
-        foreach (self::getDefaultUserSettings() as $key=>$value) {
+        foreach (self::getDefaultUserSettings() as $key => $value) {
             $default = new Setting();
             $default->type = 3;
             $default->item_id = $user_id;
@@ -91,7 +92,7 @@ class User extends Authenticatable
 
     public static function setDefaultAdminSettings($user_id)
     {
-        foreach (self::getDefaultAdminSettings() as $key=>$value) {
+        foreach (self::getDefaultAdminSettings() as $key => $value) {
             $default = new Setting();
             $default->type = 3;
             $default->item_id = $user_id;

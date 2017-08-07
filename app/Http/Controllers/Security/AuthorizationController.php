@@ -24,19 +24,19 @@ class AuthorizationController extends Controller
 
     public function checkConfirmCode(Request $request)
     {
-        $security_code = Setting::where('type',3)
+        $security_code = Setting::where('type', 3)
             ->where('item_id', Auth::user()->id)
             ->where('key', 'confirmation_code')
             ->value('value');
         if ($request->confirm == $security_code) {
-            Setting::where('type',3)
+            Setting::where('type', 3)
                 ->where('item_id', Auth::user()->id)
                 ->where('key', 'confirmation_code')
                 ->update(['value'=>""]);
 
             $namespace = Enterprise::where('id', Auth::user()->enterprise_id)->value('namespace');
 
-            return redirect("/e/{$namespace}");
+            return redirect(config('ems.prefix') . "$namespace");
         }
         //TODO log not confirm attempts
         Auth::logout();
@@ -93,7 +93,7 @@ class AuthorizationController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect("/e/{$namespace}");
+        return redirect(config('ems.prefix') . "{$namespace}");
     }
 
     /**
@@ -119,7 +119,8 @@ class AuthorizationController extends Controller
     protected function attemptLogin(Request $request)
     {
         return $this->guard()->attempt(
-            $this->credentials($request), $request->has('remember')
+            $this->credentials($request),
+            $request->has('remember')
         );
     }
 
@@ -159,19 +160,19 @@ class AuthorizationController extends Controller
     protected function authorizationFactor($request)
     {
         $this->comparePasswordWithPasswordPolicy($request);
-        $auth_type = Setting::where('type',2)
+        $auth_type = Setting::where('type', 2)
             ->where('item_id', Auth::user()->enterprise_id)
             ->where('key', 'auth_type_id')
             ->value('value');
 
-        if($auth_type != 1){
+        if ($auth_type != 1) {
             $security_code = str_random(8);
-            Setting::where('type',3)
+            Setting::where('type', 3)
                 ->where('item_id', Auth::user()->id)
                 ->where('key', 'confirmation_code')
                 ->update(['value'=>$security_code]);
 
-            $is_sms = Setting::where('type',2)
+            $is_sms = Setting::where('type', 2)
                 ->where('item_id', Auth::user()->enterprise_id)
                 ->where('key', 'is_sms_allow')
                 ->value('value');
@@ -184,7 +185,7 @@ class AuthorizationController extends Controller
                 return redirect()->back()->with('security_code', "Email. Code: $security_code");
             }
         }
-        return redirect("/e/{$request->route('namespace')}");
+        return redirect(config('ems.prefix') . "{$request->route('namespace')}");
     }
 
 

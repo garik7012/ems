@@ -24,17 +24,20 @@ class RegistrationController extends Controller
 
         //TODO Send email to user with confirm link
 
-        return view('enterprise.user.success', ['confirm'=> "{$_SERVER['SERVER_NAME']}/e/$namespace/security/confirm/{$new_user_id}/{$confirm}"]);
+        return view('enterprise.user.success', [
+            'confirm'=> "{$_SERVER['SERVER_NAME']}" . config('ems.prefix') . "$namespace/security/confirm/{$new_user_id}/{$confirm}"]);
     }
 
     public function confirmEmail($namespace, $user_id, $pass)
     {
-        if (Auth::user()) Auth::logout();
+        if (Auth::user()) {
+            Auth::logout();
+        }
         $user_pass = Setting::where('type', 3)
             ->where('item_id', $user_id)
             ->where('key', 'confirmation_code')
             ->value('value');
-        if($user_pass and $user_pass == $pass){
+        if ($user_pass and $user_pass == $pass) {
             $user = User::findOrFail($user_id);
             Setting::where('type', 3)
                 ->where('item_id', $user_id)
@@ -42,7 +45,7 @@ class RegistrationController extends Controller
                 ->update(['value' => 1]);
             $password_policy = $this->getPasswordPolicy($user);
             $this->shareEnterpriseToView($namespace);
-            return view('enterprise.user.confirmed', compact('user','password_policy', 'pass'));
+            return view('enterprise.user.confirmed', compact('user', 'password_policy', 'pass'));
         }
         abort('404');
     }
@@ -84,7 +87,7 @@ class RegistrationController extends Controller
                 ->where('key', 'date_last_change_password')
                 ->update(['value' => strtotime('now')]);
             $ent = Enterprise::where('id', $user->enterprise_id)->value('namespace');
-            return redirect("/e/{$ent}/login");
+            return redirect(config('ems.prefix') . "{$ent}/login");
         }
         abort('403');
     }
@@ -93,7 +96,7 @@ class RegistrationController extends Controller
     {
         $this->shareEnterpriseToView($namespace);
         $password_policy = $this->getPasswordPolicy(Auth::user());
-        return view('security.changePassword', ['password_policy' => $password_policy]);
+        return view('security.changePassword', compact('password_policy'));
     }
 
     public function changePassword($namespace, Request $request)
@@ -114,7 +117,7 @@ class RegistrationController extends Controller
 
             $request->session()->forget('password_need_to_change');
             $this->shareEnterpriseToView($namespace);
-            return redirect("/e/{$namespace}/");
+            return redirect(config('ems.prefix') . "{$namespace}/");
         }
         return redirect()->back()->withErrors(['old_password' => 'wrong password']);
     }

@@ -30,7 +30,7 @@
                             @endif
                             @endforeach
                         </td>
-                        <td><a href="/e/{{$enterprise->namespace}}/Users/Roles/showRolesOfUser/{{$item['user']->id}}">Change</a></td>
+                        <td><a href="{{config('ems.prefix') . $enterprise->namespace}}/Users/Roles/showRolesOfUser/{{$item['user']->id}}">Change</a></td>
                     </tr>
                 @endforeach
                 </tbody>

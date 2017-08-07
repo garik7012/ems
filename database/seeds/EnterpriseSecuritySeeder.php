@@ -21,12 +21,13 @@ class EnterpriseSecuritySeeder extends Seeder
             'password_change_days' => 10,
 
         ];
-        foreach ($enterpriseSettings as $key=>$value)
-        DB::table('settings')->insert([
-            'type' => 2,
-            'key' => $key,
-            'value' => $value,
-            'item_id' => 4,
-        ]);
+        foreach ($enterpriseSettings as $key => $value) {
+            DB::table('settings')->insert([
+                'type' => 2,
+                'key' => $key,
+                'value' => $value,
+                'item_id' => 4,
+            ]);
+        }
     }
 }

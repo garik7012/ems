@@ -16,7 +16,7 @@ class CheckPasswordChange
     public function handle($request, Closure $next)
     {
         if (session()->has('password_need_to_change')) {
-            return redirect("/e/{$request->route('namespace')}/user/changePassword");
+            return redirect(config('ems.prefix') . "{$request->route('namespace')}/user/changePassword");
         }
         return $next($request);
     }

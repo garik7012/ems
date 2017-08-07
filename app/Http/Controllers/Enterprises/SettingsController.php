@@ -18,7 +18,7 @@ class SettingsController extends Controller
         $enSec = Setting::where('type', 2)->where('item_id', $enterprise->id)->pluck('value', 'key');
         $auth_types = AuthType::all();
         $password_policies = PasswordPolicy::orderBy('id')->get();
-        return view('enterprise.security', compact('enterprise','enSec', 'auth_types', 'password_policies'));
+        return view('enterprise.security', compact('enterprise', 'enSec', 'auth_types', 'password_policies'));
     }
 
     public function setSecurity($namespace, Request $request)

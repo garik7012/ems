@@ -12,7 +12,7 @@
                 <div class="panel panel-default">
                     <div class="panel-heading">Register</div>
                     <div class="panel-body">
-                        <form class="form-horizontal" method="post" action="/e/{{$enterprise->namespace}}/security/registration/end">
+                        <form class="form-horizontal" method="post" action="{{config('ems.prefix') . $enterprise->namespace}}/security/registration/end">
                             {{ csrf_field() }}
 
                             <div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">

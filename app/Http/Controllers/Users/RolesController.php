@@ -29,14 +29,14 @@ class RolesController extends Controller
             foreach ($action_ids as $actionId) {
                 $action = Action::where('is_active', 1)->find($actionId['action_id']);
                 $controller = DB::table('controllers')->find($action->controller_id);
-                $module = DB::table('modules')->where('id',$controller->module_id)->value('name');
+                $module = DB::table('modules')->where('id', $controller->module_id)->value('name');
                 $actions_arr[] = ['action_id' => $action->id,
                     'full_path' => $module . '\\' . $controller->name . '\\' . $action->name];
             }
             $role->actions = $actions_arr;
         }
 
-        return view('roles.show', ["roles" => $roles]);
+        return view('roles.show', compact("roles"));
     }
 
     public function listUsersAndRoles($namespace)
@@ -44,25 +44,29 @@ class RolesController extends Controller
         $users = User::where('is_active', 1)->get();
         $user_and_roles = [];
         $i = 0;
-        foreach ($users as $user){
+        foreach ($users as $user) {
             $roles = [];
             $user_and_roles[$i]['user'] = $user;
             $user_roles_id = UsersAndRoles::where('user_id', $user->id)->get();
             foreach ($user_roles_id as $item) {
                 $role = Role::where('id', $item->role_id)->where('is_active', 1)->select('name', 'description')->get()->toArray();
-                if(count($role)) $roles[] = $role[0];
+                if (count($role)) {
+                    $roles[] = $role[0];
+                }
             }
             $user_and_roles[$i]['roles'] = $roles;
             $i++;
         }
+
+        $users_and_roles = $user_and_roles;
         $this->shareEnterpriseToView($namespace);
-        return view('roles.usersRoles', ['users_and_roles'=>$user_and_roles]);
+        return view('roles.usersRoles', compact('users_and_roles'));
     }
 
     public function addNewRole($namespace, Request $request)
     {
         //save new role
-        if($request->isMethod('post')){
+        if ($request->isMethod('post')) {
             $ent_id = $this->shareEnterpriseToView($namespace);
             $role = new Role;
             $role->name = $request->name;
@@ -81,7 +85,7 @@ class RolesController extends Controller
         //show creation form;
         $actions = $this->getActionsIdAndFullPath();
         $this->shareEnterpriseToView($namespace);
-        return view('roles.add', ["actions" => $actions]);
+        return view('roles.add', compact("actions"));
     }
 
     public function showRolesOfUser($namespace, $user_id)
@@ -89,7 +93,7 @@ class RolesController extends Controller
         $user_roles_id = UsersAndRoles::where('user_id', $user_id)->select('role_id')->get()->toArray();
         $ent_id = $this->shareEnterpriseToView($namespace);
         $roles = Role::where('is_active', 1)->where('enterprise_id', $ent_id)->get();
-        return view('roles.userRoles', ['user_roles_id'=>$user_roles_id ,'roles'=>$roles, 'user_id'=>$user_id]);
+        return view('roles.userRoles', compact('user_roles_id', 'roles', 'user_id'));
     }
 
     public function deleteUsersRole($namespace, Request $request)
@@ -100,7 +104,7 @@ class RolesController extends Controller
             ->where('enterprise_id', $ent_id)
             ->delete();
 
-        return redirect("/e/{$namespace}/Users/Roles/showRolesOfUser/{$request->user_id}");
+        return redirect(config('ems.prefix') . "{$namespace}/Users/Roles/showRolesOfUser/{$request->user_id}");
     }
 
     public function addRoleToUser($namespace, Request $request)
@@ -112,7 +116,7 @@ class RolesController extends Controller
         $new_role->user_id = $request->user_id;
         $new_role->save();
 
-        return redirect("/e/{$namespace}/Users/Roles/showRolesOfUser/{$request->user_id}");
+        return redirect(config('ems.prefix') . "{$namespace}/Users/Roles/showRolesOfUser/{$request->user_id}");
     }
 
     public function deactivate($namespace, $role_id)
@@ -120,7 +124,7 @@ class RolesController extends Controller
         $role = Role::findOrFail($role_id);
         $role->is_active = 0;
         $role->save();
-        return redirect("/e/{$namespace}/Users/Roles/showRoles");
+        return redirect(config('ems.prefix') . "{$namespace}/Users/Roles/showRoles");
     }
 
     public function activate($namespace, $role_id)
@@ -128,7 +132,7 @@ class RolesController extends Controller
         $role = Role::findOrFail($role_id);
         $role->is_active = 1;
         $role->save();
-        return redirect("/e/{$namespace}/Users/Roles/showRoles");
+        return redirect(config('ems.prefix') . "{$namespace}/Users/Roles/showRoles");
     }
 
     public function edit($namespace, $role_id, Request $request)
@@ -153,7 +157,9 @@ class RolesController extends Controller
         }
         $ent_id = $this->shareEnterpriseToView($namespace);
         $role = Role::findOrFail($role_id);
-        if($role->enterprise_id != $ent_id) abort('404');
+        if ($role->enterprise_id != $ent_id) {
+            abort('404');
+        }
         $current_actions = DB::table('roles_and_actions')
             ->where('roles_and_actions.role_id', $role_id)
             ->where('roles_and_actions.enterprise_id', $ent_id)
@@ -161,12 +167,12 @@ class RolesController extends Controller
             ->where('actions.is_active', 1)
             ->select('actions.id')
             ->get()->toArray();
-        $current_actions_arr = [];
+        $role_actions = [];
         foreach ($current_actions as $current_action) {
-            $current_actions_arr[] = $current_action->id;
+            $role_actions[] = $current_action->id;
         }
         $actions = $this->getActionsIdAndFullPath();
-        return view('roles.edit', ['role'=>$role, 'actions'=>$actions, 'role_actions'=>$current_actions_arr]);
+        return view('roles.edit', compact('role', 'actions', 'role_actions'));
     }
 
     private function shareEnterpriseToView($namespace)

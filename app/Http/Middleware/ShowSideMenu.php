@@ -31,8 +31,7 @@ class ShowSideMenu
                 ->join('roles', 'roles.id', '=', 'users_and_roles.role_id')->where('roles.is_active', 1)
                 ->join('roles_and_actions', 'roles_and_actions.role_id', '=', 'roles.id')
                 ->join('actions', 'actions.id', '=', 'roles_and_actions.action_id')->where('actions.is_active', 1)
-                ->join('menu', function($join)
-                {
+                ->join('menu', function ($join) {
                     $join->on('menu.action_id', '=', 'actions.id')
                         ->orWhere('menu.is_for_all_users', '=', '1');
                 })
@@ -46,7 +45,9 @@ class ShowSideMenu
             $menu_id = [];
             foreach ($menu_items as $menuItem) {
                 $menu_id[] = $menuItem->id;
-                if (!$menuItem->parent_id) continue;
+                if (!$menuItem->parent_id) {
+                    continue;
+                }
                 $menu_id[] = $menuItem->parent_id;
             }
             $menu_items = Menu::whereIn('id', $menu_id)
@@ -54,7 +55,7 @@ class ShowSideMenu
                 ->get();
             //if was no roles of user we have empty array. But we need to show is_for_all_users;
             if (!count($menu_items)) {
-                $menu_items = Menu::where('is_active', 1)->where('is_for_all_users',1)->get();
+                $menu_items = Menu::where('is_active', 1)->where('is_for_all_users', 1)->get();
             }
         }
 
@@ -75,8 +76,7 @@ class ShowSideMenu
                     ->first();
                  $link = '/'. $link_raw->module . '/' . $link_raw->controller . '/' . $link_raw->action;
                 $menuItem->link = $link;
-            }
-            else {
+            } else {
                 $menuItem->link = null;
             }
         }

@@ -7,7 +7,7 @@
             <div class="panel panel-default">
                 <div class="panel-heading">Enter security code</div>
                 <div class="panel-body">
-                    <form class="form-horizontal" method="POST" action="/e/{{$enterprise->namespace}}/security/confirm/code">
+                    <form class="form-horizontal" method="POST" action="{{config('ems.prefix') . $enterprise->namespace}}/security/confirm/code">
                         {{ csrf_field() }}
 
                         <div class="form-group">
@@ -34,7 +34,7 @@
             <div class="panel panel-default">
                 <div class="panel-heading">Change your password</div>
                 <div class="panel-body">
-                    <form class="form-horizontal" method="POST" action="/e/{{$enterprise->namespace}}/user/changePassword">
+                    <form class="form-horizontal" method="POST" action="{{config('ems.prefix') . $enterprise->namespace}}/user/changePassword">
                         {{ csrf_field() }}
                         <div class="form-group{{ $errors->has('old_password') ? ' has-error' : '' }}">
                             <label for="old_password" class="col-md-4 control-label">Old password</label>

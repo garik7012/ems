@@ -19,7 +19,7 @@
                         <td>{{$role->name}}</td>
                         <td>{{$role->description}}</td>
                         @if(in_array(array('role_id' => $role->id), $user_roles_id))
-                            <td><form action="/e/{{$enterprise->namespace}}/Users/Roles/deleteUsersRole" method="post">
+                            <td><form action="{{config('ems.prefix') . $enterprise->namespace}}/Users/Roles/deleteUsersRole" method="post">
                                     <input type="hidden" name="user_id" value="{{$user_id}}">
                                     <input type="hidden" name="role_id" value="{{$role->id}}">
                                     {{csrf_field()}}
@@ -27,7 +27,7 @@
                                 </form>
                             </td>
                         @else
-                            <td><form action="/e/{{$enterprise->namespace}}/Users/Roles/addRoleToUser" method="post">
+                            <td><form action="{{config('ems.prefix') . $enterprise->namespace}}/Users/Roles/addRoleToUser" method="post">
                                     <input type="hidden" name="user_id" value="{{$user_id}}">
                                     <input type="hidden" name="role_id" value="{{$role->id}}">
                                     {{csrf_field()}}

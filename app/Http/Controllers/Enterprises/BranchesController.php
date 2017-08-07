@@ -18,7 +18,7 @@ class BranchesController extends Controller
         if ($user->enterprise_id != $enterprise->id) {
             abort('403');
         }
-        return view('branch.create', ['enterprise' => $enterprise]);
+        return view('branch.create', compact('enterprise'));
     }
 
     public function showList($namespace)
@@ -28,7 +28,7 @@ class BranchesController extends Controller
         if ($user->enterprise_id != $enterprise->id) {
             abort('403');
         }
-        return view('branch.list', ['enterprise' => $enterprise]);
+        return view('branch.list', compact('enterprise'));
     }
 
 

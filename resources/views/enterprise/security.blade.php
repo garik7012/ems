@@ -5,7 +5,7 @@
         <div class="panel panel-default">
             <div class="panel-heading">Security settings</div>
             <div class="panel-body">
-                <form class="form-horizontal" method="POST" action="/e/{{$enterprise->namespace}}/enterprises/settings/setSecurity">
+                <form class="form-horizontal" method="POST" action="{{config('ems.prefix') . $enterprise->namespace}}/enterprises/settings/setSecurity">
                     {{ csrf_field() }}
 
                     <div class="form-group">

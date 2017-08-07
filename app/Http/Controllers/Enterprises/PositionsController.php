@@ -17,7 +17,7 @@ class PositionsController extends Controller
         if ($user->enterprise_id != $enterprise->id) {
             abort('403');
         }
-        return view('position.create', ['enterprise' => $enterprise]);
+        return view('position.create', compact('enterprise'));
     }
 
     public function showList($namespace)
@@ -27,6 +27,6 @@ class PositionsController extends Controller
         if ($user->enterprise_id != $enterprise->id) {
             abort('403');
         }
-        return view('position.list', ['enterprise' => $enterprise]);
+        return view('position.list', compact('enterprise'));
     }
 }

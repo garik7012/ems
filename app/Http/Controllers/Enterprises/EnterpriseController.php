@@ -31,19 +31,18 @@ class EnterpriseController extends Controller
     {
         $ent_id = $this->shareEnterpriseToView($namespace);
         $ent_users = User::where('enterprise_id', $ent_id)->orderBy('id')->paginate(5);
-        return view('enterprise.user.list', ['ent_users' => $ent_users]);
+        return view('enterprise.user.list', compact('ent_users'));
     }
 
     public function loginAsUser($namespace, $user_id)
     {
         $user = User::findOrFail($user_id);
 
-        if (!$user->is_superadmin)
-        {
-            Session::put('auth_from_admin_asd',Auth::user()->id);
+        if (!$user->is_superadmin) {
+            Session::put('auth_from_admin_asd', Auth::user()->id);
             Auth::loginUsingId($user_id);
 
-            return redirect("/e/{$namespace}");
+            return redirect(config('ems.prefix') . "{$namespace}");
         }
         abort(403);
     }
@@ -56,7 +55,7 @@ class EnterpriseController extends Controller
 
     public function editUserProfile($namespace, Request $request)
     {
-       $this->shareEnterpriseToView($namespace);
+        $this->shareEnterpriseToView($namespace);
         $this->validate($request, [
             'first_name' => 'required|max:50',
             'last_name' => 'required|max:50',
@@ -94,10 +93,10 @@ class EnterpriseController extends Controller
         Session::forget('auth_from_admin_asd');
         if (! Auth::user()->is_superadmin) {
             Auth::logout();
-            return redirect("/e/$namespace");
+            return redirect(config('ems.prefix') . "$namespace");
         }
         $this->shareEnterpriseToView($namespace);
-        return redirect("/e/$namespace/");
+        return redirect(config('ems.prefix') . "$namespace/");
     }
 
 

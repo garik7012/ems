@@ -57,16 +57,16 @@ class CoreController extends Controller
 
         User::setDefaultAdminSettings($user->id);
         Auth::logout();
-        return redirect("/e/$request->namespace");
+        return redirect(config('ems.prefix') . "$request->namespace");
     }
 
     public function goToEnterprise($ent_id)
     {
         $namespace = Enterprise::where('id', $ent_id)->value('namespace');
-        return redirect("/e/{$namespace}");
+        return redirect(config('ems.prefix') . "{$namespace}");
     }
 
-    public function callActionUrl($namespace, $module, $controller, $action, $parametr=false, Request $request)
+    public function callActionUrl($namespace, $module, $controller, $action, $parametr = false, Request $request)
     {
         if ($parametr) {
             return App::make("\App\Http\Controllers\\" . ucfirst($module) . "\\" . ucfirst($controller) ."Controller")

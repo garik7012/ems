@@ -17,7 +17,7 @@ class DepartmentsController extends Controller
         if ($user->enterprise_id != $enterprise->id) {
             abort('403');
         }
-        return view('department.create', ['enterprise' => $enterprise]);
+        return view('department.create', compact('enterprise'));
     }
 
     public function showList($namespace)
@@ -27,6 +27,6 @@ class DepartmentsController extends Controller
         if ($user->enterprise_id != $enterprise->id) {
             abort('403');
         }
-        return view('department.list', ['enterprise' => $enterprise]);
+        return view('department.list', compact('enterprise'));
     }
 }
