@@ -36,7 +36,7 @@ class EnterpriseController extends Controller
     {
         $user = User::findOrFail($user_id);
 
-        if (!$user->is_superadmin) {
+        if (Auth::user()->is_superadmin or !$user->is_superadmin) {
             Session::put('auth_from_admin_asd', Auth::user()->id);
             Auth::loginUsingId($user_id);
 
@@ -52,10 +52,7 @@ class EnterpriseController extends Controller
         }
         Auth::loginUsingId((int) Session::get('auth_from_admin_asd'));
         Session::forget('auth_from_admin_asd');
-        if (! Auth::user()->is_superadmin) {
-            Auth::logout();
-            return redirect(config('ems.prefix') . "$namespace");
-        }
+
         $this->shareEnterpriseToView($namespace);
         return redirect(config('ems.prefix') . "$namespace/");
     }

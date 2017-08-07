@@ -60,6 +60,26 @@ class SettingsController extends Controller
         return redirect()->back();
     }
 
+    public function makeSuperadmin($namespace, Request $request)
+    {
+        $ent_id = $this->shareEnterpriseToView($namespace);
+        $user = User::where('id', $request->user_id)->where('enterprise_id', $ent_id)->firstOrFail();
+        $user->is_superadmin = 1;
+        $user->save();
+        return redirect()->back();
+    }
+
+    public function depriveSuperadmin($namespace, Request $request)
+    {
+        if (Auth::user()->id != $request->user_id) {
+            $ent_id = $this->shareEnterpriseToView($namespace);
+            $user = User::where('id', $request->user_id)->where('enterprise_id', $ent_id)->firstOrFail();
+            $user->is_superadmin = 0;
+            $user->save();
+        }
+        return redirect()->back();
+    }
+
     private function shareEnterpriseToView($namespace)
     {
         $enterprise = Enterprise::where('namespace', $namespace)->firstOrFail();

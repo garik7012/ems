@@ -42,8 +42,10 @@ Route::group(['prefix' => config('ems.prefix') . "{namespace}"], function () {
         Route::get('/user/changePassword', 'Security\RegistrationController@showChangePasswordForm');
         Route::post('/user/changePassword', 'Security\RegistrationController@changePassword');
 
-        Route::get('/user/loginAsUser/{id}', 'Enterprises\EnterpriseController@loginAsUser')->middleware('is.admin');
         Route::get('/user/list/gback', 'Enterprises\EnterpriseController@backToAdmin');
+
+        Route::post('/user/makeSuperadmin', 'Users\SettingsController@makeSuperadmin')->middleware('is.admin');
+        Route::post('/user/depriveSuperadmin', 'Users\SettingsController@depriveSuperadmin')->middleware('is.admin');
 
     //call module\controller->action according to route /{module}/{controller}/{action}
         Route::any('/{module}/{controller}/{action}/{parametr?}', 'CoreController@callActionUrl')->middleware(['roles', 'pwd.change']);

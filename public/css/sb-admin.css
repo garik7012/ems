@@ -167,5 +167,8 @@ label .text_normal {
 .users-roles:hover {
     cursor: pointer;
 }
+.user-not-active {
+    color: red;
+}
 
 
