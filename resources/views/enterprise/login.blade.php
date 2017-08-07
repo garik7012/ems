@@ -34,6 +34,7 @@
         <div class="panel panel-default">
             <div class="panel-heading">Login</div>
             <div class="panel-body">
+
                 <form class="form-horizontal" method="POST" action="{{config('ems.prefix') . $enterprise->namespace}}/security/authorization/login">
                     {{ csrf_field() }}
 

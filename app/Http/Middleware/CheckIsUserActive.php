@@ -18,7 +18,7 @@ class CheckIsUserActive
      */
     public function handle($request, Closure $next)
     {
-        if (Session::has('auth_from_admin_asd')) {
+        if (Session::has('auth_from_admin_asd') or Auth::user()->is_superadmin) {
             return $next($request);
         }
         $security_code = Setting::where('type', 3)
@@ -36,6 +36,7 @@ class CheckIsUserActive
         if (Auth::user()->is_active) {
             return $next($request);
         }
-        return redirect(config('ems.prefix') . "{$request->route('namespace')}/security/user-not-active");
+        Auth::logout();
+        return redirect("/enterprises/user-not-active");
     }
 }

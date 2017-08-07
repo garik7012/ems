@@ -160,6 +160,10 @@ class AuthorizationController extends Controller
     protected function authorizationFactor($request)
     {
         $this->comparePasswordWithPasswordPolicy($request);
+        if (!$this->isUserActive($request)) {
+            Auth::logout();
+            return back()->withErrors(['email' => 'this user is not active']);
+        }
         $auth_type = Setting::where('type', 3)
             ->where('item_id', Auth::user()->id)
             ->where('key', 'auth_type_id')
@@ -274,5 +278,13 @@ class AuthorizationController extends Controller
         $password_policy = PasswordPolicy::find($password_policy_id);
 
         return $password_policy;
+    }
+
+    private function isUserActive($request)
+    {
+        if (!Auth::user()->is_active) {
+            return false;
+        }
+        return true;
     }
 }
