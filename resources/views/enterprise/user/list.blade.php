@@ -60,7 +60,8 @@
                                 @endif
                             @endif
                         </td>
-                        <td>@if($ent_user->id != Auth::user()->id and !$ent_user->is_superadmin)
+                        <td>@if($ent_user->id == Auth::user()->id or ($ent_user->is_superadmin && !Auth::user()->is_superadmin))
+                            @else
                             <a href="{{config('ems.prefix') . $enterprise->namespace}}/Enterprises/Enterprise/loginAsUser/{{$ent_user->id}}">Login</a>
                             @endif
                         </td>

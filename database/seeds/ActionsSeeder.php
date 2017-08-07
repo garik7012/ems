@@ -161,11 +161,22 @@ class ActionsSeeder extends Seeder
             'name' => 'changeUsersSettings',
             'is_active' => 1,
         ]);
-
         //login as user
         DB::table('actions')->insert([
             'controller_id' => 14,
             'name' => 'loginAsUser',
+            'is_active' => 1,
+        ]);
+        //show user profile
+        DB::table('actions')->insert([
+            'controller_id' => 10,
+            'name' => 'userProfile',
+            'is_active' => 1,
+        ]);
+        //change user profile
+        DB::table('actions')->insert([
+            'controller_id' => 10,
+            'name' => 'editUserProfile',
             'is_active' => 1,
         ]);
     }

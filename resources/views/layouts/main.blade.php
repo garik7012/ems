@@ -48,69 +48,10 @@
             <a class="navbar-brand" href="{{config('ems.prefix') . $enterprise->namespace}}">Enterprise management system <i class="fa fa-long-arrow-right" aria-hidden="true"></i> {{$enterprise->name}}</a>
         </div>
         <!-- Top Menu Items -->
-        <ul class="nav navbar-right top-nav">
-            @if(Auth::user())
-                @if (Auth::check() && Session::has('auth_from_admin_asd'))
-                    <li><a href = "{{config('ems.prefix') . $enterprise->namespace}}/user/list/gback">Go back to my profile</a></li>
-                @endif
-                <li><a>{{Auth::user()->is_superadmin ? 'You are SuperAdmin!': ''}}</a></li>
-                    <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" title="{{Auth::user()->is_active? '': 'this user is not active'}}">
-                        <i class="fa fa-user {{Auth::user()->is_active? '': 'user-not-active'}}"></i> {{Auth::user()->first_name}} {{Auth::user()->last_name}} <b class="caret"></b>
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li>
-                            <a href="{{config('ems.prefix') . $enterprise->namespace}}/user/profile"><i class="fa fa-fw fa-user"></i>Profile</a>
-                        </li>
-                        <li>
-                            <a href="{{config('ems.prefix') . $enterprise->namespace}}/user/changePassword"><i class="fa fa-fw fa-key"></i>Change password</a>
-                        </li>
-                        <li class="divider"></li>
-                        <li>
-                            <a href="{{ route('logout', ['namespace'=>$enterprise->namespace]) }}"
-                               onclick="event.preventDefault();
-                                                         document.getElementById('logout-form').submit();">
-                                <i class="fa fa-fw fa-power-off"></i> Logout
-                            </a>
-
-                            <form id="logout-form" action="{{ route('logout', ['namespace'=>$enterprise->namespace]) }}" method="POST" style="display: none;">
-                                {{ csrf_field() }}
-                            </form>
-                        </li>
-                    </ul>
-                </li>
-            @endif
-        </ul>
-        @if(Auth::user() && (!Session::has('security_code')))
+        @include('layouts.topMenu')
         <!-- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens -->
-        <div class="collapse navbar-collapse navbar-ex1-collapse">
-            <ul class="nav navbar-nav side-nav">
-                @foreach($menu_items as $menu_item)
-                    @if(!$menu_item->action_id and !$menu_item->parrent_id and $menu_item->is_active)
-                        <li>
-                        <a href="javascript:;" data-toggle="collapse" data-target="#demo_{{$menu_item->id}}">{{$menu_item->name}} <i class="fa fa-fw fa-caret-down"></i></a>
-                        <ul id="demo_{{$menu_item->id}}" class="collapse">
-                            @foreach($menu_items as $menu_child)
-                                @if($menu_child->parent_id == $menu_item->id)
-                            <li>
-                                <a href="{{config('ems.prefix') . $enterprise->namespace . $menu_child->link}}">{{$menu_child->name}}</a>
-                            </li>
-                                @endif
-                            @endforeach
-                        </ul>
-                        </li>
-                    @elseif($menu_item->parent_id == null and $menu_item->is_active)
-                    <li>
-                        <a href="{{config('ems.prefix') . $enterprise->namespace}}{{$menu_item->link}}">{{$menu_item->name}}</a>
-                    </li>
-                        @elseif(!$menu_item->is_active and !$menu_item->parent_id)
-                        <li class="disabled">
-                            <a>{{$menu_item->name}}</a>
-                        </li>
-                    @endif
-                @endforeach
-            </ul>
-        </div>
+        @if(Auth::user() && (!Session::has('security_code')))
+            @include('layouts.sidebar')
         @else
             <style>
                 #wrapper{

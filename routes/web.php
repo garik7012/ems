@@ -29,16 +29,14 @@ Route::group(['prefix' => config('ems.prefix') . "{namespace}"], function () {
     Route::group(['prefix' => 'security'], function () {
         Route::get('/confirm/{id}/{pass}', 'Security\RegistrationController@confirmEmail');
         Route::post('/registration/end', 'Security\RegistrationController@finishRegistration');
-        Route::get('/user-not-active', 'Security\AuthorizationController@userNotActive');
-        Route::post('/confirm/code', 'Security\AuthorizationController@checkConfirmCode');
         Route::post('/authorization/login', 'Security\AuthorizationController@login');
+        Route::post('/confirm/code', 'Security\AuthorizationController@checkConfirmCode');
+        Route::get('/user-not-active', 'Security\AuthorizationController@userNotActive');
     });
 
     //check is user belong to this enterprise, is user active, share menu according to role
     Route::group(['middleware' => ['belong', 'is.active', 'menu']], function () {
         Route::get('/', 'Enterprises\EnterpriseController@showEnterprise')->middleware('pwd.change');
-        Route::get('/user/profile', 'Users\SettingsController@userProfile');
-        Route::post('/user/profile', 'Users\SettingsController@editUserProfile');
         Route::get('/user/changePassword', 'Security\RegistrationController@showChangePasswordForm');
         Route::post('/user/changePassword', 'Security\RegistrationController@changePassword');
 
