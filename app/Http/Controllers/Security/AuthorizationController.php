@@ -160,11 +160,16 @@ class AuthorizationController extends Controller
     protected function authorizationFactor($request)
     {
         $this->comparePasswordWithPasswordPolicy($request);
-        $auth_type = Setting::where('type', 2)
-            ->where('item_id', Auth::user()->enterprise_id)
+        $auth_type = Setting::where('type', 3)
+            ->where('item_id', Auth::user()->id)
             ->where('key', 'auth_type_id')
             ->value('value');
-
+        if (!$auth_type) {
+            $auth_type = Setting::where('type', 2)
+                ->where('item_id', Auth::user()->enterprise_id)
+                ->where('key', 'auth_type_id')
+                ->value('value');
+        }
         if ($auth_type != 1) {
             $security_code = str_random(8);
             Setting::where('type', 3)
@@ -256,13 +261,18 @@ class AuthorizationController extends Controller
 
     private function getPasswordPolicy($user)
     {
-        //get enterprise's password policy
-        $password_policy_id = Setting::where('type', 2)
-            ->where('item_id', $user->enterprise_id)
+        $password_policy_id = Setting::where('type', 3)
+            ->where('item_id', $user->id)
             ->where('key', 'password_policy_id')
             ->value('value');
+        if (!$password_policy_id) {
+            $password_policy_id = Setting::where('type', 2)
+                ->where('item_id', $user->enterprise_id)
+                ->where('key', 'password_policy_id')
+                ->value('value');
+        }
         $password_policy = PasswordPolicy::find($password_policy_id);
-        //TODO get user's password policy
+
         return $password_policy;
     }
 }

@@ -81,5 +81,10 @@ class ControllersTableSeeder extends Seeder
             'module_id' => 2,
             'is_active' => 1,
         ]);
+        DB::table('controllers')->insert([
+            'name' => 'Users',
+            'module_id' => 2,
+            'is_active' => 1,
+        ]);
     }
 }

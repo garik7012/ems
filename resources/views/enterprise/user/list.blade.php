@@ -14,6 +14,7 @@
                     <th>is active</th>
                     <th>is superadmin</th>
                     <th>Login</th>
+                    <th>Settings</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -32,6 +33,7 @@
                         </td>
                         <td width="130">{{$ent_user->is_superadmin ? "Yes": ""}}</td>
                         <td><a href="{{config('ems.prefix') . $enterprise->namespace}}/user/loginAsUser/{{$ent_user->id}}">Login</a></td>
+                        <td><a href="{{config('ems.prefix') . $enterprise->namespace}}/Enterprises/Users/showUserSettings/{{$ent_user->id}}">Change</a></td>
                     </tr>
                 @endforeach
                 </tbody>

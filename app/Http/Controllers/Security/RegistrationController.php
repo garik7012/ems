@@ -131,13 +131,18 @@ class RegistrationController extends Controller
 
     private function getPasswordPolicy($user)
     {
-        //get enterprise's password policy
-        $password_policy_id = Setting::where('type', 2)
-            ->where('item_id', $user->enterprise_id)
+        $password_policy_id = Setting::where('type', 3)
+            ->where('item_id', $user->id)
             ->where('key', 'password_policy_id')
             ->value('value');
+        if (!$password_policy_id) {
+            $password_policy_id = Setting::where('type', 2)
+                ->where('item_id', $user->enterprise_id)
+                ->where('key', 'password_policy_id')
+                ->value('value');
+        }
         $password_policy = PasswordPolicy::find($password_policy_id);
-        //TODO get user's password policy
+
         return $password_policy;
     }
 }

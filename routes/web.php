@@ -37,8 +37,8 @@ Route::group(['prefix' => config('ems.prefix') . "{namespace}"], function () {
     //check is user belong to this enterprise, is user active, share menu according to role
     Route::group(['middleware' => ['belong', 'is.active', 'menu']], function () {
         Route::get('/', 'Enterprises\EnterpriseController@showEnterprise')->middleware('pwd.change');
-        Route::get('/user/profile', 'Enterprises\EnterpriseController@userProfile');
-        Route::post('/user/profile', 'Enterprises\EnterpriseController@editUserProfile');
+        Route::get('/user/profile', 'Users\SettingsController@userProfile');
+        Route::post('/user/profile', 'Users\SettingsController@editUserProfile');
         Route::get('/user/changePassword', 'Security\RegistrationController@showChangePasswordForm');
         Route::post('/user/changePassword', 'Security\RegistrationController@changePassword');
 

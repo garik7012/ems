@@ -150,5 +150,16 @@ class ActionsSeeder extends Seeder
             'is_active' => 1,
         ]);
 
+        DB::table('actions')->insert([
+            'controller_id' => 15,
+            'name' => 'showUserSettings',
+            'is_active' => 1,
+        ]);
+
+        DB::table('actions')->insert([
+            'controller_id' => 15,
+            'name' => 'changeUsersSettings',
+            'is_active' => 1,
+        ]);
     }
 }
