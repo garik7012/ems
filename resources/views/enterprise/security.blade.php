@@ -37,13 +37,13 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="max_login_period" class="col-md-4 control-label">Max login period</label>
+                        <label for="max_login_period" class="col-md-4 control-label">Max login period (min)</label>
                         <div class="col-md-6">
                             <input id="max_login_period" type="number" class="form-control" name="max_login_period" value="{{$enSec['max_login_period']}}">
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="max_hours_ban" class="col-md-4 control-label">Max hours ban</label>
+                        <label for="max_hours_ban" class="col-md-4 control-label">Max ban (hours)</label>
                         <div class="col-md-6">
                             <input id="max_hours_ban" type="number" class="form-control" name="max_hours_ban" value="{{$enSec['max_hours_ban']}}">
                         </div>

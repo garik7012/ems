@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Security;
 
 use App\Enterprise;
+use Illuminate\Support\Facades\DB;
 use App\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -58,6 +59,10 @@ class AuthorizationController extends Controller
     {
         $this->validateLogin($request);
 
+        if ($this->hasBan($request)) {
+            return back()->withErrors(['login' => 'This user has ban']);
+        }
+
         // If the class is using the ThrottlesLogins trait, we can automatically throttle
         // the login attempts for this application. We'll key this by the username and
         // the IP address of the client making these requests into this application.
@@ -110,6 +115,24 @@ class AuthorizationController extends Controller
         ]);
     }
 
+    private function hasBan($request)
+    {
+        $user_id = User::where($this->username(), $request->login)->value('id');
+        $date_end_ban = Setting::where('type', 3)
+            ->where('item_id', $user_id)
+            ->where('key', 'date_end_ban')
+            ->value('value');
+        if ($date_end_ban) {
+            $is_end = $date_end_ban - strtotime('now') < 0;
+            if ($is_end) {
+                Setting::where('type', 3)->where('item_id', $user_id)->where('key', 'date_end_ban')->update(['value' => 0]);
+                return false;
+            }
+            return true;
+        }
+        return false;
+    }
+
     /**
      * Attempt to log the user into the application.
      *
@@ -124,6 +147,14 @@ class AuthorizationController extends Controller
         );
     }
 
+    protected function hasTooManyLoginAttempts(Request $request)
+    {
+        $maxLoginAttempts = 3;
+
+        $lockoutTime = 1; // In minutes
+
+        return $this->limiter()->tooManyAttempts($this->throttleKey($request), $maxLoginAttempts, $lockoutTime);
+    }
     /**
      * Get the needed authorization credentials from the request.
      *
@@ -162,7 +193,7 @@ class AuthorizationController extends Controller
         $this->comparePasswordWithPasswordPolicy($request);
         if (!$this->isUserActive($request)) {
             Auth::logout();
-            return back()->withErrors(['email' => 'this user is not active']);
+            return back()->withErrors(['login' => 'this user is not active']);
         }
         $auth_type = Setting::where('type', 3)
             ->where('item_id', Auth::user()->id)
@@ -228,7 +259,6 @@ class AuthorizationController extends Controller
         $field = filter_var($login, FILTER_VALIDATE_EMAIL) ? 'email' : 'login';
         request()->merge([$field => $login]);
         return $field;
-        return 'email';
     }
 
     /**
