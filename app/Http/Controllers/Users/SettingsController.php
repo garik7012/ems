@@ -47,17 +47,23 @@ class SettingsController extends Controller
     public function activate($n, $id)
     {
         $user = User::findOrFail($id);
-        $user->is_active = 1;
-        $user->save();
-        return redirect()->back();
+        if (!$user->is_superadmin or Auth::user()->is_superadmin) {
+            $user->is_active = 1;
+            $user->save();
+            return redirect()->back();
+        }
+        abort('403');
     }
 
     public function deactivate($n, $id)
     {
         $user = User::findOrFail($id);
-        $user->is_active = 0;
-        $user->save();
-        return redirect()->back();
+        if (!$user->is_superadmin or Auth::user()->is_superadmin) {
+            $user->is_active = 0;
+            $user->save();
+            return redirect()->back();
+        }
+        abort('403');
     }
 
     public function makeSuperadmin($namespace, Request $request)

@@ -147,5 +147,10 @@ class MenuSeeder extends Seeder
             'position' => 22,
             'parent_id' => 19,
         ]);
+        DB::table('menu')->insert([
+            'name' => 'Supervisors',
+            'action_id' => 31,
+            'position' => 23,
+        ]);
     }
 }

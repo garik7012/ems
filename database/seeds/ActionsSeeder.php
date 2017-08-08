@@ -179,5 +179,26 @@ class ActionsSeeder extends Seeder
             'name' => 'editUserProfile',
             'is_active' => 1,
         ]);
+        //show supervisor list
+        DB::table('actions')->insert([
+            'controller_id' => 16,
+            'name' => 'showList',
+            'is_active' => 1,
+        ]);
+        DB::table('actions')->insert([
+            'controller_id' => 16,
+            'name' => 'edit',
+            'is_active' => 1,
+        ]);
+        DB::table('actions')->insert([
+            'controller_id' => 16,
+            'name' => 'delete',
+            'is_active' => 1,
+        ]);
+        DB::table('actions')->insert([
+            'controller_id' => 16,
+            'name' => 'add',
+            'is_active' => 1,
+        ]);
     }
 }

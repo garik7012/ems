@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Auth;
+use App\User;
 use \Illuminate\Support\Facades\View;
 use App\Menu;
 use Illuminate\Support\Facades\DB;
@@ -27,7 +28,13 @@ class ShowSideMenu
         if (Auth::user()->is_superadmin) {
             $menu_items = Menu::orderBy('position')->where('is_active', 1)->get();
         } else {
-            $menu_items = DB::table('users_and_roles')->where('users_and_roles.user_id', '=', Auth::user()->id)
+            if (Auth::user()->parent_id == null) {
+                $subs_id = User::where('parent_id', Auth::user()->id)->where('is_active', 1)->pluck('id')->toArray();
+            } else {
+                $subs_id = [];
+            }
+            $subs_id[] = Auth::user()->id;
+            $menu_items = DB::table('users_and_roles')->whereIn('users_and_roles.user_id', $subs_id)
                 ->join('roles', 'roles.id', '=', 'users_and_roles.role_id')->where('roles.is_active', 1)
                 ->join('roles_and_actions', 'roles_and_actions.role_id', '=', 'roles.id')
                 ->join('actions', 'actions.id', '=', 'roles_and_actions.action_id')->where('actions.is_active', 1)
@@ -39,9 +46,6 @@ class ShowSideMenu
                 ->distinct()
                 ->select('menu.id', 'menu.parent_id')
                 ->get();
-            //we have array collections. make array of assoc arrays
-            // $menu_items = collect($menu_items)->map(function($x){ return (array) $x; })->toArray();
-            //all menu id we will show;
             $menu_id = [];
             foreach ($menu_items as $menuItem) {
                 $menu_id[] = $menuItem->id;

@@ -2,11 +2,8 @@
 
 namespace App\Http\Middleware;
 
-use App\Menu;
-use App\UsersAndRoles;
+use App\User;
 use Closure;
-use App\Controller;
-use App\Action;
 use Auth;
 use Illuminate\Support\Facades\DB;
 
@@ -37,7 +34,14 @@ class Roles
         }
 
         if (!Auth::user()->is_superadmin) {
-            $actions = DB::table('users_and_roles')->where('users_and_roles.user_id', Auth::user()->id)
+            //If user is supervisor
+            if (Auth::user()->parent_id == null) {
+                $subs_id = User::where('parent_id', Auth::user()->id)->where('is_active', 1)->pluck('id')->toArray();
+            } else {
+                $subs_id = [];
+            }
+            $subs_id[] = Auth::user()->id;
+            $actions = DB::table('users_and_roles')->whereIn('users_and_roles.user_id', $subs_id)
                 ->join('roles', 'roles.id', '=', 'users_and_roles.role_id')->where('roles.is_active', 1)
                 ->join('roles_and_actions', 'users_and_roles.role_id', '=', 'roles_and_actions.role_id')
                 ->join('actions', 'actions.id', '=', 'roles_and_actions.action_id')->where('actions.is_active', 1)
