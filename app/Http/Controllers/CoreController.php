@@ -33,7 +33,8 @@ class CoreController extends Controller
         $this->validate($request, [
             'namespace' => 'required|max:25|unique:enterprises',
             'password' => 'required|string|min:6|confirmed',
-            'email' => 'unique:users'
+            'email' => 'required|email|unique:users',
+            'login' => 'required|alpha_dash|unique:users',
         ]);
         $enterprise = new Enterprise;
         $enterprise->name = $request->e_name;

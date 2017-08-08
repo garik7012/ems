@@ -16,6 +16,10 @@ class RegistrationController extends Controller
     public function createUserByAdmin($namespace, Request $request)
     {
         $ent_id = $this->shareEnterpriseToView($namespace);
+        $this->validate($request, [
+            'email' => 'unique:users',
+            'login' => 'unique:users',
+        ]);
         $new_user_id = User::createNewUserByAdmin($request, $ent_id);
         $confirm = Setting::where('type', 3)
             ->where('item_id', $new_user_id)
@@ -64,7 +68,7 @@ class RegistrationController extends Controller
             $this->validate($request, [
                 'first_name' => 'required|max:50',
                 'last_name' => 'required|max:50',
-                'login' => 'required|max:50',
+                'login' => 'required|alpha_dash|unique:users|max:50',
                 'phone_number' => 'required|max:50',
                 'date_born' => 'required|date',
                 'password' => "required|string|regex:/${password_pattern}/|confirmed"

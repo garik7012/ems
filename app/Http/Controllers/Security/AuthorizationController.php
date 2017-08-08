@@ -224,6 +224,10 @@ class AuthorizationController extends Controller
      */
     public function username()
     {
+        $login = request()->input('login');
+        $field = filter_var($login, FILTER_VALIDATE_EMAIL) ? 'email' : 'login';
+        request()->merge([$field => $login]);
+        return $field;
         return 'email';
     }
 
