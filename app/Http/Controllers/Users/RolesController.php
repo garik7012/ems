@@ -72,6 +72,15 @@ class RolesController extends Controller
             $role->name = $request->name;
             $role->description = $request->description;
             $role->enterprise_id = $ent_id;
+            if (!$request->is_never_expires) {
+                $this->validate($request, [
+                    'expire_begin_at' => 'required',
+                    'expire_end_at' => 'required'
+                ]);
+                $role->expire_begin_at = $request->expire_begin_at;
+                $role->expire_end_at = $request->expire_end_at;
+                $role->is_never_expires = 0;
+            }
             $role->save();
             foreach ($request->actions as $action) {
                 $role_action = new RolesAndActions;

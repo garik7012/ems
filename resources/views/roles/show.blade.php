@@ -10,6 +10,7 @@
                     <th>Role</th>
                     <th>Description</th>
                     <th>Action path</th>
+                    <th>Expires</th>
                     <th>Activate/Deactivate role</th>
                     <th>Edit role</th>
                 </tr>
@@ -23,6 +24,9 @@
                         <td>@foreach ($role->actions as $action)
                                 <p> {{$action['full_path']}}</p>
                         @endforeach
+                        </td>
+                        <td>
+                            {{$role->is_never_expires ? 'never': "from $role->expire_begin_at to $role->expire_end_at"}}
                         </td>
                         <td>
                             @if($role->is_active)

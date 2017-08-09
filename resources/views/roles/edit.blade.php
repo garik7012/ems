@@ -21,6 +21,50 @@
                         </div>
                     </div>
                     <div class="form-group">
+                        <label for="role_policies" class="col-md-4 control-label">Role policies</label>
+                        <div class="col-md-6">
+                            @if($role->is_never_expires)
+                                <label><input type="checkbox" name="is_never_expires" checked> Is never expired</label>
+                                <div class="row role_date">
+                                    <br>
+                                    <label class="col-md-6{{ $errors->has('expire_begin_at') ? ' has-error' : '' }}">Active from
+                                        <input type="date" name="expire_begin_at" class="form-control">
+                                        @if ($errors->has('expire_begin_at'))
+                                            <span class="help-block">
+                                                <strong>{{ $errors->first('expire_begin_at') }}</strong>
+                                            </span>
+                                        @endif</label>
+                                    <label class="col-md-6{{ $errors->has('expire_end_at') ? ' has-error' : '' }}"> to
+                                        <input type="date" name="expire_end_at" class="form-control">
+                                        @if ($errors->has('expire_end_at'))
+                                            <span class="help-block">
+                                                <strong>{{ $errors->first('expire_end_at') }}</strong>
+                                            </span>
+                                        @endif</label>
+                                </div>
+                            @else
+                                <label><input type="checkbox" name="is_never_expires"> Is never expired</label>
+                                <div class="row role_date">
+                                    <br>
+                                    <label class="col-md-6{{ $errors->has('expire_begin_at') ? ' has-error' : '' }}">Active from
+                                        <input type="date" name="expire_begin_at" class="form-control" value="{{$role->expire_begin_at}}">
+                                        @if ($errors->has('expire_begin_at'))
+                                            <span class="help-block">
+                                                <strong>{{ $errors->first('expire_begin_at') }}</strong>
+                                            </span>
+                                        @endif</label>
+                                    <label class="col-md-6{{ $errors->has('expire_end_at') ? ' has-error' : '' }}"> to
+                                        <input type="date" name="expire_end_at" class="form-control" value="{{$role->expire_end_at}}">
+                                        @if ($errors->has('expire_end_at'))
+                                            <span class="help-block">
+                                                <strong>{{ $errors->first('expire_end_at') }}</strong>
+                                            </span>
+                                        @endif</label>
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+                    <div class="form-group">
                         <label for="action" class="col-md-4 control-label">Module . Controller . Action.</br> You can add several actions.</br> Just hold Ctrl button</label>
                         <div class="col-md-6">
                             <select size="17" name="actions[]" id="action" class="form-control" multiple="" required>
@@ -41,4 +85,22 @@
             </div>
         </div>
     </div>
+@endsection
+@section('script')
+    <script>
+        $(document).ready(function() {
+            if ($('input[name=is_never_expires]').is(':checked')) {
+                $('.role_date').hide();
+            } else {
+                $('.role_date').show();
+            }
+            $('input[name=is_never_expires]').click(function () {
+                $('.role_date').toggle();
+            });
+            if ($('.role_date label').hasClass('has-error')) {
+                $('.role_date').show();
+                $('input[name=is_never_expires]').attr('checked', false);
+            }
+        })
+    </script>
 @endsection

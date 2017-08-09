@@ -43,6 +43,11 @@ class Roles
             $subs_id[] = Auth::user()->id;
             $actions = DB::table('users_and_roles')->whereIn('users_and_roles.user_id', $subs_id)
                 ->join('roles', 'roles.id', '=', 'users_and_roles.role_id')->where('roles.is_active', 1)
+                ->where('roles.is_never_expires', 1)
+                ->orWhere(function ($q) {
+                    $q->where('roles.expire_begin_at', '<=', date('Y-m-d'))
+                        ->where('roles.expire_end_at', '>=', date('Y-m-d'));
+                })
                 ->join('roles_and_actions', 'users_and_roles.role_id', '=', 'roles_and_actions.role_id')
                 ->join('actions', 'actions.id', '=', 'roles_and_actions.action_id')->where('actions.is_active', 1)
                 ->select('roles_and_actions.action_id', 'actions.name', 'actions.controller_id')
