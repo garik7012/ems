@@ -170,6 +170,8 @@ label .text_normal {
 .user-not-active {
     color: red;
 }
-
+.logs-logins th:hover{
+    cursor: pointer;
+}
 
 

@@ -23,7 +23,6 @@ class SettingsController extends Controller
         $this->validate($request, [
             'first_name' => 'required|max:50',
             'last_name' => 'required|max:50',
-            'login' => 'required|max:50',
             'phone_number' => 'required|max:50',
             'date_born' => 'required|date',
             'password' => 'required|string|min:6'
@@ -33,11 +32,8 @@ class SettingsController extends Controller
         if (Hash::check($request->password, $user->password)) {
             $user->first_name = $request->first_name;
             $user->last_name = $request->last_name;
-            $user->login = $request->login;
             $user->phone_number = $request->phone_number;
-            $user->password = bcrypt($request->password);
             $user->date_born = $request->date_born;
-            $user->is_active = 1;
             $user->save();
             return redirect()->back();
         }

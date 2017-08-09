@@ -65,10 +65,14 @@ class RegistrationController extends Controller
             $user = User::findOrFail($request->user_id);
             $password_policy = $this->getPasswordPolicy($user);
             $password_pattern = $password_policy->pattern;
+            $login_validate = 'required|alpha_dash|unique:users|max:50';
+            if ($user->login == $request->login) {
+                $login_validate = 'required';
+            }
             $this->validate($request, [
                 'first_name' => 'required|max:50',
                 'last_name' => 'required|max:50',
-                'login' => 'required|alpha_dash|unique:users|max:50',
+                'login' => $login_validate,
                 'phone_number' => 'required|max:50',
                 'date_born' => 'required|date',
                 'password' => "required|string|regex:/${password_pattern}/|confirmed"

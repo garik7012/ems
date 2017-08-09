@@ -12,6 +12,7 @@ use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use App\Setting;
 use App\PasswordPolicy;
 use Illuminate\Support\Facades\Session;
+use App\LoginStat;
 
 class AuthorizationController extends Controller
 {
@@ -57,30 +58,33 @@ class AuthorizationController extends Controller
      */
     public function login(Request $request)
     {
+        $user_id = User::where($this->username(), $request->login)->value('id');
+        $ent_id = Enterprise::where('namespace', $request->route('namespace'))->value('id');
         $this->validateLogin($request);
+        $logs = new LoginStat();
+        $logs->enterprise_id = $ent_id;
+        $logs->user_id = $user_id;
+        $logs->is_ok = 0;
+        $logs->login = $request->login;
+        $logs->ip = $request->ip();
+        $logs->user_agent = $request->header('User-Agent');
+        $logs->created_at = date('Y-m-d H:i:s');
+        $logs->save();
 
-        if ($this->hasBan($request)) {
-            return back()->withErrors(['login' => 'This user has ban']);
-        }
-
-        // If the class is using the ThrottlesLogins trait, we can automatically throttle
-        // the login attempts for this application. We'll key this by the username and
-        // the IP address of the client making these requests into this application.
-        if ($this->hasTooManyLoginAttempts($request)) {
-            $this->fireLockoutEvent($request);
-
-            return $this->sendLockoutResponse($request);
+        $end_ban = $this->hasBan($request, $user_id);
+        if ($end_ban) {
+            $hours_mins_left = date('H \h i \m\i\n', $end_ban - strtotime('now'));
+            return back()->withErrors(['login' => "This user has ban. Please try again in $hours_mins_left"]);
         }
 
         if ($this->attemptLogin($request)) {
+            $logs->is_ok = 1;
+            $logs->save();
             return $this->sendLoginResponse($request);
         }
-
-        // If the login attempt was unsuccessful we will increment the number of attempts
-        // to login and redirect the user back to the login form. Of course, when this
-        // user surpasses their maximum number of attempts they will get locked out.
-        $this->incrementLoginAttempts($request);
-
+        if ($user_id) {
+            $this->checkCountLoginAttempts($ent_id, $user_id);
+        }
         return $this->sendFailedLoginResponse($request);
     }
 
@@ -115,24 +119,6 @@ class AuthorizationController extends Controller
         ]);
     }
 
-    private function hasBan($request)
-    {
-        $user_id = User::where($this->username(), $request->login)->value('id');
-        $date_end_ban = Setting::where('type', 3)
-            ->where('item_id', $user_id)
-            ->where('key', 'date_end_ban')
-            ->value('value');
-        if ($date_end_ban) {
-            $is_end = $date_end_ban - strtotime('now') < 0;
-            if ($is_end) {
-                Setting::where('type', 3)->where('item_id', $user_id)->where('key', 'date_end_ban')->update(['value' => 0]);
-                return false;
-            }
-            return true;
-        }
-        return false;
-    }
-
     /**
      * Attempt to log the user into the application.
      *
@@ -142,28 +128,8 @@ class AuthorizationController extends Controller
     protected function attemptLogin(Request $request)
     {
         return $this->guard()->attempt(
-            $this->credentials($request),
-            $request->has('remember')
+            $request->only($this->username(), 'password')
         );
-    }
-
-    protected function hasTooManyLoginAttempts(Request $request)
-    {
-        $maxLoginAttempts = 3;
-
-        $lockoutTime = 1; // In minutes
-
-        return $this->limiter()->tooManyAttempts($this->throttleKey($request), $maxLoginAttempts, $lockoutTime);
-    }
-    /**
-     * Get the needed authorization credentials from the request.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return array
-     */
-    protected function credentials(Request $request)
-    {
-        return $request->only($this->username(), 'password');
     }
 
     /**
@@ -176,8 +142,6 @@ class AuthorizationController extends Controller
     {
         $request->session()->regenerate();
 
-        $this->clearLoginAttempts($request);
-        
         return $this->authenticated($request, $this->guard()->user())
             ?: $this->authorizationFactor($request);
     }
@@ -225,6 +189,7 @@ class AuthorizationController extends Controller
                 return redirect()->back()->with('security_code', "Email. Code: $security_code");
             }
         }
+
         return redirect(config('ems.prefix') . "{$request->route('namespace')}");
     }
 
@@ -320,5 +285,50 @@ class AuthorizationController extends Controller
             return false;
         }
         return true;
+    }
+
+    private function hasBan($request, $user_id)
+    {
+        $date_end_ban = Setting::where('type', 3)
+            ->where('item_id', $user_id)
+            ->where('key', 'date_end_ban')
+            ->value('value');
+        if ($date_end_ban) {
+            $is_end = $date_end_ban - strtotime('now') < 0;
+            if ($is_end) {
+                Setting::where('type', 3)->where('item_id', $user_id)->where('key', 'date_end_ban')->update(['value' => 0]);
+                return false;
+            }
+            return $date_end_ban;
+        }
+        return false;
+    }
+
+    private function checkCountLoginAttempts($ent_id, $user_id)
+    {
+        $ent_settings = Setting::where('type', 2)
+            ->where('item_id', $ent_id)
+            ->where(function ($q) {
+                $q->where('key', 'max_login_attempts')
+                    ->orWhere('key', 'max_login_period')
+                    ->orWhere('key', 'max_hours_ban');
+            })
+            ->pluck('value', 'key')->toArray();
+
+        $date = date('Y-m-d H:i:s', strtotime("-{$ent_settings['max_login_period']}min"));
+
+        $count = LoginStat::where('enterprise_id', $ent_id)
+            ->where('user_id', $user_id)
+            ->where('created_at', '>', $date)
+            ->where('is_ok', 0)
+            ->count();
+
+        if ($count >= $ent_settings['max_login_attempts']) {
+            $date_end_ban = strtotime("+{$ent_settings['max_hours_ban']}hours");
+            Setting::where('type', 3)
+                ->where('item_id', $user_id)
+                ->where('key', 'date_end_ban')
+                ->update(['value' => $date_end_ban]);
+        }
     }
 }

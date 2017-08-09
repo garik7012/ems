@@ -152,5 +152,15 @@ class MenuSeeder extends Seeder
             'action_id' => 31,
             'position' => 23,
         ]);
+        DB::table('menu')->insert([
+            'name' => 'Logs',
+            'position' => 24,
+        ]);
+        DB::table('menu')->insert([
+            'name' => 'Login',
+            'action_id' => 35,
+            'position' => 25,
+            'parent_id' => 24,
+        ]);
     }
 }

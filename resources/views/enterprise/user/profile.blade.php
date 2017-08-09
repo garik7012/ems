@@ -8,7 +8,7 @@
             <div class="panel panel-default">
                 <div class="panel-heading">User panel</div>
                 <div class="panel-body">
-                    <form class="form-horizontal" method="post" action="{{config('ems.prefix') . $enterprise->namespace}}/user/profile">
+                    <form class="form-horizontal" method="post" action="{{config('ems.prefix') . $enterprise->namespace}}/Users/Settings/editUserProfile">
                         {{ csrf_field() }}
 
                         <div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
@@ -19,17 +19,11 @@
                             </div>
                         </div>
 
-                        <div class="form-group{{ $errors->has('login') ? ' has-error' : '' }}">
+                        <div class="form-group">
                             <label for="login" class="col-md-4 control-label">Login</label>
 
                             <div class="col-md-6">
-                                <input id="login" type="text" class="form-control" name="login" value="{{ old('login') ? old('login'): $user->login  }}" required autofocus>
-
-                                @if ($errors->has('login'))
-                                    <span class="help-block">
-                                        <strong>{{ $errors->first('login') }}</strong>
-                                    </span>
-                                @endif
+                                <input id="login" type="text" disabled="disabled" class="form-control" name="login" value="{{ $user->login }}" required>
                             </div>
                         </div>
 
