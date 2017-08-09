@@ -206,5 +206,21 @@ class ActionsSeeder extends Seeder
             'name' => 'show',
             'is_active' => 1,
         ]);
+        //enterprises/branch
+        DB::table('actions')->insert([
+            'controller_id' => 3,
+            'name' => 'edit',
+            'is_active' => 1,
+        ]);
+        DB::table('actions')->insert([
+            'controller_id' => 3,
+            'name' => 'activate',
+            'is_active' => 1,
+        ]);
+        DB::table('actions')->insert([
+            'controller_id' => 3,
+            'name' => 'deactivate',
+            'is_active' => 1,
+        ]);
     }
 }
