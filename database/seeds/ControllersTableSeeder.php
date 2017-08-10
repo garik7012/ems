@@ -25,11 +25,13 @@ class ControllersTableSeeder extends Seeder
             'name' => 'Branches',
             'module_id' => 2,
             'is_active' => 1,
+            'table' => 'branches'
         ]);
         DB::table('controllers')->insert([
             'name' => 'Departments',
             'module_id' => 2,
             'is_active' => 1,
+            'table' => 'departments'
         ]);
         DB::table('controllers')->insert([
             'name' => 'Positions',

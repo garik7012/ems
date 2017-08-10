@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateControllersTable extends Migration
+class CreateUsersAndControllersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,12 @@ class CreateControllersTable extends Migration
      */
     public function up()
     {
-        Schema::create('controllers', function (Blueprint $table) {
+        Schema::create('users_and_controllers', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name');
-            $table->integer('module_id');
-            $table->smallInteger('is_active')->nullable();
-            $table->string('table')->nullable();
+            $table->integer('enterprise_id');
+            $table->integer('user_id');
+            $table->integer('controller_id');
+            $table->integer('item_id');
         });
     }
 
@@ -29,6 +29,6 @@ class CreateControllersTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('controllers');
+        Schema::dropIfExists('users_and_controllers');
     }
 }
