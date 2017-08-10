@@ -25,10 +25,14 @@ class BranchesController extends Controller
         return view('branch.create');
     }
 
-    public function showList($namespace)
+    public function showList($namespace, Request $request)
     {
         $ent_id = $this->shareEnterpriseToView($namespace);
-        $branches = Branch::where('enterprise_id', $ent_id)->orderBy('is_main', 'desc')->get();
+        if ($request->has_item_id) {
+            $branches = Branch::where('enterprise_id', $ent_id)->whereIn('id', $request->has_item_id)->get();
+        } else {
+            $branches = Branch::where('enterprise_id', $ent_id)->orderBy('is_main', 'desc')->get();
+        }
         return view('branch.list', compact('branches'));
     }
 
@@ -64,7 +68,7 @@ class BranchesController extends Controller
     private function validateRequest($request)
     {
         $this->validate($request, [
-            'name' => 'required|alpha_dash',
+            'name' => 'required|string',
         ]);
     }
 

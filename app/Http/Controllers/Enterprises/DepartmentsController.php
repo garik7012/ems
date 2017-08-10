@@ -24,10 +24,14 @@ class DepartmentsController extends Controller
         return view('department.create', compact('departments'));
     }
 
-    public function showList($namespace)
+    public function showList($namespace, Request $request)
     {
         $ent_id = $this->shareEnterpriseToView($namespace);
-        $departments = Department::where('enterprise_id', $ent_id)->orderBy('id')->get();
+        if ($request->has_item_id) {
+            $departments = Department::where('enterprise_id', $ent_id)->whereIn('id', $request->has_item_id)->get();
+        } else {
+            $departments = Department::where('enterprise_id', $ent_id)->orderBy('id')->get();
+        }
         return view('department.list', compact('departments'));
     }
 

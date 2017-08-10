@@ -57,6 +57,7 @@ class ControllersTableSeeder extends Seeder
             'name' => 'Roles',
             'module_id' => 3,
             'is_active' => 1,
+            'table' => 'users'
         ]);
         DB::table('controllers')->insert([
             'name' => 'Settings',
@@ -103,6 +104,12 @@ class ControllersTableSeeder extends Seeder
         DB::table('controllers')->insert([
             'name' => 'UsersAndControllers',
             'module_id' => 3,
+            'is_active' => 1,
+        ]);
+        //Enterprises
+        DB::table('controllers')->insert([
+            'name' => 'Roles',
+            'module_id' => 2,
             'is_active' => 1,
         ]);
     }

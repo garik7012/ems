@@ -29,9 +29,10 @@ class UsersAndControllersController extends Controller
                 'users_and_controllers.id as id',
                 'users_and_controllers.item_id as item_id'
             )->get();
+
         foreach ($u_and_c as &$item) {
             if ($item->table == 'users') {
-                $item->item_name = User::getSimpleUserById($item->user_id, $ent_id);
+                $item->item_name = User::getSimpleUserById($item->item_id, $ent_id);
             } else {
                 $item->item_name = DB::table($item->table)->where("enterprise_id", $ent_id)
                     ->where('id', $item->item_id)
@@ -108,6 +109,13 @@ class UsersAndControllersController extends Controller
 
             return view('usersAndContr.create', compact('users', 'controllers'));
         }
+    }
+
+    public function delete($namespace, $id)
+    {
+        $u_a_c = UsersAndController::findOrFail($id);
+        $u_a_c->delete();
+        return back();
     }
 
     private function getController($id)

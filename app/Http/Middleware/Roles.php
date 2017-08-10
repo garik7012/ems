@@ -6,6 +6,7 @@ use App\User;
 use Closure;
 use Auth;
 use Illuminate\Support\Facades\DB;
+use App\UsersAndController;
 
 class Roles
 {
@@ -62,6 +63,29 @@ class Roles
                 ->get()->toArray();
             $this->addToPermissionPath($menu_for_all_user, $permission_paths);
             if (!in_array($current_path, $permission_paths)) {
+                //if user from users_and_controllers
+                $user_controllers = UsersAndController::where('enterprise_id', Auth::user()->enterprise_id)
+                    ->where('user_id', Auth::user()->id)
+                    ->pluck('controller_id')
+                    ->toArray();
+                if (count($user_controllers)) {
+                    $item_id = DB::table('controllers')->whereIn('controllers.id', $user_controllers)
+                        ->where('controllers.is_active', 1)
+                        ->where('controllers.name', $request->route('controller'))
+                        ->join('modules', 'modules.id', '=', 'controllers.module_id')
+                        ->where('modules.is_active', 1)
+                        ->where('modules.name', $request->route('module'))
+                        ->join('users_and_controllers', 'users_and_controllers.controller_id', '=', 'controllers.id')
+                        ->pluck('users_and_controllers.item_id')
+                        ->toArray();
+
+                    if (count($item_id) and $request->route('parametr') == null) {
+                        $request->has_item_id = $item_id;
+                        return $next($request);
+                    } elseif (count($item_id) and in_array($request->route('parametr'), $item_id)) {
+                        return $next($request);
+                    }
+                }
                 abort('403');
             }
         }

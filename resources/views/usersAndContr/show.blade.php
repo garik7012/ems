@@ -23,6 +23,7 @@
                         <td>{{$item->first_name}} {{$item->last_name}} ({{$item->login}})</td>
                         <td>{{$item->module}}.{{$item->controller}}</td>
                         @if($item->table == 'users')
+                            <td>{{$item->item_name['first_name']}} {{$item->item_name['last_name']}} ({{$item->item_name['login']}})</td>
                         @else
                             <td>{{$item->item_name}} ({{$item->item_id}})</td>
                         @endif

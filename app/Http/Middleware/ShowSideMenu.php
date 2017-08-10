@@ -8,6 +8,7 @@ use App\User;
 use \Illuminate\Support\Facades\View;
 use App\Menu;
 use Illuminate\Support\Facades\DB;
+use App\UsersAndController;
 
 class ShowSideMenu
 {
@@ -52,6 +53,10 @@ class ShowSideMenu
                 ->select('menu.id', 'menu.parent_id')
                 ->get();
             $menu_id = [];
+            //if was no roles of user we have empty array. But we need to show is_for_all_users;
+            if (!count($menu_items)) {
+                $menu_items = Menu::where('is_active', 1)->where('is_for_all_users', 1)->get();
+            }
             foreach ($menu_items as $menuItem) {
                 $menu_id[] = $menuItem->id;
                 if (!$menuItem->parent_id) {
@@ -59,13 +64,34 @@ class ShowSideMenu
                 }
                 $menu_id[] = $menuItem->parent_id;
             }
+
+            //if user from users_and_controllers
+            $user_controllers = UsersAndController::where('enterprise_id', Auth::user()->enterprise_id)
+                ->where('user_id', Auth::user()->id)
+                ->pluck('controller_id')
+                ->toArray();
+            if (count($user_controllers)) {
+                $menu_items = DB::table('controllers')->whereIn('controllers.id', $user_controllers)
+                    ->where('controllers.is_active', 1)
+                    ->join('actions', 'actions.controller_id', '=', 'controllers.id')->where('actions.is_active', 1)
+                    ->where('actions.name', 'showList')
+                    ->join('menu', 'menu.action_id', '=', 'actions.id')
+                    ->where('menu.is_active', 1)
+                    ->distinct()
+                    ->select('menu.id', 'menu.parent_id')
+                    ->get();
+                foreach ($menu_items as $menuItem) {
+                    $menu_id[] = $menuItem->id;
+                    if (!$menuItem->parent_id) {
+                        continue;
+                    }
+                    $menu_id[] = $menuItem->parent_id;
+                }
+            }
+            //get menu items
             $menu_items = Menu::whereIn('id', $menu_id)
                 ->orderBy('position')
                 ->get();
-            //if was no roles of user we have empty array. But we need to show is_for_all_users;
-            if (!count($menu_items)) {
-                $menu_items = Menu::where('is_active', 1)->where('is_for_all_users', 1)->get();
-            }
         }
 
         $this->createMenuLinks($menu_items);

@@ -61,14 +61,14 @@ class ActionsSeeder extends Seeder
             'name' => 'create',
             'is_active' => 1,
         ]);
-        //Users(enterpiseController)
+        //Enterprise/Users
         DB::table('actions')->insert([
-            'controller_id' => 14,
-            'name' => 'showUsers',
+            'controller_id' => 15,
+            'name' => 'showList',
             'is_active' => 1,
         ]);
         DB::table('actions')->insert([
-            'controller_id' => 14,
+            'controller_id' => 15,
             'name' => 'createUser',
             'is_active' => 1,
         ]);
@@ -88,11 +88,11 @@ class ActionsSeeder extends Seeder
         //roles
         DB::table('actions')->insert([
             'controller_id' => 9,
-            'name' => 'listUsersAndRoles',
+            'name' => 'showList',
             'is_active' => 1,
         ]);
         DB::table('actions')->insert([
-            'controller_id' => 9,
+            'controller_id' => 19,
             'name' => 'addNewRole',
             'is_active' => 1,
         ]);
@@ -112,17 +112,17 @@ class ActionsSeeder extends Seeder
             'is_active' => 1,
         ]);
         DB::table('actions')->insert([
-            'controller_id' => 9,
+            'controller_id' => 19,
             'name' => 'showRoles',
             'is_active' => 1,
         ]);
         DB::table('actions')->insert([
-            'controller_id' => 9,
+            'controller_id' => 19,
             'name' => 'deactivate',
             'is_active' => 1,
         ]);
         DB::table('actions')->insert([
-            'controller_id' => 9,
+            'controller_id' => 19,
             'name' => 'activate',
             'is_active' => 1,
         ]);
@@ -145,7 +145,7 @@ class ActionsSeeder extends Seeder
         ]);
         //edit role
         DB::table('actions')->insert([
-            'controller_id' => 9,
+            'controller_id' => 19,
             'name' => 'edit',
             'is_active' => 1,
         ]);
