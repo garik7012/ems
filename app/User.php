@@ -101,4 +101,28 @@ class User extends Authenticatable
             $default->save();
         }
     }
+
+    public static function getSimpleUserById($user_id, $ent_id)
+    {
+        $user = self::where('enterprise_id', $ent_id)
+            ->where('id', $user_id)
+            ->where('is_active', 1)
+            ->where('is_superadmin', 0)
+            ->select('id', 'first_name', 'last_name', 'login')
+            ->first();
+        if (!$user) {
+            abort('404');
+        }
+        return $user;
+    }
+
+    public static function getAllSimpleUsers($ent_id)
+    {
+        $users = self::where('enterprise_id', $ent_id)
+                    ->where('is_active', 1)
+                    ->where('is_superadmin', 0)
+                    ->select('id', 'first_name', 'last_name', 'login')
+                    ->get();
+        return $users;
+    }
 }
