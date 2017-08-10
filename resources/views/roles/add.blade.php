@@ -46,7 +46,7 @@
                     <div class="form-group">
                         <label for="action" class="col-md-4 control-label">Module/Controller/Action.</br> You can add several actions.</br> Just hold Ctrl button</label>
                         <div class="col-md-6">
-                            <select size="17" name="actions[]" id="action" class="form-control" multiple="" required>
+                            <select size="17" name="actions[]" id="action" class="form-control" multiple data-selected-text-format="count" required>
                                 @foreach($actions as $action)
                                     <option value="{{$action->id}}">{{$action->module}}.{{$action->controller}}.{{$action->action}}</option>
                                 @endforeach

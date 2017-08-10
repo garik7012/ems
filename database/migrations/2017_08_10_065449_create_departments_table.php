@@ -19,7 +19,7 @@ class CreateDepartmentsTable extends Migration
             $table->integer('enterprise_id');
             $table->string('name');
             $table->string('description');
-            $table->smallInteger('is_active');
+            $table->smallInteger('is_active')->default(1);
             $table->timestamps();
         });
     }
