@@ -14,7 +14,7 @@ class SettingsController extends Controller
     public function userProfile($namespace)
     {
         $this->shareEnterpriseToView($namespace);
-        return view('enterprise.user.profile', ['user'=>Auth::user()]);
+        return view('user.profile', ['user'=>Auth::user()]);
     }
 
     public function editUserProfile($namespace, Request $request)
@@ -38,28 +38,6 @@ class SettingsController extends Controller
             return redirect()->back();
         }
         return redirect()->back()->withErrors(['password' => 'wrong password']);
-    }
-
-    public function activate($n, $id)
-    {
-        $user = User::findOrFail($id);
-        if (!$user->is_superadmin or Auth::user()->is_superadmin) {
-            $user->is_active = 1;
-            $user->save();
-            return redirect()->back();
-        }
-        abort('403');
-    }
-
-    public function deactivate($n, $id)
-    {
-        $user = User::findOrFail($id);
-        if (!$user->is_superadmin or Auth::user()->is_superadmin) {
-            $user->is_active = 0;
-            $user->save();
-            return redirect()->back();
-        }
-        abort('403');
     }
 
     public function makeSuperadmin($namespace, Request $request)

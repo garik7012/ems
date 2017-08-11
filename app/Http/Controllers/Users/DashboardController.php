@@ -11,7 +11,7 @@ class DashboardController extends Controller
     public function show($namespace)
     {
         $this->shareEnterpriseToView($namespace);
-        return view('enterprise.user.dashboard');
+        return view('user.dashboard');
     }
 
 

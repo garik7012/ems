@@ -131,15 +131,15 @@ class ActionsSeeder extends Seeder
             'name' => 'createUserByAdmin',
             'is_active' => 1,
         ]);
-        //Activate user
+        //Activate user (/Enterprises/Users)
         DB::table('actions')->insert([
-            'controller_id' => 10,
+            'controller_id' => 15,
             'name' => 'activate',
             'is_active' => 1,
         ]);
-        //Deactivate user
+        //Deactivate user (/Enterprises/Users)
         DB::table('actions')->insert([
-            'controller_id' => 10,
+            'controller_id' => 15,
             'name' => 'deactivate',
             'is_active' => 1,
         ]);
@@ -163,7 +163,7 @@ class ActionsSeeder extends Seeder
         ]);
         //login as user
         DB::table('actions')->insert([
-            'controller_id' => 14,
+            'controller_id' => 15,
             'name' => 'loginAsUser',
             'is_active' => 1,
         ]);
@@ -263,6 +263,17 @@ class ActionsSeeder extends Seeder
         DB::table('actions')->insert([
             'controller_id' => 20,
             'name' => 'show',
+            'is_active' => 1,
+        ]);
+        //enterprises/users
+        DB::table('actions')->insert([
+            'controller_id' => 15,
+            'name' => 'showUserProfile',
+            'is_active' => 1,
+        ]);
+        DB::table('actions')->insert([
+            'controller_id' => 15,
+            'name' => 'changeUserProfile',
             'is_active' => 1,
         ]);
     }

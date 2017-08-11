@@ -8,7 +8,7 @@
             <div class="panel panel-default">
                 <div class="panel-heading">User panel</div>
                 <div class="panel-body">
-                    <form class="form-horizontal" method="post" action="{{config('ems.prefix') . $enterprise->namespace}}/Enterprises/Users/changeUserProfile/{{$user->id}}">
+                    <form class="form-horizontal" method="post" action="{{config('ems.prefix') . $enterprise->namespace}}/Users/Settings/editUserProfile">
                         {{ csrf_field() }}
 
                         <div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
@@ -78,6 +78,20 @@
                                 @if ($errors->has('date_born'))
                                     <span class="help-block">
                                         <strong>{{ $errors->first('date_born') }}</strong>
+                                    </span>
+                                @endif
+                            </div>
+                        </div>
+
+                        <div class="form-group{{ $errors->has('password') ? ' has-error' : '' }}">
+                            <label for="password" class="col-md-4 control-label">Your password</label>
+
+                            <div class="col-md-6">
+                                <input id="password" type="password" class="form-control" name="password" required>
+
+                                @if ($errors->has('password'))
+                                    <span class="help-block">
+                                        <strong>{{ $errors->first('password') }}</strong>
                                     </span>
                                 @endif
                             </div>

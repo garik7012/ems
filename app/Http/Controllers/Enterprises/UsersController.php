@@ -14,10 +14,14 @@ use Auth;
 
 class UsersController extends Controller
 {
-    public function showList($namespace)
+    public function showList($namespace, Request $request)
     {
         $ent_id = $this->shareEnterpriseToView($namespace);
-        $ent_users = User::where('enterprise_id', $ent_id)->orderBy('id')->paginate(5);
+        if ($request->has_item_id) {
+            $ent_users = User::where('enterprise_id', $ent_id)->whereIn('id', $request->has_item_id)->paginate(25);
+        } else {
+            $ent_users = User::where('enterprise_id', $ent_id)->orderBy('id')->paginate(25);
+        }
         return view('enterprise.user.list', compact('ent_users'));
     }
 
@@ -59,7 +63,7 @@ class UsersController extends Controller
         return view('enterprise.user.settings', compact('user', 'password_policies', 'auth_types'));
     }
 
-    public function changeUsersSettings($namespace, Request $request)
+    public function changeUsersSettings($namespace, $user_id, Request $request)
     {
         $user_enterprise_id = User::where('id', $request->user_id)->value('enterprise_id');
         $ent_id = $this->shareEnterpriseToView($namespace);
@@ -76,6 +80,53 @@ class UsersController extends Controller
             ->update(['value' => $request->auth_type_id]);
 
         return redirect()->back();
+    }
+
+    public function showUserProfile($namespace, $user_id)
+    {
+        $ent_id = $this->shareEnterpriseToView($namespace);
+        $user = User::where('id', $user_id)->where('enterprise_id', $ent_id)->firstOrFail();
+        return view('enterprise.user.profile', compact('user'));
+    }
+
+    public function changeUserProfile($namespace, $user_id, Request $request)
+    {
+        $ent_id = $this->shareEnterpriseToView($namespace);
+        $this->validate($request, [
+            'first_name' => 'required|max:50',
+            'last_name' => 'required|max:50',
+            'phone_number' => 'required|max:50',
+            'date_born' => 'required|date',
+        ]);
+        $user = User::where('id', $user_id)->where('enterprise_id', $ent_id)->firstOrFail();
+        $user->first_name = $request->first_name;
+        $user->last_name = $request->last_name;
+        $user->phone_number = $request->phone_number;
+        $user->date_born = $request->date_born;
+        $user->save();
+        return back();
+    }
+
+    public function activate($n, $id)
+    {
+        $user = User::findOrFail($id);
+        if (!$user->is_superadmin or Auth::user()->is_superadmin) {
+            $user->is_active = 1;
+            $user->save();
+            return redirect()->back();
+        }
+        abort('403');
+    }
+
+    public function deactivate($n, $id)
+    {
+        $user = User::findOrFail($id);
+        if (!$user->is_superadmin or Auth::user()->is_superadmin) {
+            $user->is_active = 0;
+            $user->save();
+            return redirect()->back();
+        }
+        abort('403');
     }
 
     private function shareEnterpriseToView($namespace)

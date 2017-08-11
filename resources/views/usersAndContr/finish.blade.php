@@ -46,7 +46,7 @@
                                     <select id="item_id" type="text" class="form-control" name="item_id" required>
                                         @if($is_users)
                                             @foreach($table_items as $item)
-                                                <option value="{{$item->id}}">{{$user->first_name}} {{$user->last_name}} ({{$user->login}})</option>
+                                                <option value="{{$item->id}}">{{$item->first_name}} {{$item->last_name}} ({{$item->login}})</option>
                                             @endforeach
                                         @else
                                             @foreach($table_items as $item)

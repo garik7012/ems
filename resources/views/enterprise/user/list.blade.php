@@ -15,6 +15,7 @@
                     <th>is superadmin</th>
                     <th>Login</th>
                     <th>Settings</th>
+                    <th>Profile</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -33,9 +34,9 @@
                                 @endif
                             @else
                                 @if($ent_user->is_active)
-                                Yes <a href="{{config('ems.prefix') . $enterprise->namespace}}/Users/Settings/deactivate/{{$ent_user->id}}" class="btn btn-danger">deactivate</a>
+                                Yes <a href="{{config('ems.prefix') . $enterprise->namespace}}/Enterprises/Users/deactivate/{{$ent_user->id}}" class="btn btn-danger">deactivate</a>
                                 @else
-                                No &nbsp; <a href="{{config('ems.prefix') . $enterprise->namespace}}/Users/Settings/activate/{{$ent_user->id}}" class="btn btn-primary">activate</a>
+                                No &nbsp; <a href="{{config('ems.prefix') . $enterprise->namespace}}/Enterprises/Users/activate/{{$ent_user->id}}" class="btn btn-primary">activate</a>
                                 @endif
                             @endif
                         </td>
@@ -62,13 +63,19 @@
                         </td>
                         <td>@if($ent_user->id == Auth::user()->id or ($ent_user->is_superadmin && !Auth::user()->is_superadmin))
                             @else
-                            <a href="{{config('ems.prefix') . $enterprise->namespace}}/Enterprises/Enterprise/loginAsUser/{{$ent_user->id}}">Login</a>
+                            <a href="{{config('ems.prefix') . $enterprise->namespace}}/Enterprises/Users/loginAsUser/{{$ent_user->id}}">Login</a>
                             @endif
                         </td>
 
                         <td>@if($ent_user->is_superadmin && !Auth::user()->is_superadmin)
                             @else
                             <a href="{{config('ems.prefix') . $enterprise->namespace}}/Enterprises/Users/showUserSettings/{{$ent_user->id}}">Change</a>
+                            @endif
+                        </td>
+                        <td>@if($ent_user->is_superadmin && !Auth::user()->is_superadmin)
+                            @else
+                                <a href="{{config('ems.prefix') . $enterprise->namespace}}/Enterprises/Users/showUserProfile/{{$ent_user->id}}"
+                                    class="btn btn-primary">Show</a>
                             @endif
                         </td>
                     </tr>

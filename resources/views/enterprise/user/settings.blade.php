@@ -8,7 +8,7 @@
             <div class="panel panel-default">
                 <div class="panel-heading">User panel</div>
                 <div class="panel-body">
-                    <form class="form-horizontal" method="post" action="{{config('ems.prefix') . $enterprise->namespace}}/Enterprises/Users/changeUsersSettings">
+                    <form class="form-horizontal" method="post" action="{{config('ems.prefix') . $enterprise->namespace}}/Enterprises/Users/changeUsersSettings/{{$user['user_id']}}">
                         {{ csrf_field() }}
 
                         <div class="form-group">
