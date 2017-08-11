@@ -13,6 +13,7 @@
                     <th>Last name</th>
                     <th>Roles</th>
                     <th>Change</th>
+                    <th>The note</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -31,6 +32,10 @@
                             @endforeach
                         </td>
                         <td><a href="{{config('ems.prefix') . $enterprise->namespace}}/Users/Roles/showRolesOfUser/{{$item['user']->id}}">Change</a></td>
+                        <td>
+                            {{in_array($item['user']->id, $supervisors_id) ? 'Supervisor; ': ''}}
+                            {{in_array($item['user']->id, $u_and_c) ? 'In users and controllers': ''}}
+                        </td>
                     </tr>
                 @endforeach
                 </tbody>

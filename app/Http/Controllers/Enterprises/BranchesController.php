@@ -69,6 +69,8 @@ class BranchesController extends Controller
     {
         $this->validate($request, [
             'name' => 'required|string',
+            'latitude' => 'required_with:longitude',
+            'longitude' => 'required_with:latitude',
         ]);
     }
 
@@ -89,6 +91,8 @@ class BranchesController extends Controller
         $branch->address_1 = $request->address_1;
         $branch->address_2 = $request->address_2;
         $branch->is_main = +$request->is_main;
+        $branch->latitude = $request->latitude;
+        $branch->longitude = $request->longitude;
         $branch->save();
         if ($branch->is_main) {
             Branch::where('is_main', 1)->where('id', '<>', $branch->id)->update(['is_main' => 0]);

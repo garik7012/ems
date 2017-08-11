@@ -11,15 +11,15 @@ class ActionsController extends Controller
 {
     public function show($namespace, Request $request)
     {
-        $orderBy = 'id';
+        $orderBy = 'created_at';
         $desc = 'desc';
-        if ($request->has('order')) {
-            $orderBy = $request->order;
-            $desc = $request->desc;
+        $page_c = 0;
+        if ($request->has('page')) {
+            $page_c = ($request->page - 1) * 50;
         }
         $ent_id = $this->shareEnterpriseToView($namespace);
         $login_stats = ActionStat::where('enterprise_id', $ent_id)->orderBy($orderBy, $desc)->paginate(50);
-        return view('logs.actionStats', compact('login_stats', 'orderBy', 'desc'));
+        return view('logs.actionStats', compact('login_stats', 'page_c'));
     }
 
     private function shareEnterpriseToView($namespace)
