@@ -58,6 +58,9 @@ class SupervisorsController extends Controller
     {
         $ent_id = $this->shareEnterpriseToView($namespace);
         if ($request->isMethod('post')) {
+            $this->validate($request, [
+                'supervisor_id' => 'required',
+            ]);
             $sup_id = $request->supervisor_id;
             $subs_id = $request->subs_id;
             if (in_array($sup_id, $subs_id)) {
@@ -67,8 +70,7 @@ class SupervisorsController extends Controller
                 User::whereIn('id', $subs_id)->update(['parent_id' => $sup_id]);
                 return back();
             }
-            dd(1);
-            return back();
+            return back()->withErrors(['subs_id' => 'Select subordinates. You cannot be your own supervisor']);
         }
         $supervisors_id = User::where('parent_id', '>', 0)
             ->where('is_active', 1)
