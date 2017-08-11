@@ -112,5 +112,11 @@ class ControllersTableSeeder extends Seeder
             'module_id' => 2,
             'is_active' => 1,
         ]);
+        //Logs
+        DB::table('controllers')->insert([
+            'name' => 'Actions',
+            'module_id' => 5,
+            'is_active' => 1,
+        ]);
     }
 }

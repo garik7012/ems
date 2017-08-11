@@ -34,7 +34,8 @@ Route::group(['prefix' => config('ems.prefix') . "{namespace}"], function () {
         Route::post('/confirm/code', 'Security\AuthorizationController@checkConfirmCode');
     });
 
-    //check is user belong to this enterprise, is user active, share menu according to role
+    //check is user belong to this enterprise, is user active,
+    // share menu according to roles, supervisors, users_and_controllers
     Route::group(['middleware' => ['belong', 'is.active', 'menu']], function () {
         Route::get('/', 'Enterprises\EnterpriseController@showEnterprise')->middleware('pwd.change');
         Route::get('/user/changePassword', 'Security\RegistrationController@showChangePasswordForm');
@@ -46,6 +47,7 @@ Route::group(['prefix' => config('ems.prefix') . "{namespace}"], function () {
         Route::post('/user/depriveSuperadmin', 'Users\SettingsController@depriveSuperadmin')->middleware('is.admin');
 
     //call module\controller->action according to route /{module}/{controller}/{action}
-        Route::any('/{module}/{controller}/{action}/{parametr?}', 'CoreController@callActionUrl')->middleware(['roles', 'pwd.change']);
+        Route::any('/{module}/{controller}/{action}/{parametr?}', 'CoreController@callActionUrl')
+            ->middleware(['roles', 'pwd.change', 'log']);
     });
 });

@@ -2,7 +2,6 @@
 
 namespace App\Http;
 
-use App\Http\Middleware\CheckPasswordChange;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel
@@ -62,6 +61,7 @@ class Kernel extends HttpKernel
         'is.active' => \App\Http\Middleware\CheckIsUserActive::class,
         'menu' =>  \App\Http\Middleware\ShowSideMenu::class,
         'roles' => \App\Http\Middleware\Roles::class,
-        'pwd.change' => CheckPasswordChange::class,
+        'pwd.change' => \App\Http\Middleware\CheckPasswordChange::class,
+        'log' => \App\Http\Middleware\ActionsLog::class,
     ];
 }

@@ -259,5 +259,11 @@ class ActionsSeeder extends Seeder
             'name' => 'edit',
             'is_active' => 1,
         ]);
+        //logs/actions
+        DB::table('actions')->insert([
+            'controller_id' => 20,
+            'name' => 'show',
+            'is_active' => 1,
+        ]);
     }
 }
