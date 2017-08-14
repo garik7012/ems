@@ -44,15 +44,13 @@
 
                                 <div class="col-md-6">
                                     <select id="item_id" type="text" class="form-control" name="item_id" required>
-                                        @if($is_users)
-                                            @foreach($table_items as $item)
-                                                <option value="{{$item->id}}">{{$item->first_name}} {{$item->last_name}} ({{$item->login}})</option>
-                                            @endforeach
-                                        @else
-                                            @foreach($table_items as $item)
-                                                <option value="{{$item->id}}">{{$item->name}}</option>
-                                            @endforeach
-                                        @endif
+                                        @foreach($table_items as $item)
+                                            <option value="{{$item->id}}">
+                                                @foreach($fields as $field)
+                                                {{$field . ':' . $item->$field}};
+                                                @endforeach
+                                            </option>
+                                        @endforeach
                                     </select>
                                     @if ($errors->has('item_id'))
                                         <span class="help-block">

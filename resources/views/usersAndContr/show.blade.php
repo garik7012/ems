@@ -22,11 +22,12 @@
                         <td>{{$item->id}}</td>
                         <td>{{$item->first_name}} {{$item->last_name}} ({{$item->login}})</td>
                         <td>{{$item->module}}.{{$item->controller}}</td>
-                        @if($item->table == 'users')
-                            <td>{{$item->item_name['first_name']}} {{$item->item_name['last_name']}} ({{$item->item_name['login']}})</td>
-                        @else
-                            <td>{{$item->item_name}} ({{$item->item_id}})</td>
-                        @endif
+                        <td>
+                        @foreach($item->fields as $field)
+                            {{$field . ':' . $item->item_name[0]->$field}};
+                        @endforeach
+                        </td>
+
                         <td>
                             <a href="{{config('ems.prefix') . $enterprise->namespace}}/Users/UsersAndControllers/delete/{{$item->id}}" class="btn btn-danger">Delete</a>
                         </td>

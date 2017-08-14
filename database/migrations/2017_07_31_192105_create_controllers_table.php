@@ -19,6 +19,7 @@ class CreateControllersTable extends Migration
             $table->integer('module_id');
             $table->smallInteger('is_active')->nullable();
             $table->string('table')->nullable();
+            $table->string('fields')->nullable();
         });
     }
 

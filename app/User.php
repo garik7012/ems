@@ -116,12 +116,12 @@ class User extends Authenticatable
         return $user;
     }
 
-    public static function getAllSimpleUsers($ent_id)
+    public static function getAllSimpleUsers($ent_id, $fields = ['id', 'first_name', 'last_name', 'login'])
     {
         $users = self::where('enterprise_id', $ent_id)
                     ->where('is_active', 1)
                     ->where('is_superadmin', 0)
-                    ->select('id', 'first_name', 'last_name', 'login')
+                    ->select($fields)
                     ->get();
         return $users;
     }

@@ -25,13 +25,15 @@ class ControllersTableSeeder extends Seeder
             'name' => 'Branches',
             'module_id' => 2,
             'is_active' => 1,
-            'table' => 'branches'
+            'table' => 'branches',
+            'fields' => 'id, name'
         ]);
         DB::table('controllers')->insert([
             'name' => 'Departments',
             'module_id' => 2,
             'is_active' => 1,
-            'table' => 'departments'
+            'table' => 'departments',
+            'fields' => 'id, name'
         ]);
         DB::table('controllers')->insert([
             'name' => 'Positions',
@@ -57,7 +59,8 @@ class ControllersTableSeeder extends Seeder
             'name' => 'Roles',
             'module_id' => 3,
             'is_active' => 1,
-            'table' => 'users'
+            'table' => 'users',
+            'fields' => 'id, first_name, last_name, login'
         ]);
         DB::table('controllers')->insert([
             'name' => 'Settings',
@@ -90,6 +93,7 @@ class ControllersTableSeeder extends Seeder
             'module_id' => 2,
             'is_active' => 1,
             'table' => 'users',
+            'fields' => 'id, first_name, last_name, login'
         ]);
         DB::table('controllers')->insert([
             'name' => 'Supervisors',

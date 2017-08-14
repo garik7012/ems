@@ -8,8 +8,8 @@
                 <thead>
                 <tr>
                     <th>#<span></span></th>
-                    <th>User_id<span></span></th>
-                    <th>Action_id<span></span></th>
+                    <th>User<span></span></th>
+                    <th>Action<span></span></th>
                     <th>Data<span></span></th>
                     <th>User Agent<span></span></th>
                     <th>IP<span></span></th>
@@ -20,8 +20,8 @@
                 @foreach($login_stats as $login_stat)
                     <tr>
                         <td>{{$loop->iteration + $page_c}}</td>
-                        <td>{{$login_stat->user_id}}</td>
-                        <td>{{$login_stat->action_id}}</td>
+                        <td>{{$users[$login_stat->user_id]}}</td>
+                        <td>{{$actions[$login_stat->action_id]}}</td>
                         <td class="text_review" style="word-break: break-all;">{{base64_decode($login_stat->data)}}</td>
                         <td class="text_review">{{base64_decode($login_stat->user_agent)}}</td>
                         <td>{{$login_stat->ip}}</td>

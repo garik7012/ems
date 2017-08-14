@@ -45,12 +45,10 @@
                                 <div class="col-md-6">
                                     <select id="item_id" type="text" class="form-control" name="item_id" required>
                                         @foreach($table_items as $item)
-                                            <option value="{{$item->id}}" {{$item->id == $current_item_id ? 'selected': ''}}>
-                                                @if($controller->table == 'users')
-                                                    {{$item->first_name}} {{$item->last_name}} ({{$item->login}})
-                                                @else
-                                                    {{$item->name}}
-                                                @endif
+                                            <option value="{{$item->id}}">
+                                                @foreach($fields as $field)
+                                                    {{$field . ':' . $item->$field}};
+                                                @endforeach
                                             </option>
                                         @endforeach
                                     </select>
