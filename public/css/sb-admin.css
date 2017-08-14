@@ -170,6 +170,9 @@ label .text_normal {
 .user-not-active {
     color: red;
 }
-
+.read_more {
+    color: blue;
+    cursor: pointer;
+}
 
 

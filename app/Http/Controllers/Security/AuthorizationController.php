@@ -67,7 +67,7 @@ class AuthorizationController extends Controller
         $logs->is_ok = 0;
         $logs->login = $request->login;
         $logs->ip = $request->ip();
-        $logs->user_agent = $request->header('User-Agent');
+        $logs->user_agent = base64_encode($request->header('User-Agent'));
         $logs->created_at = date('Y-m-d H:i:s');
         $logs->save();
 

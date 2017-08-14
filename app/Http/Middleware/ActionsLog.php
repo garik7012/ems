@@ -31,8 +31,8 @@ class ActionsLog
         $log->enterprise_id = $ent_id;
         $log->user_id = Auth::user()->id;
         $log->action_id = $action_id;
-        $log->data = json_encode(Input::all());
-        $log->user_agent = $request->header('User-Agent');
+        $log->data = base64_encode(json_encode(Input::all()));
+        $log->user_agent = base64_encode($request->header('User-Agent'));
         $log->ip = $request->ip();
         $log->created_at = date('Y-m-d H:i:s');
         $log->save();

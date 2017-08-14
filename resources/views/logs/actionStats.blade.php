@@ -22,8 +22,8 @@
                         <td>{{$loop->iteration + $page_c}}</td>
                         <td>{{$login_stat->user_id}}</td>
                         <td>{{$login_stat->action_id}}</td>
-                        <td style="word-break: break-all;">{{$login_stat->data}}</td>
-                        <td>{{$login_stat->user_agent}}</td>
+                        <td class="text_review" style="word-break: break-all;">{{base64_decode($login_stat->data)}}</td>
+                        <td class="text_review">{{base64_decode($login_stat->user_agent)}}</td>
                         <td>{{$login_stat->ip}}</td>
                         <td>{{$login_stat->created_at}}</td>
                     </tr>
@@ -35,4 +35,20 @@
     <div class="show-pagination">
         {{$login_stats->render()}}
     </div>
+@endsection
+@section('script')
+    <script>
+        jQuery(".text_review").each(function(){
+            var review_full = jQuery(this).html();
+            var review = review_full;
+            if( review.length > 255 ) {
+                review = review.substring(0, 255);
+                jQuery(this).html( review + '<div class="read_more"> more...</div>' );
+            }
+            jQuery(this).append('<div class="full_text" style="display: none;">' + review_full + '</div>');
+        });
+        jQuery(".read_more").click(function(){
+            jQuery(this).parent().html( jQuery(this).parent().find(".full_text").html() );
+        });
+    </script>
 @endsection
