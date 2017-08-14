@@ -322,5 +322,11 @@ class ActionsSeeder extends Seeder
             'name' => 'editUsersDepartment',
             'is_active' => 1,
         ]);
+        //Users/Positions
+        DB::table('actions')->insert([
+            'controller_id' => 22,
+            'name' => 'editUsersPositions',
+            'is_active' => 1,
+        ]);
     }
 }
