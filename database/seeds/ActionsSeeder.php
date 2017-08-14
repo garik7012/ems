@@ -292,5 +292,35 @@ class ActionsSeeder extends Seeder
             'name' => 'edit',
             'is_active' => 1,
         ]);
+        //Users/Departments
+        DB::table('actions')->insert([
+            'controller_id' => 21,
+            'name' => 'showList',
+            'is_active' => 1,
+        ]);
+        //Users/Positions
+        DB::table('actions')->insert([
+            'controller_id' => 22,
+            'name' => 'showList',
+            'is_active' => 1,
+        ]);
+        //Users/Branches
+        DB::table('actions')->insert([
+            'controller_id' => 23,
+            'name' => 'showList',
+            'is_active' => 1,
+        ]);
+        //Users/Branches
+        DB::table('actions')->insert([
+            'controller_id' => 23,
+            'name' => 'editUsersBranch',
+            'is_active' => 1,
+        ]);
+        //Users/Department
+        DB::table('actions')->insert([
+            'controller_id' => 21,
+            'name' => 'editUsersDepartment',
+            'is_active' => 1,
+        ]);
     }
 }

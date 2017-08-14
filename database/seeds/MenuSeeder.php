@@ -174,5 +174,29 @@ class MenuSeeder extends Seeder
             'action_id' => 42,
             'position' => 27,
         ]);
+        //users/departments
+        DB::table('menu')->insert([
+            'name' => 'Users and departments',
+            'parent_id' => 5,
+            'action_id' => 52,
+            'position' => 28,
+            'is_active' => 1,
+        ]);
+        //users/positions
+        DB::table('menu')->insert([
+            'name' => 'Users and positions',
+            'parent_id' => 11,
+            'action_id' => 53,
+            'position' => 29,
+            'is_active' => 1,
+        ]);
+        //users/branches
+        DB::table('menu')->insert([
+            'name' => 'Users and branches',
+            'parent_id' => 2,
+            'action_id' => 54,
+            'position' => 30,
+            'is_active' => 1,
+        ]);
     }
 }
