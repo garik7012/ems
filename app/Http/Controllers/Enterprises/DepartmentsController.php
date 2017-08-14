@@ -16,8 +16,8 @@ class DepartmentsController extends Controller
         $ent_id = $this->shareEnterpriseToView($namespace);
         if ($request->isMethod('post')) {
             $this->validateRequest($request);
-            $branch = new Department();
-            $this->saveDepartment($branch, $request, $ent_id);
+            $department = new Department();
+            $this->saveDepartment($department, $request, $ent_id);
             return redirect()->back();
         }
         $departments= Department::where('enterprise_id', $ent_id)->where('is_active', 1)->get();

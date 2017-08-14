@@ -276,5 +276,21 @@ class ActionsSeeder extends Seeder
             'name' => 'changeUserProfile',
             'is_active' => 1,
         ]);
+        //Enterprises/Positions
+        DB::table('actions')->insert([
+            'controller_id' => 5,
+            'name' => 'activate',
+            'is_active' => 1,
+        ]);
+        DB::table('actions')->insert([
+            'controller_id' => 5,
+            'name' => 'deactivate',
+            'is_active' => 1,
+        ]);
+        DB::table('actions')->insert([
+            'controller_id' => 5,
+            'name' => 'edit',
+            'is_active' => 1,
+        ]);
     }
 }
