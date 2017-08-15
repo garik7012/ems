@@ -11,6 +11,9 @@ class Enterprise extends Model
     public static function shareEnterpriseToView($namespace)
     {
         $enterprise = Enterprise::where('namespace', $namespace)->firstOrFail();
+        if ($enterprise->parent_id) {
+            $enterprise->parent_name = self::where('id', $enterprise->parent_id)->value('name');
+        }
         view()->share('enterprise', $enterprise);
         return $enterprise->id;
     }

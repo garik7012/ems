@@ -45,7 +45,13 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
+            @if($enterprise->parent_id)
+                <a class="navbar-brand" href="{{config('ems.prefix') . $enterprise->namespace}}">EMS <i class="fa fa-long-arrow-right" aria-hidden="true"></i>
+                    {{$enterprise->parent_name}} <i class="fa fa-long-arrow-right" aria-hidden="true"></i>
+                    {{$enterprise->name}}</a>
+            @else
             <a class="navbar-brand" href="{{config('ems.prefix') . $enterprise->namespace}}">Enterprise management system <i class="fa fa-long-arrow-right" aria-hidden="true"></i> {{$enterprise->name}}</a>
+            @endif
         </div>
         <!-- Top Menu Items -->
         @include('layouts.topMenu')
