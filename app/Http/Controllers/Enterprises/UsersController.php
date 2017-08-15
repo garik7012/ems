@@ -16,7 +16,7 @@ class UsersController extends Controller
 {
     public function showList($namespace, Request $request)
     {
-        $ent_id = $this->shareEnterpriseToView($namespace);
+        $ent_id = Enterprise::shareEnterpriseToView($namespace);
         if ($request->has_item_id) {
             $ent_users = User::where('enterprise_id', $ent_id)->whereIn('id', $request->has_item_id)->paginate(25);
         } else {
@@ -27,7 +27,7 @@ class UsersController extends Controller
 
     public function createUser($namespace)
     {
-        $this->shareEnterpriseToView($namespace);
+        Enterprise::shareEnterpriseToView($namespace);
         return view('enterprise.user.create');
     }
 
@@ -59,14 +59,14 @@ class UsersController extends Controller
 
         $password_policies = PasswordPolicy::all();
         $auth_types = AuthType::all();
-        $this->shareEnterpriseToView($namespace);
+        Enterprise::shareEnterpriseToView($namespace);
         return view('enterprise.user.settings', compact('user', 'password_policies', 'auth_types'));
     }
 
     public function changeUsersSettings($namespace, $user_id, Request $request)
     {
         $user_enterprise_id = User::where('id', $request->user_id)->value('enterprise_id');
-        $ent_id = $this->shareEnterpriseToView($namespace);
+        $ent_id = Enterprise::shareEnterpriseToView($namespace);
         if ($user_enterprise_id != $ent_id) {
             abort('403');
         }
@@ -84,14 +84,14 @@ class UsersController extends Controller
 
     public function showUserProfile($namespace, $user_id)
     {
-        $ent_id = $this->shareEnterpriseToView($namespace);
+        $ent_id = Enterprise::shareEnterpriseToView($namespace);
         $user = User::where('id', $user_id)->where('enterprise_id', $ent_id)->firstOrFail();
         return view('enterprise.user.profile', compact('user'));
     }
 
     public function changeUserProfile($namespace, $user_id, Request $request)
     {
-        $ent_id = $this->shareEnterpriseToView($namespace);
+        $ent_id = Enterprise::shareEnterpriseToView($namespace);
         $this->validate($request, [
             'first_name' => 'required|max:50',
             'last_name' => 'required|max:50',
@@ -127,12 +127,5 @@ class UsersController extends Controller
             return redirect()->back();
         }
         abort('403');
-    }
-
-    private function shareEnterpriseToView($namespace)
-    {
-        $enterprise = Enterprise::where('namespace', $namespace)->firstOrFail();
-        view()->share('enterprise', $enterprise);
-        return $enterprise->id;
     }
 }

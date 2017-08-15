@@ -14,7 +14,7 @@ class PositionsController extends Controller
 {
     public function showList($namespace)
     {
-        $ent_id = $this->shareEnterpriseToView($namespace);
+        $ent_id = Enterprise::shareEnterpriseToView($namespace);
         $users_and_positions_raw = DB::table('users')->where('users.enterprise_id', $ent_id)
             ->where('users.is_active', 1)
             ->leftJoin('users_and_positions', 'users_and_positions.user_id', '=', 'users.id')
@@ -34,7 +34,7 @@ class PositionsController extends Controller
 
     public function editUsersPositions($namespace, $user_id, Request $request)
     {
-        $ent_id = $this->shareEnterpriseToView($namespace);
+        $ent_id = Enterprise::shareEnterpriseToView($namespace);
         $user = User::where('id', $user_id)->where('enterprise_id', $ent_id)->firstOrFail();
         if ($request->isMethod('post')) {
             if ($request->positions_id) {
@@ -56,12 +56,5 @@ class PositionsController extends Controller
             ->where('user_id', $user->id)
             ->pluck('position_id')->toArray();
         return view('position.user', compact('user', 'positions', 'user_positions'));
-    }
-
-    private function shareEnterpriseToView($namespace)
-    {
-        $enterprise = Enterprise::where('namespace', $namespace)->firstOrFail();
-        view()->share('enterprise', $enterprise);
-        return $enterprise->id;
     }
 }

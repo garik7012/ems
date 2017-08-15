@@ -328,5 +328,26 @@ class ActionsSeeder extends Seeder
             'name' => 'editUsersPositions',
             'is_active' => 1,
         ]);
+        //External Organizations
+        DB::table('actions')->insert([
+            'controller_id' => 7,
+            'name' => 'edit',
+            'is_active' => 1,
+        ]);
+        DB::table('actions')->insert([
+            'controller_id' => 7,
+            'name' => 'activate',
+            'is_active' => 1,
+        ]);
+        DB::table('actions')->insert([
+            'controller_id' => 7,
+            'name' => 'deactivate',
+            'is_active' => 1,
+        ]);
+        DB::table('actions')->insert([
+            'controller_id' => 7,
+            'name' => 'addUser',
+            'is_active' => 1,
+        ]);
     }
 }

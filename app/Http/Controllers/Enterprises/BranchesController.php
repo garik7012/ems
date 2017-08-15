@@ -14,7 +14,7 @@ class BranchesController extends Controller
 
     public function create($namespace, Request $request)
     {
-        $ent_id = $this->shareEnterpriseToView($namespace);
+        $ent_id = Enterprise::shareEnterpriseToView($namespace);
         if ($request->isMethod('post')) {
             $this->validateRequest($request);
             $branch = new Branch();
@@ -27,7 +27,7 @@ class BranchesController extends Controller
 
     public function showList($namespace, Request $request)
     {
-        $ent_id = $this->shareEnterpriseToView($namespace);
+        $ent_id = Enterprise::shareEnterpriseToView($namespace);
         if ($request->has_item_id) {
             $branches = Branch::where('enterprise_id', $ent_id)->whereIn('id', $request->has_item_id)->get();
         } else {
@@ -38,7 +38,7 @@ class BranchesController extends Controller
 
     public function edit($namespace, $id, Request $request)
     {
-        $ent_id = $this->shareEnterpriseToView($namespace);
+        $ent_id = Enterprise::shareEnterpriseToView($namespace);
         $branch = Branch::where('id', $id)->where('enterprise_id', $ent_id)->firstOrFail();
         if ($request->isMethod('post')) {
             $this->validateRequest($request);
@@ -49,7 +49,7 @@ class BranchesController extends Controller
 
     public function activate($namespace, $id)
     {
-        $ent_id = $this->shareEnterpriseToView($namespace);
+        $ent_id = Enterprise::shareEnterpriseToView($namespace);
         $branch = Branch::where('id', $id)->where('enterprise_id', $ent_id)->where('is_active', 0)->firstOrFail();
         $branch->is_active = 1;
         $branch->save();
@@ -58,7 +58,7 @@ class BranchesController extends Controller
 
     public function deactivate($namespace, $id)
     {
-        $ent_id = $this->shareEnterpriseToView($namespace);
+        $ent_id = Enterprise::shareEnterpriseToView($namespace);
         $branch = Branch::where('id', $id)->where('enterprise_id', $ent_id)->where('is_active', 1)->firstOrFail();
         $branch->is_active = 0;
         $branch->save();
@@ -72,13 +72,6 @@ class BranchesController extends Controller
             'latitude' => 'required_with:longitude',
             'longitude' => 'required_with:latitude',
         ]);
-    }
-
-    private function shareEnterpriseToView($namespace)
-    {
-        $enterprise = Enterprise::where('namespace', $namespace)->firstOrFail();
-        view()->share('enterprise', $enterprise);
-        return $enterprise->id;
     }
 
     private function saveBranch(&$branch, $request, $ent_id)

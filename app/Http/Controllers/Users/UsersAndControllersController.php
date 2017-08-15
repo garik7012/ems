@@ -13,7 +13,7 @@ class UsersAndControllersController extends Controller
 {
     public function showList($namespace)
     {
-        $ent_id = $this->shareEnterpriseToView($namespace);
+        $ent_id = Enterprise::shareEnterpriseToView($namespace);
         $u_and_c = DB::table('users_and_controllers')
             ->where('users_and_controllers.enterprise_id', $ent_id)
             ->join('users', 'users.id', '=', 'users_and_controllers.user_id')
@@ -48,7 +48,7 @@ class UsersAndControllersController extends Controller
 
     public function edit($namespace, $id, Request $request)
     {
-        $ent_id = $this->shareEnterpriseToView($namespace);
+        $ent_id = Enterprise::shareEnterpriseToView($namespace);
         $user_and_c = UsersAndController::where('enterprise_id', $ent_id)->where('id', $id)->first();
         $current_item_id = $user_and_c->item_id;
         $user = User::getSimpleUserById($user_and_c->user_id, $ent_id);
@@ -73,7 +73,7 @@ class UsersAndControllersController extends Controller
 
     public function create($namespace, Request $request)
     {
-        $ent_id = $this->shareEnterpriseToView($namespace);
+        $ent_id = Enterprise::shareEnterpriseToView($namespace);
         if ($request->isMethod('post')) {
             $user = User::getSimpleUserById($request->user_id, $ent_id);
             $controller = $this->getController($request->controller_id);
@@ -138,12 +138,5 @@ class UsersAndControllersController extends Controller
             )
             ->first();
         return $controller;
-    }
-
-    private function shareEnterpriseToView($namespace)
-    {
-        $enterprise = Enterprise::where('namespace', $namespace)->firstOrFail();
-        view()->share('enterprise', $enterprise);
-        return $enterprise->id;
     }
 }

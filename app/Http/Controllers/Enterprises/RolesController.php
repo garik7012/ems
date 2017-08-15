@@ -14,7 +14,7 @@ class RolesController extends Controller
 {
     public function showRoles($namespace)
     {
-        $ent_id = $this->shareEnterpriseToView($namespace);
+        $ent_id = Enterprise::shareEnterpriseToView($namespace);
         $roles = Role::all();
         foreach ($roles as &$role) {
             $action_ids = RolesAndActions::where('role_id', $role->id)
@@ -40,7 +40,7 @@ class RolesController extends Controller
     {
         //save new role
         if ($request->isMethod('post')) {
-            $ent_id = $this->shareEnterpriseToView($namespace);
+            $ent_id = Enterprise::shareEnterpriseToView($namespace);
             $role = new Role;
             $role->name = $request->name;
             $role->description = $request->description;
@@ -66,7 +66,7 @@ class RolesController extends Controller
 
         //show creation form;
         $actions = $this->getActionsIdAndFullPath();
-        $this->shareEnterpriseToView($namespace);
+        Enterprise::shareEnterpriseToView($namespace);
         return view('roles.add', compact("actions"));
     }
 
@@ -90,7 +90,7 @@ class RolesController extends Controller
     {
         //edit role
         if ($request->isMethod('post')) {
-            $ent_id = $this->shareEnterpriseToView($namespace);
+            $ent_id = Enterprise::shareEnterpriseToView($namespace);
             $role = Role::where('enterprise_id', $ent_id)->where('id', $role_id)->firstOrFail();
             $role->name = $request->name;
             $role->description = $request->description;
@@ -106,7 +106,7 @@ class RolesController extends Controller
             }
             return redirect()->back();
         }
-        $ent_id = $this->shareEnterpriseToView($namespace);
+        $ent_id = Enterprise::shareEnterpriseToView($namespace);
         $role = Role::findOrFail($role_id);
         if ($role->enterprise_id != $ent_id) {
             abort('404');
@@ -124,13 +124,6 @@ class RolesController extends Controller
         }
         $actions = $this->getActionsIdAndFullPath();
         return view('roles.edit', compact('role', 'actions', 'role_actions'));
-    }
-
-    private function shareEnterpriseToView($namespace)
-    {
-        $enterprise = Enterprise::where('namespace', $namespace)->firstOrFail();
-        view()->share('enterprise', $enterprise);
-        return $enterprise->id;
     }
 
     private function getActionsIdAndFullPath()

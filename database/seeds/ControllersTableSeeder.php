@@ -46,7 +46,7 @@ class ControllersTableSeeder extends Seeder
             'is_active' => 1,
         ]);
         DB::table('controllers')->insert([
-            'name' => 'Externalorganisations',
+            'name' => 'ExternalOrganizations',
             'module_id' => 2,
             'is_active' => 1,
         ]);

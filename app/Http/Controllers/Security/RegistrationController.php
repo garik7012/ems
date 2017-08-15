@@ -15,7 +15,14 @@ class RegistrationController extends Controller
 {
     public function createUserByAdmin($namespace, Request $request)
     {
-        $ent_id = $this->shareEnterpriseToView($namespace);
+        $ent_id = Enterprise::shareEnterpriseToView($namespace);
+        if ($request->has('external_id')) {
+            $ext = Enterprise::where('parent_id', $ent_id)
+                ->where('id', $request->external_id)
+                ->firstOrFail();
+            $ent_id = $ext->id;
+            $namespace = $ext->namespace;
+        }
         $this->validate($request, [
             'email' => 'unique:users',
             'login' => 'unique:users',
@@ -48,7 +55,7 @@ class RegistrationController extends Controller
                 ->where('key', 'is_email_confirmed')
                 ->update(['value' => 1]);
             $password_policy = $this->getPasswordPolicy($user);
-            $this->shareEnterpriseToView($namespace);
+            Enterprise::shareEnterpriseToView($namespace);
             return view('enterprise.user.confirmed', compact('user', 'password_policy', 'pass'));
         }
         abort('404');
@@ -102,7 +109,7 @@ class RegistrationController extends Controller
 
     public function showChangePasswordForm($namespace)
     {
-        $this->shareEnterpriseToView($namespace);
+        Enterprise::shareEnterpriseToView($namespace);
         $password_policy = $this->getPasswordPolicy(Auth::user());
         return view('security.changePassword', compact('password_policy'));
     }
@@ -124,17 +131,10 @@ class RegistrationController extends Controller
                 ->update(['value' => strtotime('now')]);
 
             $request->session()->forget('password_need_to_change');
-            $this->shareEnterpriseToView($namespace);
+            Enterprise::shareEnterpriseToView($namespace);
             return redirect(config('ems.prefix') . "{$namespace}/");
         }
         return redirect()->back()->withErrors(['old_password' => 'wrong password']);
-    }
-
-    private function shareEnterpriseToView($namespace)
-    {
-        $enterprise = Enterprise::where('namespace', $namespace)->firstOrFail();
-        view()->share('enterprise', $enterprise);
-        return $enterprise->id;
     }
 
     private function getPasswordPolicy($user)

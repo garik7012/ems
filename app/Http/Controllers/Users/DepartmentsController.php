@@ -13,7 +13,7 @@ class DepartmentsController extends Controller
 {
     public function showList($namespace)
     {
-        $ent_id = $this->shareEnterpriseToView($namespace);
+        $ent_id = Enterprise::shareEnterpriseToView($namespace);
         $users_and_departments = DB::table('users')->where('users.enterprise_id', $ent_id)
             ->where('users.is_active', 1)
             ->leftJoin('departments', 'departments.id', '=', 'users.department_id')
@@ -30,7 +30,7 @@ class DepartmentsController extends Controller
 
     public function editUsersDepartment($namespace, $user_id, Request $request)
     {
-        $ent_id = $this->shareEnterpriseToView($namespace);
+        $ent_id = Enterprise::shareEnterpriseToView($namespace);
         $user = User::where('id', $user_id)->where('enterprise_id', $ent_id)->firstOrFail();
         if ($request->isMethod('post')) {
             $department = $request->department_id;
@@ -43,12 +43,5 @@ class DepartmentsController extends Controller
         }
         $departments = Department::where('is_active', 1)->where('enterprise_id', $ent_id)->get();
         return view('department.user', compact('departments', 'user'));
-    }
-
-    private function shareEnterpriseToView($namespace)
-    {
-        $enterprise = Enterprise::where('namespace', $namespace)->firstOrFail();
-        view()->share('enterprise', $enterprise);
-        return $enterprise->id;
     }
 }

@@ -3,6 +3,9 @@
         @if (Auth::check() && Session::has('auth_from_admin_asd'))
             <li><a href = "{{config('ems.prefix') . $enterprise->namespace}}/user/list/gback">Go back to my profile</a></li>
         @endif
+        @if (Auth::check() && Session::has('old_adm_namespace'))
+            <li><a href = "{{config('ems.prefix') . session('old_adm_namespace')}}/">Go back to my organization</a></li>
+        @endif
         <li><a>{{Auth::user()->is_superadmin ? 'You are SuperAdmin!': ''}}</a></li>
         <li class="dropdown">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown" title="{{Auth::user()->is_active? '': 'this user is not active'}}">

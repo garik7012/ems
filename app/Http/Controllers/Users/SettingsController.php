@@ -13,13 +13,13 @@ class SettingsController extends Controller
 {
     public function userProfile($namespace)
     {
-        $this->shareEnterpriseToView($namespace);
+        Enterprise::shareEnterpriseToView($namespace);
         return view('user.profile', ['user'=>Auth::user()]);
     }
 
     public function editUserProfile($namespace, Request $request)
     {
-        $this->shareEnterpriseToView($namespace);
+        Enterprise::shareEnterpriseToView($namespace);
         $this->validate($request, [
             'first_name' => 'required|max:50',
             'last_name' => 'required|max:50',
@@ -42,7 +42,7 @@ class SettingsController extends Controller
 
     public function makeSuperadmin($namespace, Request $request)
     {
-        $ent_id = $this->shareEnterpriseToView($namespace);
+        $ent_id = Enterprise::shareEnterpriseToView($namespace);
         $user = User::where('id', $request->user_id)->where('enterprise_id', $ent_id)->firstOrFail();
         $user->is_superadmin = 1;
         $user->save();
@@ -52,18 +52,11 @@ class SettingsController extends Controller
     public function depriveSuperadmin($namespace, Request $request)
     {
         if (Auth::user()->id != $request->user_id) {
-            $ent_id = $this->shareEnterpriseToView($namespace);
+            $ent_id = Enterprise::shareEnterpriseToView($namespace);
             $user = User::where('id', $request->user_id)->where('enterprise_id', $ent_id)->firstOrFail();
             $user->is_superadmin = 0;
             $user->save();
         }
         return redirect()->back();
-    }
-
-    private function shareEnterpriseToView($namespace)
-    {
-        $enterprise = Enterprise::where('namespace', $namespace)->firstOrFail();
-        view()->share('enterprise', $enterprise);
-        return $enterprise->id;
     }
 }

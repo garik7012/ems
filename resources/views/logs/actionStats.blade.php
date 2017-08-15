@@ -17,11 +17,12 @@
                 </tr>
                 </thead>
                 <tbody>
+
                 @foreach($login_stats as $login_stat)
                     <tr>
                         <td>{{$loop->iteration + $page_c}}</td>
                         <td>{{$users[$login_stat->user_id]}}</td>
-                        <td>{{$actions[$login_stat->action_id]}}</td>
+                        <td>{{@$actions[$login_stat->action_id]}}</td>
                         <td class="text_review" style="word-break: break-all;">{{base64_decode($login_stat->data)}}</td>
                         <td class="text_review">{{base64_decode($login_stat->user_agent)}}</td>
                         <td>{{$login_stat->ip}}</td>

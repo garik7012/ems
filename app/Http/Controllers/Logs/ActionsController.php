@@ -18,7 +18,7 @@ class ActionsController extends Controller
         if ($request->has('page')) {
             $page_c = ($request->page - 1) * 50;
         }
-        $ent_id = $this->shareEnterpriseToView($namespace);
+        $ent_id = Enterprise::shareEnterpriseToView($namespace);
         $login_stats = ActionStat::where('enterprise_id', $ent_id)->orderBy($orderBy, $desc)->paginate(50);
         $actions_raw = DB::table('actions')->where('actions.is_active', 1)
             ->join('controllers', 'controllers.id', '=', 'actions.controller_id')
@@ -36,12 +36,5 @@ class ActionsController extends Controller
         }
         $users = DB::table('users')->pluck('login', 'id')->toArray();
         return view('logs.actionStats', compact('login_stats', 'page_c', 'actions', 'users'));
-    }
-
-    private function shareEnterpriseToView($namespace)
-    {
-        $enterprise = Enterprise::where('namespace', $namespace)->firstOrFail();
-        view()->share('enterprise', $enterprise);
-        return $enterprise->id;
     }
 }

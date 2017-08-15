@@ -10,15 +10,7 @@ class DashboardController extends Controller
 {
     public function show($namespace)
     {
-        $this->shareEnterpriseToView($namespace);
+        Enterprise::shareEnterpriseToView($namespace);
         return view('user.dashboard');
-    }
-
-
-    private function shareEnterpriseToView($namespace)
-    {
-        $enterprise = Enterprise::where('namespace', $namespace)->firstOrFail();
-        view()->share('enterprise', $enterprise);
-        return $enterprise->id;
     }
 }

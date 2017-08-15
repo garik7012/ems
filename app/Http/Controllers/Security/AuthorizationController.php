@@ -20,7 +20,7 @@ class AuthorizationController extends Controller
 
     public function showLoginForm($namespace)
     {
-        $this->shareEnterpriseToView($namespace);
+        Enterprise::shareEnterpriseToView($namespace);
         return view('enterprise.login');
     }
 
@@ -234,13 +234,6 @@ class AuthorizationController extends Controller
     protected function guard()
     {
         return Auth::guard();
-    }
-
-    private function shareEnterpriseToView($namespace)
-    {
-        $enterprise = Enterprise::where('namespace', $namespace)->firstOrFail();
-        view()->share('enterprise', $enterprise);
-        return $enterprise->id;
     }
 
     private function comparePasswordWithPasswordPolicy($request)

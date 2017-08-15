@@ -13,7 +13,7 @@ class BranchesController extends Controller
 {
     public function showList($namespace)
     {
-        $ent_id = $this->shareEnterpriseToView($namespace);
+        $ent_id = Enterprise::shareEnterpriseToView($namespace);
         $users_and_branches = DB::table('users')->where('users.enterprise_id', $ent_id)
             ->where('users.is_active', 1)
             ->leftJoin('branches', 'branches.id', '=', 'users.branch_id')
@@ -30,7 +30,7 @@ class BranchesController extends Controller
 
     public function editUsersBranch($namespace, $user_id, Request $request)
     {
-        $ent_id = $this->shareEnterpriseToView($namespace);
+        $ent_id = Enterprise::shareEnterpriseToView($namespace);
         $user = User::where('id', $user_id)->where('enterprise_id', $ent_id)->firstOrFail();
         if ($request->isMethod('post')) {
             $branch = $request->branch_id;
@@ -43,12 +43,5 @@ class BranchesController extends Controller
         }
         $branches = Branch::where('is_active', 1)->where('enterprise_id', $ent_id)->get();
         return view('branch.user', compact('branches', 'user'));
-    }
-
-    private function shareEnterpriseToView($namespace)
-    {
-        $enterprise = Enterprise::where('namespace', $namespace)->firstOrFail();
-        view()->share('enterprise', $enterprise);
-        return $enterprise->id;
     }
 }

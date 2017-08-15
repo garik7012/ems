@@ -20,8 +20,11 @@ class CheckUserEnterprise
         if (Auth::guest()) {
             return redirect(config('ems.prefix') . "{$request->route('namespace')}/login");
         };
-        $ent_id = Enterprise::where('namespace', $request->route('namespace'))->firstOrFail()->id;
-        if (Auth::user()->enterprise_id == $ent_id) {
+        $ent = Enterprise::where('namespace', $request->route('namespace'))->firstOrFail();
+        if (Auth::user()->enterprise_id == $ent->id) {
+            return $next($request);
+        }
+        if (Auth::user()->enterprise_id == $ent->parent_id) {
             return $next($request);
         }
         abort(403);

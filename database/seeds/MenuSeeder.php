@@ -57,23 +57,23 @@ class MenuSeeder extends Seeder
             'is_active' => 1,
         ]);
         DB::table('menu')->insert([
-            'name' => 'External Organisations',
+            'name' => 'External Organizations',
             'position' => 8,
-            'is_active' => 0,
+            'is_active' => 1,
         ]);
         DB::table('menu')->insert([
             'name' => 'List',
             'parent_id' => 8,
             'action_id' => 6,
             'position' => 9,
-            'is_active' => 0,
+            'is_active' => 1,
         ]);
         DB::table('menu')->insert([
             'name' => 'Add',
             'parent_id' => 8,
             'action_id' => 7,
             'position' => 10,
-            'is_active' => 0,
+            'is_active' => 1,
         ]);
         DB::table('menu')->insert([
             'name' => 'Positions',

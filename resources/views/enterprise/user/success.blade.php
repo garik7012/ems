@@ -1,4 +1,5 @@
 @extends('layouts.main')
+@section('page_name', 'Success')
 @section('content')
     <div class="container">
         <div class="row">

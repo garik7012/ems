@@ -11,7 +11,7 @@ class SupervisorsController extends Controller
 {
     public function showList($namespace)
     {
-        $ent_id = $this->shareEnterpriseToView($namespace);
+        $ent_id = Enterprise::shareEnterpriseToView($namespace);
         $supervisors_id = User::where('parent_id', '>', 0)
             ->where('is_active', 1)
             ->where('enterprise_id', $ent_id)
@@ -28,7 +28,7 @@ class SupervisorsController extends Controller
 
     public function edit($namespace, $id, Request $request)
     {
-        $ent_id = $this->shareEnterpriseToView($namespace);
+        $ent_id = Enterprise::shareEnterpriseToView($namespace);
         User::where('enterprise_id', $ent_id)->where('id', $id)->firstOrFail();
         if ($request->isMethod('post')) {
             if (count($request->users_id)) {
@@ -56,7 +56,7 @@ class SupervisorsController extends Controller
 
     public function add($namespace, Request $request)
     {
-        $ent_id = $this->shareEnterpriseToView($namespace);
+        $ent_id = Enterprise::shareEnterpriseToView($namespace);
         if ($request->isMethod('post')) {
             $this->validate($request, [
                 'supervisor_id' => 'required',
@@ -86,15 +86,8 @@ class SupervisorsController extends Controller
 
     public function delete($namespace, $id)
     {
-        $ent_id = $this->shareEnterpriseToView($namespace);
+        $ent_id = Enterprise::shareEnterpriseToView($namespace);
         User::where('enterprise_id', $ent_id)->where('parent_id', $id)->update(['parent_id' => null]);
         return back();
-    }
-
-    private function shareEnterpriseToView($namespace)
-    {
-        $enterprise = Enterprise::where('namespace', $namespace)->firstOrFail();
-        view()->share('enterprise', $enterprise);
-        return $enterprise->id;
     }
 }

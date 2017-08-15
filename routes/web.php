@@ -22,7 +22,7 @@ Route::group(['prefix' => 'enterprises'], function () {
 Route::post('/logout', 'Auth\LoginController@logout');
 
 //--------------------------------   Enterprise's routes   ---------------------------------------
-Route::group(['prefix' => config('ems.prefix') . "{namespace}"], function () {
+Route::group(['prefix' => config('ems.prefix') . "{namespace}", 'middleware' => 'ent.active'], function () {
     //Auth
     Route::any('/logout', 'Security\AuthorizationController@logout')->name('logout');
     Route::get('/login', 'Security\AuthorizationController@showLoginForm');
@@ -43,6 +43,7 @@ Route::group(['prefix' => config('ems.prefix') . "{namespace}"], function () {
 
         Route::get('/user/list/gback', 'Enterprises\EnterpriseController@backToAdmin');
 
+        Route::get('/ext/goToExt/{ext_id}', 'Enterprises\ExternalOrganizationsController@goToExt')->middleware('is.admin');
         Route::post('/user/makeSuperadmin', 'Users\SettingsController@makeSuperadmin')->middleware('is.admin');
         Route::post('/user/depriveSuperadmin', 'Users\SettingsController@depriveSuperadmin')->middleware('is.admin');
 

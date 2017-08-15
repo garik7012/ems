@@ -13,7 +13,7 @@ class DepartmentsController extends Controller
 {
     public function create($namespace, Request $request)
     {
-        $ent_id = $this->shareEnterpriseToView($namespace);
+        $ent_id = Enterprise::shareEnterpriseToView($namespace);
         if ($request->isMethod('post')) {
             $this->validateRequest($request);
             $department = new Department();
@@ -26,7 +26,7 @@ class DepartmentsController extends Controller
 
     public function showList($namespace, Request $request)
     {
-        $ent_id = $this->shareEnterpriseToView($namespace);
+        $ent_id = Enterprise::shareEnterpriseToView($namespace);
         if ($request->has_item_id) {
             $departments = Department::where('enterprise_id', $ent_id)->whereIn('id', $request->has_item_id)->get();
         } else {
@@ -37,7 +37,7 @@ class DepartmentsController extends Controller
 
     public function edit($namespace, $id, Request $request)
     {
-        $ent_id = $this->shareEnterpriseToView($namespace);
+        $ent_id = Enterprise::shareEnterpriseToView($namespace);
         $department = Department::where('id', $id)->where('enterprise_id', $ent_id)->firstOrFail();
         if ($request->isMethod('post')) {
             $this->validateRequest($request);
@@ -49,7 +49,7 @@ class DepartmentsController extends Controller
 
     public function activate($namespace, $id)
     {
-        $ent_id = $this->shareEnterpriseToView($namespace);
+        $ent_id = Enterprise::shareEnterpriseToView($namespace);
         $department = Department::where('id', $id)->where('enterprise_id', $ent_id)->where('is_active', 0)->firstOrFail();
         $department->is_active = 1;
         $department->save();
@@ -58,7 +58,7 @@ class DepartmentsController extends Controller
 
     public function deactivate($namespace, $id)
     {
-        $ent_id = $this->shareEnterpriseToView($namespace);
+        $ent_id = Enterprise::shareEnterpriseToView($namespace);
         $department = Department::where('id', $id)->where('enterprise_id', $ent_id)->where('is_active', 1)->firstOrFail();
         $department->is_active = 0;
         $department->save();
@@ -71,13 +71,6 @@ class DepartmentsController extends Controller
             'name' => 'required|string',
             'description' => 'required|string',
         ]);
-    }
-
-    private function shareEnterpriseToView($namespace)
-    {
-        $enterprise = Enterprise::where('namespace', $namespace)->firstOrFail();
-        view()->share('enterprise', $enterprise);
-        return $enterprise->id;
     }
 
     private function saveDepartment(&$department, $request, $ent_id)
