@@ -64,5 +64,6 @@ class Kernel extends HttpKernel
         'pwd.change' => \App\Http\Middleware\CheckPasswordChange::class,
         'log' => \App\Http\Middleware\ActionsLog::class,
         'ent.active' => \App\Http\Middleware\EnterpriseIsActive::class,
+        'ristrict' => \App\Http\Middleware\EnterpirseNetwork::class,
     ];
 }

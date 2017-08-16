@@ -198,5 +198,32 @@ class MenuSeeder extends Seeder
             'position' => 30,
             'is_active' => 1,
         ]);
+        //secutiry/enterpriseNetworks
+        DB::table('menu')->insert([
+            'name' => 'Enterprise networks',
+            'action_id' => 62,
+            'position' => 31,
+            'is_active' => 1,
+        ]);
+        //firewall
+        DB::table('menu')->insert([
+            'name' => 'Firewall',
+            'position' => 32,
+            'is_active' => 1,
+        ]);
+        DB::table('menu')->insert([
+            'name' => 'ShowList',
+            'parent_id' => 32,
+            'action_id' => 67,
+            'position' => 33,
+            'is_active' => 1,
+        ]);
+        DB::table('menu')->insert([
+            'name' => 'Create',
+            'parent_id' => 32,
+            'action_id' => 68,
+            'position' => 34,
+            'is_active' => 1,
+        ]);
     }
 }

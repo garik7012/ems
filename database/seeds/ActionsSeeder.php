@@ -349,5 +349,57 @@ class ActionsSeeder extends Seeder
             'name' => 'addUser',
             'is_active' => 1,
         ]);
+        //security/enterpriseNetworks
+        DB::table('actions')->insert([
+            'controller_id' => 24,
+            'name' => 'showList',
+            'is_active' => 1,
+        ]);
+        DB::table('actions')->insert([
+            'controller_id' => 24,
+            'name' => 'addIP',
+            'is_active' => 1,
+        ]);
+        DB::table('actions')->insert([
+            'controller_id' => 24,
+            'name' => 'deleteIP',
+            'is_active' => 1,
+        ]);
+        DB::table('actions')->insert([
+            'controller_id' => 24,
+            'name' => 'activate',
+            'is_active' => 1,
+        ]);
+        DB::table('actions')->insert([
+            'controller_id' => 24,
+            'name' => 'deactivate',
+            'is_active' => 1,
+        ]);
+        //Users/firewall
+        DB::table('actions')->insert([
+            'controller_id' => 25,
+            'name' => 'showList',
+            'is_active' => 1,
+        ]);
+        DB::table('actions')->insert([
+            'controller_id' => 25,
+            'name' => 'create',
+            'is_active' => 1,
+        ]);
+        DB::table('actions')->insert([
+            'controller_id' => 25,
+            'name' => 'edit',
+            'is_active' => 1,
+        ]);
+        DB::table('actions')->insert([
+            'controller_id' => 25,
+            'name' => 'activate',
+            'is_active' => 1,
+        ]);
+        DB::table('actions')->insert([
+            'controller_id' => 25,
+            'name' => 'deactivate',
+            'is_active' => 1,
+        ]);
     }
 }

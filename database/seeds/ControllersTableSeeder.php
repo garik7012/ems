@@ -140,5 +140,17 @@ class ControllersTableSeeder extends Seeder
             'module_id' => 3,
             'is_active' => 1,
         ]);
+        //security
+        DB::table('controllers')->insert([
+            'name' => 'EnterpriseNetworks',
+            'module_id' => 1,
+            'is_active' => 1,
+        ]);
+        //Users
+        DB::table('controllers')->insert([
+            'name' => 'Firewall',
+            'module_id' => 3,
+            'is_active' => 1,
+        ]);
     }
 }

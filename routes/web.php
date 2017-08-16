@@ -22,7 +22,7 @@ Route::group(['prefix' => 'enterprises'], function () {
 Route::post('/logout', 'Auth\LoginController@logout');
 
 //--------------------------------   Enterprise's routes   ---------------------------------------
-Route::group(['prefix' => config('ems.prefix') . "{namespace}", 'middleware' => 'ent.active'], function () {
+Route::group(['prefix' => config('ems.prefix') . "{namespace}", 'middleware' => ['ent.active', 'ristrict']], function () {
     //Auth
     Route::any('/logout', 'Security\AuthorizationController@logout')->name('logout');
     Route::get('/login', 'Security\AuthorizationController@showLoginForm');
