@@ -6,6 +6,7 @@ use App\EnterpriseNetwork;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Enterprise;
+use Illuminate\Support\Facades\Session;
 
 class EnterpriseNetworksController extends Controller
 {
@@ -34,6 +35,7 @@ class EnterpriseNetworksController extends Controller
         $ent_ip->description = $request->description;
         $ent_ip->ristrict_network_ip = $request->ristrict_network_ip;
         $ent_ip->save();
+        Session::put('firewall_has_been_changed', true, 1);
         return back();
     }
 

@@ -22,7 +22,7 @@ Route::group(['prefix' => 'enterprises'], function () {
 Route::post('/logout', 'Auth\LoginController@logout');
 
 //--------------------------------   Enterprise's routes   ---------------------------------------
-Route::group(['prefix' => config('ems.prefix') . "{namespace}", 'middleware' => ['ent.active', 'ristrict']], function () {
+Route::group(['prefix' => config('ems.prefix') . "{namespace}", 'middleware' => 'ent.active'], function () {
     //Auth
     Route::any('/logout', 'Security\AuthorizationController@logout')->name('logout');
     Route::get('/login', 'Security\AuthorizationController@showLoginForm');
@@ -34,9 +34,10 @@ Route::group(['prefix' => config('ems.prefix') . "{namespace}", 'middleware' => 
         Route::post('/confirm/code', 'Security\AuthorizationController@checkConfirmCode');
     });
 
-    //check is user belong to this enterprise, is user active,
-    // share menu according to roles, supervisors, users_and_controllers
-    Route::group(['middleware' => ['belong', 'is.active', 'menu']], function () {
+    /*check is user belong to this enterprise, is user active,
+     *share menu according to roles, supervisors, users_and_controllers
+    */
+    Route::group(['middleware' => ['belong', 'firewall', 'is.active', 'menu']], function () {
         Route::get('/', 'Enterprises\EnterpriseController@showEnterprise')->middleware('pwd.change');
         Route::get('/user/changePassword', 'Security\RegistrationController@showChangePasswordForm');
         Route::post('/user/changePassword', 'Security\RegistrationController@changePassword');
