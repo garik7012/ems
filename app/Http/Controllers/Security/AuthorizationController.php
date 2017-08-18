@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers\Security;
 
+use App\UserTrustedDevice;
 use App\Enterprise;
+use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\DB;
 use App\User;
 use Illuminate\Http\Request;
@@ -35,12 +37,14 @@ class AuthorizationController extends Controller
                 ->where('item_id', Auth::user()->id)
                 ->where('key', 'confirmation_code')
                 ->update(['value'=>""]);
-
             $namespace = Enterprise::where('id', Auth::user()->enterprise_id)->value('namespace');
-
+            if ($request->trusted) {
+                $token = $this->createTrustedToken();
+                return redirect(config('ems.prefix') . "$namespace")->cookie('device_token', $token, 30*60*24);
+            }
             return redirect(config('ems.prefix') . "$namespace");
         }
-        //TODO log not confirm attempts
+
         Auth::logout();
         return redirect()->back();
     }
@@ -169,7 +173,7 @@ class AuthorizationController extends Controller
                 ->where('key', 'auth_type_id')
                 ->value('value');
         }
-        if ($auth_type != 1) {
+        if ($auth_type == 2 or ($auth_type == 3 and !$this->trustedDevice())) {
             $security_code = str_random(8);
             Setting::where('type', 3)
                 ->where('item_id', Auth::user()->id)
@@ -323,5 +327,32 @@ class AuthorizationController extends Controller
                 ->where('key', 'date_end_ban')
                 ->update(['value' => $date_end_ban]);
         }
+    }
+
+    private function trustedDevice()
+    {
+
+        if (Cookie::has('device_token')) {
+            $token = Cookie::get('device_token');
+            $is_trusted = UserTrustedDevice::where('user_id', Auth::user()->id)
+                ->where('enterprise_id', Auth::user()->enterprise_id)
+                ->where('token', $token)
+                ->where('expire_end_at', '>', date('Y-m-d H:i:s'))
+                ->count();
+            return $is_trusted;
+        }
+    }
+
+    private function createTrustedToken()
+    {
+        $token = str_random(16);
+        $u_t_d = new UserTrustedDevice();
+        $u_t_d->user_id = Auth::user()->id;
+        $u_t_d->enterprise_id = Auth::user()->enterprise_id;
+        $u_t_d->token = $token;
+        $u_t_d->created_at = date('Y-m-d H:i:s');
+        $u_t_d->expire_end_at = date('Y-m-d H:i:s', strtotime('+30days'));
+        $u_t_d->save();
+        return $token;
     }
 }
