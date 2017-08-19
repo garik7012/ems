@@ -58,7 +58,7 @@ class User extends Authenticatable
             'password_policy_id' => 0,
             'email_frequency_hours' => 1,
             'last_email_send_at' => strtotime('now'),
-            'auth_category_id' => 1,
+            'auth_category_id' => 0,
         ];
         return $arr;
     }

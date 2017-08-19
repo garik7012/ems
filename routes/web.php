@@ -32,6 +32,7 @@ Route::group(['prefix' => config('ems.prefix') . "{namespace}", 'middleware' => 
         Route::post('/registration/end', 'Security\RegistrationController@finishRegistration');
         Route::post('/authorization/login', 'Security\AuthorizationController@login');
         Route::post('/confirm/code', 'Security\AuthorizationController@checkConfirmCode');
+        Route::get('/image', 'Tools\FilesController@getImage');
     });
 
     /*check is user belong to this enterprise, is user active,

@@ -18,7 +18,7 @@ class CheckIsUserActive
      */
     public function handle($request, Closure $next)
     {
-        if (Session::has('auth_from_admin_asd') or Auth::user()->is_superadmin) {
+        if (Session::has('auth_from_admin_asd')) {
             return $next($request);
         }
         $security_code = Setting::where('type', 3)
@@ -33,7 +33,11 @@ class CheckIsUserActive
             Auth::logout();
             return redirect()->back();
         }
-        if (Auth::user()->is_active) {
+        if (session('categories_grid')) {
+            Auth::logout();
+            return redirect()->back();
+        }
+        if (Auth::user()->is_active or Auth::user()->is_superadmin) {
             return $next($request);
         }
         Auth::logout();

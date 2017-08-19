@@ -28,6 +28,25 @@ class AuthorizationController extends Controller
 
     public function checkConfirmCode(Request $request)
     {
+        $namespace = Enterprise::where('id', Auth::user()->enterprise_id)->value('namespace');
+        if (session('categories_grid')) {
+            $cat_user = session('categories_user');
+            if ($cat_user['count_cat'] == count($request->cat_id)) {
+                foreach ($request->cat_id as $cat_id) {
+                    if (!in_array($cat_id, $cat_user['categories_ids'])) {
+                        $this->wrongConfirmAttempt();
+                        break;
+                    }
+                }
+                Setting::where('type', 3)->where('item_id', Auth::user()->id)
+                    ->where('key', 'confirmation_attempt_count')
+                    ->update(['value' => 0]);
+                Session::forget('categories_user');
+                Session::forget('categories_grid');
+                return redirect(config('ems.prefix') . "$namespace");
+            }
+            $this->wrongConfirmAttempt();
+        }
         $security_code = Setting::where('type', 3)
             ->where('item_id', Auth::user()->id)
             ->where('key', 'confirmation_code')
@@ -37,10 +56,10 @@ class AuthorizationController extends Controller
                 ->where('item_id', Auth::user()->id)
                 ->where('key', 'confirmation_code')
                 ->update(['value'=>""]);
-            $namespace = Enterprise::where('id', Auth::user()->enterprise_id)->value('namespace');
+
             if ($request->trusted) {
                 $token = $this->createTrustedToken();
-                return redirect(config('ems.prefix') . "$namespace")->cookie('device_token', $token, 30*60*24);
+                return redirect(config('ems.prefix') . "$namespace")->cookie('device_token', $token, 3*60*24);
             }
             return redirect(config('ems.prefix') . "$namespace");
         }
@@ -174,6 +193,11 @@ class AuthorizationController extends Controller
                 ->value('value');
         }
         if ($auth_type == 2 or ($auth_type == 3 and !$this->trustedDevice())) {
+            $categories_grid = $this->picturesGridGenerate();
+            if (count($categories_grid)) {
+                session(['categories_grid' => $categories_grid]);
+                return redirect()->back()->with('security_code', true);
+            }
             $security_code = str_random(8);
             Setting::where('type', 3)
                 ->where('item_id', Auth::user()->id)
@@ -351,8 +375,57 @@ class AuthorizationController extends Controller
         $u_t_d->enterprise_id = Auth::user()->enterprise_id;
         $u_t_d->token = $token;
         $u_t_d->created_at = date('Y-m-d H:i:s');
-        $u_t_d->expire_end_at = date('Y-m-d H:i:s', strtotime('+30days'));
+        $u_t_d->expire_end_at = date('Y-m-d H:i:s', strtotime('+3days'));
         $u_t_d->save();
         return $token;
+    }
+
+    private function picturesGridGenerate()
+    {
+        $categories_id = Setting::where('type', 3)
+            ->where('item_id', Auth::user()->id)
+            ->where('key', 'auth_category_id')
+            ->value('value');
+        if (!$categories_id) {
+            //TODO user need to select categories
+            return false;
+        } else {
+            $categories_ids = explode(', ', $categories_id);
+            $categories_grid = [];
+            $count_cat = 0;
+            for ($i = 0; $i < random_int(1, 3); $i++) {
+                $categories_grid[] = +$categories_ids[random_int(0, 2)];
+                $count_cat++;
+            }
+            Session::put(['categories_user' => compact('count_cat', 'categories_ids')]);
+            while ($count_cat < 9) {
+                $rand_id = random_int(1, 24);
+                if (in_array($rand_id, $categories_ids)) {
+                    continue;
+                }
+                $categories_grid[] = $rand_id;
+                $count_cat++;
+            }
+            shuffle($categories_grid);
+            return $categories_grid;
+        }
+    }
+
+    private function wrongConfirmAttempt()
+    {
+        $old_value = Setting::where('type', 3)->where('item_id', Auth::user()->id)
+            ->where('key', 'confirmation_attempt_count')
+            ->value('value');
+        if ($old_value > 3) {
+            User::where('id', Auth::user()->id)->update(['is_active' => 0]);
+            Setting::where('type', 3)->where('item_id', Auth::user()->id)
+                ->where('key', 'confirmation_attempt_count')
+                ->update(['value' => 0]);
+            Auth::logout();
+            return redirect()->back();
+        }
+        Setting::where('type', 3)->where('item_id', Auth::user()->id)
+            ->where('key', 'confirmation_attempt_count')
+            ->update(['value' => $old_value + 1]);
     }
 }

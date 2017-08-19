@@ -56,7 +56,7 @@
         <!-- Top Menu Items -->
         @include('layouts.topMenu')
         <!-- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens -->
-        @if(Auth::user() && (!Session::has('security_code')))
+        @if(Auth::user() && isset($menu_items))
             @include('layouts.sidebar')
         @else
             <style>

@@ -1,7 +1,41 @@
 @extends('layouts.main')
 @section('page_name', 'Login')
 @section('content')
-    @if(session('security_code'))
+    @if(session('security_code') and session('categories_grid'))
+        <style>
+            .images_categories {
+                max-width: 700px;
+                margin: 0 auto;
+            }
+            .images_categories input {
+                display: none;
+            }
+            .images_categories input + label{
+                opacity: 0.5;
+            }
+            .images_categories input:checked + label{
+                opacity: 1;
+            }
+        </style>
+        <form action="{{config('ems.prefix') . $enterprise->namespace}}/security/confirm/code" method="post" class="images_categories">
+            {{csrf_field()}}
+            @foreach(session('categories_grid') as $itemt)
+                @if(!($loop->iteration % 3))
+                    <div class="row">
+                        @endif
+                        <div class="col-xs-4">
+                            <input id="cat_id_{{$loop->iteration}}" type="checkbox" name="cat_id[]" max="3" value="{{$itemt}}">
+                            <label for="cat_id_{{$loop->iteration}}"><img src="{{config('ems.prefix') . $enterprise->namespace}}/security/image/?id={{$loop->iteration}}&v={{str_random(10)}}" alt="1" class="img-thumbnail" width="200"></label>
+                        </div>
+                        @if(!($loop->iteration % 3))
+                    </div>
+                @endif
+            @endforeach
+            <button type="submit" class="btn btn-primary">
+                Submit
+            </button>
+        </form>
+    @elseif(session('security_code'))
         <div class="col-md-8 col-md-offset-2">
             {{ session('security_code') }}
             <div class="panel panel-default">
