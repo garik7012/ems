@@ -30,41 +30,30 @@ class AuthorizationController extends Controller
     public function checkConfirmCode(Request $request)
     {
         $namespace = Enterprise::where('id', Auth::user()->enterprise_id)->value('namespace');
-        if (session('categories_grid')) {
-            $cat_user = session('categories_user');
-            if ($cat_user['count_cat'] == count($request->cat_id)) {
-                foreach ($request->cat_id as $cat_id) {
-                    if (!in_array($cat_id, $cat_user['categories_ids'])) {
-                        $this->wrongConfirmAttempt();
-                        break;
-                    }
+        $cat_user = session('categories_user');
+        if ($cat_user and $cat_user['count_cat'] == count($request->cat_id)) {
+            foreach ($request->cat_id as $cat_id) {
+                if (!in_array($cat_id, $cat_user['categories_ids'])) {
+                    $this->wrongConfirmAttempt();
+                    Auth::logout();
+                    return redirect()->back();
                 }
-                Setting::where('type', 3)->where('item_id', Auth::user()->id)
-                    ->where('key', 'confirmation_attempt_count')
-                    ->update(['value' => 0]);
-                Session::forget('categories_user');
-                Session::forget('categories_grid');
-                return redirect(config('ems.prefix') . "$namespace");
             }
-            $this->wrongConfirmAttempt();
+            Setting::updateValue(3, Auth::user()->id, 'confirmation_attempt_count', 0);
+            Session::forget('categories_user');
+            Session::forget('categories_grid');
+            return redirect(config('ems.prefix') . "$namespace");
         }
-        $security_code = Setting::where('type', 3)
-            ->where('item_id', Auth::user()->id)
-            ->where('key', 'confirmation_code')
-            ->value('value');
+        $security_code = Setting::getValue(3, Auth::user()->id, 'confirmation_code');
         if ($request->confirm == $security_code) {
-            Setting::where('type', 3)
-                ->where('item_id', Auth::user()->id)
-                ->where('key', 'confirmation_code')
-                ->update(['value'=>""]);
-
+            Setting::updateValue(3, Auth::user()->id, 'confirmation_code', '');
             if ($request->trusted) {
-                $token = $this->createTrustedToken();
+                $token = UserTrustedDevice::createTrustedToken();
                 return redirect(config('ems.prefix') . "$namespace")->cookie('device_token', $token, 3*60*24);
             }
             return redirect(config('ems.prefix') . "$namespace");
         }
-
+        $this->wrongConfirmAttempt();
         Auth::logout();
         return redirect()->back();
     }
@@ -171,28 +160,22 @@ class AuthorizationController extends Controller
     protected function authorizationFactor($request)
     {
         $this->comparePasswordWithPasswordPolicy($request);
-        if (!$this->isUserActive($request)) {
+        if (Auth::user()->is_active == 0) {
             Auth::logout();
             return back()->withErrors(['login' => 'this user is not active']);
         }
         $user_id = Auth::user()->id;
         $ent_id = Auth::user()->enterprise_id;
-        $auth_type = Setting::getValue(3, $user_id, 'auth_type_id');
-        if (!$auth_type) {
-            $auth_type = Setting::getValue(2, $ent_id, 'auth_type_id');
-        }
+        $auth_type = Setting::getValue(3, $user_id, 'auth_type_id') ?:
+            Setting::getValue(2, $ent_id, 'auth_type_id');
         in_array($auth_type, [3, 5]) ? $with_trusted_device = true: $with_trusted_device = false;
         //single factor or 2 factor with trusted device(trusted device ok)
         if ($auth_type == 1 or $with_trusted_device && UserTrustedDevice::isTrusted()) {
             return redirect(config('ems.prefix') . "{$request->route('namespace')}");
         }
         //2 factor (picture based)
-        if (in_array($auth_type, [4, 5])) {
-            $categories_grid = $this->picturesGridGenerate();
-            if ($categories_grid and count($categories_grid)) {
-                session(['categories_grid' => $categories_grid]);
-                return redirect()->back()->with('security_code', true)->with(compact('with_trusted_device'));
-            }
+        if (in_array($auth_type, [4, 5]) and $this->picturesGridGenerate()) {
+            return redirect()->back()->with('security_code', true)->with(compact('with_trusted_device'));
         }
         //2 factor(email or sms)
         $security_code = str_random(8);
@@ -269,14 +252,8 @@ class AuthorizationController extends Controller
         $password_pattern = $this->getPasswordPolicy(Auth::user())->pattern;
         $is_it = preg_match("/^{$password_pattern}$/", $request->password);
 
-        $password_change_days = Setting::where('type', 2)
-            ->where('item_id', Auth::user()->enterprise_id)
-            ->where('key', 'password_change_days')
-            ->value('value');
-        $password_last_change = Setting::where('type', 3)
-            ->where('item_id', Auth::user()->id)
-            ->where('key', 'date_last_change_password')
-            ->value('value');
+        $password_change_days = Setting::getValue(2, Auth::user()->enterprise_id, 'password_change_days');
+        $password_last_change = Setting::getValue(3, Auth::user()->id, 'date_last_change_password');
         $has_password_expired = $password_last_change - strtotime("-{$password_change_days}days") < 0 ;
         if (!$is_it or $has_password_expired) {
             session(['password_need_to_change' => true]);
@@ -285,27 +262,10 @@ class AuthorizationController extends Controller
 
     private function getPasswordPolicy($user)
     {
-        $password_policy_id = Setting::where('type', 3)
-            ->where('item_id', $user->id)
-            ->where('key', 'password_policy_id')
-            ->value('value');
-        if (!$password_policy_id) {
-            $password_policy_id = Setting::where('type', 2)
-                ->where('item_id', $user->enterprise_id)
-                ->where('key', 'password_policy_id')
-                ->value('value');
-        }
-        $password_policy = PasswordPolicy::find($password_policy_id);
+        $password_policy_id = Setting::getValue(3, $user->id, 'password_policy_id') ?:
+            Setting::getValue(2, $user->enterprise_id, 'password_policy_id');
 
-        return $password_policy;
-    }
-
-    private function isUserActive($request)
-    {
-        if (!Auth::user()->is_active) {
-            return false;
-        }
-        return true;
+        return PasswordPolicy::find($password_policy_id);
     }
 
     private function hasBan($request, $user_id)
@@ -347,24 +307,11 @@ class AuthorizationController extends Controller
         }
     }
 
-    private function createTrustedToken()
-    {
-        $token = str_random(16);
-        $u_t_d = new UserTrustedDevice();
-        $u_t_d->user_id = Auth::user()->id;
-        $u_t_d->enterprise_id = Auth::user()->enterprise_id;
-        $u_t_d->token = $token;
-        $u_t_d->created_at = date('Y-m-d H:i:s');
-        $u_t_d->expire_end_at = date('Y-m-d H:i:s', strtotime('+3days'));
-        $u_t_d->save();
-        return $token;
-    }
-
     private function picturesGridGenerate()
     {
         $categories_id = Setting::getValue(3, Auth::user()->id, 'auth_category_id');
         if (!$categories_id) {
-            //TODO user need to select categories
+            Session::put('need_to_select_categories', true);
             return false;
         }
         $categories_ids = explode(', ', $categories_id);
@@ -384,24 +331,19 @@ class AuthorizationController extends Controller
             $count_cat++;
         }
         shuffle($categories_grid);
-        return $categories_grid;
+        session(['categories_grid' => $categories_grid]);
+        return true;
     }
 
     private function wrongConfirmAttempt()
     {
-        $old_value = Setting::where('type', 3)->where('item_id', Auth::user()->id)
-            ->where('key', 'confirmation_attempt_count')
-            ->value('value');
-        if ($old_value > 3) {
+        $old_value = Setting::getValue(3, Auth::user()->id, 'confirmation_attempt_count');
+        if ($old_value > 2) {
             User::where('id', Auth::user()->id)->update(['is_active' => 0]);
-            Setting::where('type', 3)->where('item_id', Auth::user()->id)
-                ->where('key', 'confirmation_attempt_count')
-                ->update(['value' => 0]);
+            Setting::updateValue(3, Auth::user()->id, 'confirmation_attempt_count', 0);
             Auth::logout();
             return redirect()->back();
         }
-        Setting::where('type', 3)->where('item_id', Auth::user()->id)
-            ->where('key', 'confirmation_attempt_count')
-            ->update(['value' => $old_value + 1]);
+        Setting::updateValue(3, Auth::user()->id, 'confirmation_attempt_count', $old_value + 1);
     }
 }
