@@ -401,5 +401,11 @@ class ActionsSeeder extends Seeder
             'name' => 'deactivate',
             'is_active' => 1,
         ]);
+        //logs/email
+        DB::table('actions')->insert([
+            'controller_id' => 13,
+            'name' => 'show',
+            'is_active' => 1,
+        ]);
     }
 }

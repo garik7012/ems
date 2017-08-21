@@ -25,5 +25,15 @@ class AuthTypesSeeder extends Seeder
             'name' => '2 factor with "trusted devices"',
             'type' => 3,
         ]);
+
+        DB::table('auth_types')->insert([
+            'name' => 'Two-factor (picture based)',
+            'type' => 4,
+        ]);
+
+        DB::table('auth_types')->insert([
+            'name' => '2 factor (picture based) with "trusted devices"',
+            'type' => 5,
+        ]);
     }
 }

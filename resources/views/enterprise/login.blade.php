@@ -31,13 +31,24 @@
                     </div>
                 @endif
             @endforeach
+            @if (session('with_trusted_device'))
+            <div class="form-group">
+                <div class="col-md-6 col-md-offset-4">
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" name="trusted" {{ old('remember') ? 'checked' : '' }}> This is the trusted device
+                        </label>
+                    </div>
+                </div>
+            </div>
+            @endif
             <button type="submit" class="btn btn-primary">
                 Submit
             </button>
         </form>
     @elseif(session('security_code'))
         <div class="col-md-8 col-md-offset-2">
-            {{ session('security_code') }}
+            {{ session('security_code_temp') }}
             <div class="panel panel-default">
                 <div class="panel-heading">Enter security code</div>
                 <div class="panel-body">
@@ -51,17 +62,17 @@
                                 <input id="confirm" type="text" class="form-control" name="confirm" required>
                             </div>
                         </div>
-
+                        @if(session('with_trusted_device'))
                         <div class="form-group">
                             <div class="col-md-6 col-md-offset-4">
                                 <div class="checkbox">
                                     <label>
-                                        <input type="checkbox" name="trusted" {{ old('remember') ? 'checked' : '' }}> This is a trusted device
+                                        <input type="checkbox" name="trusted" {{ old('remember') ? 'checked' : '' }}> This is the trusted device
                                     </label>
                                 </div>
                             </div>
                         </div>
-
+                        @endif
                         <div class="form-group">
                             <div class="col-md-8 col-md-offset-4">
                                 <button type="submit" class="btn btn-primary">

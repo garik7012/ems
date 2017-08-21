@@ -41,6 +41,7 @@ class User extends Authenticatable
             'email_frequency_hours' => 1,
             'last_email_send_at' => strtotime('now'),
             'auth_category_id' => 0,
+            'confirmation_attempt_count' => 0,
         ];
         return $arr;
     }
@@ -59,6 +60,7 @@ class User extends Authenticatable
             'email_frequency_hours' => 1,
             'last_email_send_at' => strtotime('now'),
             'auth_category_id' => 0,
+            'confirmation_attempt_count' => 0,
         ];
         return $arr;
     }

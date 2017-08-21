@@ -225,5 +225,13 @@ class MenuSeeder extends Seeder
             'position' => 34,
             'is_active' => 1,
         ]);
+        //Logs
+        DB::table('menu')->insert([
+            'name' => 'Emails',
+            'parent_id' => 24,
+            'action_id' => 72,
+            'position' => 35,
+            'is_active' => 1,
+        ]);
     }
 }

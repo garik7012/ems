@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Security;
 
+use App\EmailStat;
 use App\UserTrustedDevice;
 use App\Enterprise;
 use Illuminate\Support\Facades\Cookie;
@@ -84,15 +85,7 @@ class AuthorizationController extends Controller
         $user_id = User::where($this->username(), $request->login)->value('id');
         $ent_id = Enterprise::where('namespace', $request->route('namespace'))->value('id');
         $this->validateLogin($request);
-        $logs = new LoginStat();
-        $logs->enterprise_id = $ent_id;
-        $logs->user_id = $user_id;
-        $logs->is_ok = 0;
-        $logs->login = $request->login;
-        $logs->ip = $request->ip();
-        $logs->user_agent = base64_encode($request->header('User-Agent'));
-        $logs->created_at = date('Y-m-d H:i:s');
-        $logs->save();
+        $logs = LoginStat::logLogin($ent_id, $user_id, $request);
 
         $end_ban = $this->hasBan($request, $user_id);
         if ($end_ban) {
@@ -182,43 +175,50 @@ class AuthorizationController extends Controller
             Auth::logout();
             return back()->withErrors(['login' => 'this user is not active']);
         }
-        $auth_type = Setting::where('type', 3)
-            ->where('item_id', Auth::user()->id)
-            ->where('key', 'auth_type_id')
-            ->value('value');
+        $user_id = Auth::user()->id;
+        $ent_id = Auth::user()->enterprise_id;
+        $auth_type = Setting::getValue(3, $user_id, 'auth_type_id');
         if (!$auth_type) {
-            $auth_type = Setting::where('type', 2)
-                ->where('item_id', Auth::user()->enterprise_id)
-                ->where('key', 'auth_type_id')
-                ->value('value');
+            $auth_type = Setting::getValue(2, $ent_id, 'auth_type_id');
         }
-        if ($auth_type == 2 or ($auth_type == 3 and !$this->trustedDevice())) {
+        in_array($auth_type, [3, 5]) ? $with_trusted_device = true: $with_trusted_device = false;
+        //single factor or 2 factor with trusted device(trusted device ok)
+        if ($auth_type == 1 or $with_trusted_device && UserTrustedDevice::isTrusted()) {
+            return redirect(config('ems.prefix') . "{$request->route('namespace')}");
+        }
+        //2 factor (picture based)
+        if (in_array($auth_type, [4, 5])) {
             $categories_grid = $this->picturesGridGenerate();
-            if (count($categories_grid)) {
+            if ($categories_grid and count($categories_grid)) {
                 session(['categories_grid' => $categories_grid]);
-                return redirect()->back()->with('security_code', true);
-            }
-            $security_code = str_random(8);
-            Setting::where('type', 3)
-                ->where('item_id', Auth::user()->id)
-                ->where('key', 'confirmation_code')
-                ->update(['value'=>$security_code]);
-
-            $is_sms = Setting::where('type', 2)
-                ->where('item_id', Auth::user()->enterprise_id)
-                ->where('key', 'is_sms_allow')
-                ->value('value');
-
-            if ($is_sms) {
-                //TODO send sms
-                return redirect()->back()->with('security_code', "SMS. Code: $security_code");
-            } else {
-                //TODO send email
-                return redirect()->back()->with('security_code', "Email. Code: $security_code");
+                return redirect()->back()->with('security_code', true)->with(compact('with_trusted_device'));
             }
         }
+        //2 factor(email or sms)
+        $security_code = str_random(8);
+        Setting::updateValue(3, $user_id, 'confirmation_code', $security_code);
 
-        return redirect(config('ems.prefix') . "{$request->route('namespace')}");
+        $is_sms = Setting::getValue(2, $ent_id, 'is_sms_allow');
+        if ($is_sms) {
+            //TODO send sms
+            return redirect()->back()->with([
+                'security_code_temp' => "SMS. Code: $security_code",
+                'security_code' => true,
+                'with_trusted_device' => $with_trusted_device
+            ]);
+        } else {
+            $from_email = 'no-reply@domain.com';
+            $to_email = Auth::user()->email;
+            $subject = 'no-reply@domain.com';
+            $data = base64_encode("your security code is $security_code");
+            //TODO send email
+            EmailStat::logEmail($ent_id, $user_id, $from_email, $to_email, $subject, $data);
+            return redirect()->back()->with([
+                'security_code_temp' => "Email. Code: $security_code",
+                'security_code' => true,
+                'with_trusted_device' => $with_trusted_device
+            ]);
+        }
     }
 
 
@@ -310,14 +310,11 @@ class AuthorizationController extends Controller
 
     private function hasBan($request, $user_id)
     {
-        $date_end_ban = Setting::where('type', 3)
-            ->where('item_id', $user_id)
-            ->where('key', 'date_end_ban')
-            ->value('value');
+        $date_end_ban = Setting::getValue(3, $user_id, 'date_end_ban');
         if ($date_end_ban) {
             $is_end = $date_end_ban - strtotime('now') < 0;
             if ($is_end) {
-                Setting::where('type', 3)->where('item_id', $user_id)->where('key', 'date_end_ban')->update(['value' => 0]);
+                Setting::updateValue(3, $user_id, 'date_end_ban', 0);
                 return false;
             }
             return $date_end_ban;
@@ -346,24 +343,7 @@ class AuthorizationController extends Controller
 
         if ($count >= $ent_settings['max_login_attempts']) {
             $date_end_ban = strtotime("+{$ent_settings['max_hours_ban']}hours");
-            Setting::where('type', 3)
-                ->where('item_id', $user_id)
-                ->where('key', 'date_end_ban')
-                ->update(['value' => $date_end_ban]);
-        }
-    }
-
-    private function trustedDevice()
-    {
-
-        if (Cookie::has('device_token')) {
-            $token = Cookie::get('device_token');
-            $is_trusted = UserTrustedDevice::where('user_id', Auth::user()->id)
-                ->where('enterprise_id', Auth::user()->enterprise_id)
-                ->where('token', $token)
-                ->where('expire_end_at', '>', date('Y-m-d H:i:s'))
-                ->count();
-            return $is_trusted;
+            Setting::updateValue(3, $user_id, 'date_end_ban', $date_end_ban);
         }
     }
 
@@ -382,33 +362,29 @@ class AuthorizationController extends Controller
 
     private function picturesGridGenerate()
     {
-        $categories_id = Setting::where('type', 3)
-            ->where('item_id', Auth::user()->id)
-            ->where('key', 'auth_category_id')
-            ->value('value');
+        $categories_id = Setting::getValue(3, Auth::user()->id, 'auth_category_id');
         if (!$categories_id) {
             //TODO user need to select categories
             return false;
-        } else {
-            $categories_ids = explode(', ', $categories_id);
-            $categories_grid = [];
-            $count_cat = 0;
-            for ($i = 0; $i < random_int(1, 3); $i++) {
-                $categories_grid[] = +$categories_ids[random_int(0, 2)];
-                $count_cat++;
-            }
-            Session::put(['categories_user' => compact('count_cat', 'categories_ids')]);
-            while ($count_cat < 9) {
-                $rand_id = random_int(1, 24);
-                if (in_array($rand_id, $categories_ids)) {
-                    continue;
-                }
-                $categories_grid[] = $rand_id;
-                $count_cat++;
-            }
-            shuffle($categories_grid);
-            return $categories_grid;
         }
+        $categories_ids = explode(', ', $categories_id);
+        $categories_grid = [];
+        $count_cat = 0;
+        for ($i = 0; $i < random_int(1, 3); $i++) {
+            $categories_grid[] = +$categories_ids[random_int(0, 2)];
+            $count_cat++;
+        }
+        Session::put(['categories_user' => compact('count_cat', 'categories_ids')]);
+        while ($count_cat < 9) {
+            $rand_id = random_int(1, 24);
+            if (in_array($rand_id, $categories_ids)) {
+                continue;
+            }
+            $categories_grid[] = $rand_id;
+            $count_cat++;
+        }
+        shuffle($categories_grid);
+        return $categories_grid;
     }
 
     private function wrongConfirmAttempt()

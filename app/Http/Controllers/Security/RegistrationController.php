@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Security;
 
+use App\EmailStat;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Setting;
@@ -34,9 +35,11 @@ class RegistrationController extends Controller
             ->value('value');
 
         //TODO Send email to user with confirm link
-
-        return view('enterprise.user.success', [
-            'confirm'=> "{$_SERVER['SERVER_NAME']}" . config('ems.prefix') . "$namespace/security/confirm/{$new_user_id}/{$confirm}"]);
+        $link = "{$_SERVER['SERVER_NAME']}" . config('ems.prefix') .
+            "$namespace/security/confirm/{$new_user_id}/{$confirm}";
+        $data = base64_encode("To complete your registration please <a href='{$link}'>Click here</a>");
+        EmailStat::logEmail($ent_id, $new_user_id, 'no-reply@domain.com', $request->email, 'confirm email', $data);
+        return view('enterprise.user.success', ['confirm' => $link]);
     }
 
     public function confirmEmail($namespace, $user_id, $pass)

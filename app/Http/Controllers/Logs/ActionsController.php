@@ -34,7 +34,7 @@ class ActionsController extends Controller
         foreach ($actions_raw as $item) {
             $actions[$item->id] = $item->module . '.' . $item->controller . '.' . $item->action;
         }
-        $users = DB::table('users')->pluck('login', 'id')->toArray();
+        $users = DB::table('users')->where('enterprise_id', $ent_id)->pluck('login', 'id')->toArray();
         return view('logs.actionStats', compact('login_stats', 'page_c', 'actions', 'users'));
     }
 }

@@ -39,4 +39,17 @@ class Setting extends Model
             $default->save();
         }
     }
+
+    public static function getValue($type, $item_id, $key)
+    {
+        return self::where('type', $type)->where('item_id', $item_id)->where('key', $key)->value('value');
+    }
+
+    public static function updateValue($type, $item_id, $key, $value)
+    {
+        self::where('type', $type)
+            ->where('item_id', $item_id)
+            ->where('key', $key)
+            ->update(['value'=>$value]);
+    }
 }
