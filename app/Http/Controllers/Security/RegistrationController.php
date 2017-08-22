@@ -29,11 +29,8 @@ class RegistrationController extends Controller
             'email' => 'unique:users',
             'login' => 'unique:users',
         ]);
-        $new_user_id = User::createNewUserByAdmin($request, $ent_id);
-        $confirm = Setting::where('type', 3)
-            ->where('item_id', $new_user_id)
-            ->where('key', 'confirmation_code')
-            ->value('value');
+        $new_user_id = User::createNewUser($request, $ent_id);
+        $confirm = Setting::getValue(3, $new_user_id, 'confirmation_code');
 
         //TODO Send email to user with confirm link
         $link = "{$_SERVER['SERVER_NAME']}" . config('ems.prefix') .
@@ -41,6 +38,29 @@ class RegistrationController extends Controller
         $data = base64_encode("To complete your registration please <a href='{$link}'>Click here</a>");
         EmailStat::logEmail($ent_id, $new_user_id, 'no-reply@domain.com', $request->email, 'confirm email', $data);
         return view('enterprise.user.success', ['confirm' => $link]);
+    }
+
+    public function registerNewUser($namespace, Request $request)
+    {
+        $ent_id = Enterprise::shareEnterpriseToView($namespace);
+        $is_allow = Setting::getValue(2, $ent_id, 'self_signup');
+        if (!$is_allow) {
+            abort('404');
+        }
+        if ($request->isMethod('post')) {
+            $this->validate($request, [
+                'email' => 'unique:users',
+                'login' => 'unique:users',
+            ]);
+            $new_user_id = User::createNewUser($request, $ent_id);
+            $confirm = Setting::getValue(3, $new_user_id, 'confirmation_code');
+            $link = "{$_SERVER['SERVER_NAME']}" . config('ems.prefix') .
+                "$namespace/security/confirm/{$new_user_id}/{$confirm}";
+            $data = base64_encode("To complete your registration please <a href='{$link}'>Click here</a>");
+            EmailStat::logEmail($ent_id, $new_user_id, 'no-reply@domain.com', $request->email, 'confirm email', $data);
+            return view('user.success', ['confirm' => $link]);
+        }
+        return view('user.register');
     }
 
     public function confirmEmail($namespace, $user_id, $pass)

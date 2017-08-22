@@ -23,8 +23,9 @@ class AuthorizationController extends Controller
 
     public function showLoginForm($namespace)
     {
-        Enterprise::shareEnterpriseToView($namespace);
-        return view('enterprise.login');
+        $ent_id = Enterprise::shareEnterpriseToView($namespace);
+        $self_signup = Setting::getValue(2, $ent_id, 'self_signup');
+        return view('enterprise.login', compact('self_signup'));
     }
 
     public function checkConfirmCode(Request $request)

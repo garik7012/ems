@@ -15,7 +15,8 @@ class Setting extends Model
             'max_login_attempts' => 10,
             'max_login_period' =>30,
             'max_hours_ban' =>10,
-            'password_change_days' => 30
+            'password_change_days' => 30,
+            'self_signup' => 0
         ];
 
     public static function setEnterpriseSecurity($ent_id, $request)

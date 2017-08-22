@@ -26,6 +26,8 @@ Route::group(['prefix' => config('ems.prefix') . "{namespace}", 'middleware' => 
     //Auth
     Route::any('/logout', 'Security\AuthorizationController@logout')->name('logout');
     Route::get('/login', 'Security\AuthorizationController@showLoginForm');
+    //Signup
+    Route::any('/register', 'Security\RegistrationController@registerNewUser');
     //email confirmation, finish registration, 2 factor authorization, check confirm code, force change password
     Route::group(['prefix' => 'security'], function () {
         Route::get('/confirm/{id}/{pass}', 'Security\RegistrationController@confirmEmail');

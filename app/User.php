@@ -65,7 +65,7 @@ class User extends Authenticatable
         return $arr;
     }
 
-    public static function createNewUserByAdmin($request, $ent_id)
+    public static function createNewUser($request, $ent_id)
     {
         $user = new User;
         $user->enterprise_id = $ent_id;

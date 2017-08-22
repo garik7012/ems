@@ -69,6 +69,17 @@
                     </div>
 
                     <div class="form-group">
+                        <div class="col-md-6 col-md-offset-4">
+                            <div class="checkbox">
+                                <label>
+                                    <input type="hidden" name="self_signup" value="0">
+                                    <input type="checkbox" name="self_signup" {{$enSec['self_signup']  ? 'checked' : '' }}> Self signup
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
                         <div class="col-md-8 col-md-offset-4">
                             <button type="submit" class="btn btn-primary">
                                 Save Changes
