@@ -15,6 +15,9 @@ class CheckPasswordChange
      */
     public function handle($request, Closure $next)
     {
+        if (session()->has('need_to_select_categories')) {
+            return redirect(config('ems.prefix') . "{$request->route('namespace')}/user/selectCategories");
+        }
         if (session()->has('password_need_to_change')) {
             return redirect(config('ems.prefix') . "{$request->route('namespace')}/user/changePassword");
         }

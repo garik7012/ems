@@ -16,6 +16,13 @@
             .images_categories input:checked + label{
                 opacity: 1;
             }
+            .images_categories .trusted_device {
+                font-size: 16px;
+            }
+            .images_categories .trusted_device input {
+                display: block;
+            }
+
         </style>
         <form action="{{config('ems.prefix') . $enterprise->namespace}}/security/confirm/code" method="post" class="images_categories">
             {{csrf_field()}}
@@ -35,7 +42,7 @@
             <div class="form-group">
                 <div class="col-md-6 col-md-offset-4">
                     <div class="checkbox">
-                        <label>
+                        <label  class="trusted_device">
                             <input type="checkbox" name="trusted" {{ old('remember') ? 'checked' : '' }}> This is the trusted device
                         </label>
                     </div>

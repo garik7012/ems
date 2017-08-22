@@ -11,6 +11,7 @@ use App\Enterprise;
 use App\PasswordPolicy;
 use Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Session;
 
 class RegistrationController extends Controller
 {
@@ -138,6 +139,31 @@ class RegistrationController extends Controller
             return redirect(config('ems.prefix') . "{$namespace}/");
         }
         return redirect()->back()->withErrors(['old_password' => 'wrong password']);
+    }
+
+    public function selectCategories($namespace, Request $request)
+    {
+        if (!session('need_to_select_categories')) {
+            abort('404');
+        }
+        if ($request->isMethod('post')) {
+            $this->validate($request, [
+                'first_cat' => 'required|different:third_cat|numeric|min:1|max:24',
+                'second_cat' => 'required|different:first_cat|numeric|min:1|max:24',
+                'third_cat' => 'required|different:second_cat|numeric|min:1|max:24'
+            ]);
+            $cat_ids = $request->first_cat . ', ' . $request->second_cat . ', ' . $request->third_cat;
+            Setting::updateValue(3, Auth::user()->id, 'auth_category_id', $cat_ids);
+            Session::forget('need_to_select_categories');
+            return redirect(config('ems.prefix') . "{$namespace}/");
+        }
+        Enterprise::shareEnterpriseToView($namespace);
+        return view('security.selectCategories');
+    }
+
+    public function changeUserCategories($namespace, Request $request)
+    {
+        //
     }
 
     private function getPasswordPolicy($user)

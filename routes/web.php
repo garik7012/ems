@@ -34,7 +34,6 @@ Route::group(['prefix' => config('ems.prefix') . "{namespace}", 'middleware' => 
         Route::post('/confirm/code', 'Security\AuthorizationController@checkConfirmCode');
         Route::get('/image', 'Tools\FilesController@getImage');
     });
-
     /*check is user belong to this enterprise, is user active,
      *share menu according to roles, supervisors, users_and_controllers
     */
@@ -42,6 +41,7 @@ Route::group(['prefix' => config('ems.prefix') . "{namespace}", 'middleware' => 
         Route::get('/', 'Enterprises\EnterpriseController@showEnterprise')->middleware('pwd.change');
         Route::get('/user/changePassword', 'Security\RegistrationController@showChangePasswordForm');
         Route::post('/user/changePassword', 'Security\RegistrationController@changePassword');
+        Route::any('/user/selectCategories', 'Security\RegistrationController@selectCategories');
 
         Route::get('/user/list/gback', 'Enterprises\EnterpriseController@backToAdmin');
 
