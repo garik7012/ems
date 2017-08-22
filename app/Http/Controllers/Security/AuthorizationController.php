@@ -44,10 +44,15 @@ class AuthorizationController extends Controller
             Session::forget('categories_user');
             Session::forget('categories_grid');
             return redirect(config('ems.prefix') . "$namespace");
+        } elseif ($cat_user and $cat_user['count_cat'] != count($request->cat_id)) {
+            $this->wrongConfirmAttempt();
+            Auth::logout();
+            return redirect()->back();
         }
         $security_code = Setting::getValue(3, Auth::user()->id, 'confirmation_code');
         if ($request->confirm == $security_code) {
             Setting::updateValue(3, Auth::user()->id, 'confirmation_code', '');
+            Setting::updateValue(3, Auth::user()->id, 'confirmation_attempt_count', 0);
             if ($request->trusted) {
                 $token = UserTrustedDevice::createTrustedToken();
                 return redirect(config('ems.prefix') . "$namespace")->cookie('device_token', $token, 3*60*24);
@@ -193,7 +198,7 @@ class AuthorizationController extends Controller
         } else {
             $from_email = 'no-reply@domain.com';
             $to_email = Auth::user()->email;
-            $subject = 'no-reply@domain.com';
+            $subject = 'Security code';
             $data = base64_encode("your security code is $security_code");
             //TODO send email
             EmailStat::logEmail($ent_id, $user_id, $from_email, $to_email, $subject, $data);
@@ -305,6 +310,15 @@ class AuthorizationController extends Controller
         if ($count >= $ent_settings['max_login_attempts']) {
             $date_end_ban = strtotime("+{$ent_settings['max_hours_ban']}hours");
             Setting::updateValue(3, $user_id, 'date_end_ban', $date_end_ban);
+            //TODO send email
+            $from_email = 'no-reply@domain.com';
+            $to_email = User::where('id', $user_id)->value('email');
+            $subject = "Account ban";
+            $data = "After " . $ent_settings['max_login_attempts'] . " wrong login attempts your account was baned" .
+                " You can try again after " . $ent_settings['max_hours_ban'] . 'hours' .
+                " If you did not attempt to log in, contact the administrator";
+            $data = base64_encode($data);
+            EmailStat::logEmail($ent_id, $user_id, $from_email, $to_email, $subject, $data);
         }
     }
 
@@ -339,9 +353,17 @@ class AuthorizationController extends Controller
     private function wrongConfirmAttempt()
     {
         $old_value = Setting::getValue(3, Auth::user()->id, 'confirmation_attempt_count');
-        if ($old_value > 2) {
+        if ($old_value > 1) {
             User::where('id', Auth::user()->id)->update(['is_active' => 0]);
             Setting::updateValue(3, Auth::user()->id, 'confirmation_attempt_count', 0);
+            //TODO send email
+            $from_email = 'no-reply@domain.com';
+            $to_email = Auth::user()->email;
+            $subject = "Account deactivation";
+            $data = "After three wrong confirm attempts your account was deactivated" .
+                        " To activate it, please contact your enterprise admin ";
+            $data = base64_encode($data);
+            EmailStat::logEmail(Auth::user()->enterprise_id, Auth::user()->id, $from_email, $to_email, $subject, $data);
             Auth::logout();
             return redirect()->back();
         }
