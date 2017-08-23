@@ -37,6 +37,18 @@
                             </div>
                         </div>
 
+                        <div class="form-group{{ $errors->has('expire_end_at') ? ' has-error' : '' }}">
+                            <label for="expire_end_at" class="col-md-4 control-label">Set expiration date</label>
+                            <div class="col-md-6">
+                                <input id="expire_end_at" type="date" class="form-control" name="expire_end_at" value="{{ old('expire_end_at') ? old('expire_end_at'): $user['expire_end_at'] }}">
+                                @if ($errors->has('expire_end_at'))
+                                    <span class="help-block">
+                                        <strong>{{ $errors->first('expire_end_at') }}</strong>
+                                    </span>
+                                @endif
+                            </div>
+                        </div>
+
                         <div class="form-group">
                             <div class="col-md-6 col-md-offset-4">
                                 <input type="hidden" name="user_id" value="{{$user['user_id']}}">

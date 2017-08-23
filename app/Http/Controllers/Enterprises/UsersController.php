@@ -48,14 +48,9 @@ class UsersController extends Controller
     {
         $user = [];
         $user['user_id'] = $user_id;
-        $user['auth_type_id'] = Setting::where('type', 3)
-            ->where('item_id', $user_id)
-            ->where('key', 'auth_type_id')
-            ->value('value');
-        $user['password_policy_id'] = Setting::where('type', 3)
-            ->where('item_id', $user_id)
-            ->where('key', 'password_policy_id')
-            ->value('value');
+        $user['auth_type_id'] = Setting::getValue(3, $user_id, 'auth_type_id');
+        $user['password_policy_id'] = Setting::getValue(3, $user_id, 'password_policy_id');
+        $user['expire_end_at'] = User::findOrFail($user_id)->expire_end_at;
 
         $password_policies = PasswordPolicy::all();
         $auth_types = AuthType::all();
@@ -70,14 +65,9 @@ class UsersController extends Controller
         if ($user_enterprise_id != $ent_id) {
             abort('403');
         }
-        Setting::where('type', 3)
-            ->where('item_id', $request->user_id)
-            ->where('key', 'password_policy_id')
-            ->update(['value' => $request->password_policy_id]);
-        Setting::where('type', 3)
-            ->where('item_id', $request->user_id)
-            ->where('key', 'auth_type_id')
-            ->update(['value' => $request->auth_type_id]);
+        Setting::updateValue(3, $request->user_id, 'password_policy_id', $request->password_policy_id);
+        Setting::updateValue(3, $request->user_id, 'auth_type_id', $request->auth_type_id);
+        User::where('id', $request->user_id)->update(['expire_end_at' => $request->expire_end_at]);
 
         return redirect()->back();
     }
