@@ -135,7 +135,12 @@ class RegistrationController extends Controller
     {
         Enterprise::shareEnterpriseToView($namespace);
         $password_policy = $this->getPasswordPolicy(Auth::user());
-        return view('security.changePassword', compact('password_policy'));
+        $auth_type = Setting::getValue(3, Auth::user()->id, 'auth_type_id') ?:
+            Setting::getValue(2, Auth::user()->enterprise_id, 'auth_type_id');
+        !in_array($auth_type, [4, 5]) ? $categories = -1 :
+            $categories = explode(', ', Setting::getValue(3, Auth::user()->id, 'auth_category_id'));
+
+        return view('security.changePassword', compact('password_policy', 'categories'));
     }
 
     public function changePassword($namespace, Request $request)
@@ -183,7 +188,14 @@ class RegistrationController extends Controller
 
     public function changeUserCategories($namespace, Request $request)
     {
-        //
+        $this->validate($request, [
+            'first_cat' => 'required|different:third_cat|numeric|min:1|max:24',
+            'second_cat' => 'required|different:first_cat|numeric|min:1|max:24',
+            'third_cat' => 'required|different:second_cat|numeric|min:1|max:24'
+        ]);
+        $cat_ids = $request->first_cat . ', ' . $request->second_cat . ', ' . $request->third_cat;
+        Setting::updateValue(3, Auth::user()->id, 'auth_category_id', $cat_ids);
+        return back();
     }
 
     private function getPasswordPolicy($user)

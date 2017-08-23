@@ -44,6 +44,7 @@ Route::group(['prefix' => config('ems.prefix') . "{namespace}", 'middleware' => 
         Route::get('/user/changePassword', 'Security\RegistrationController@showChangePasswordForm');
         Route::post('/user/changePassword', 'Security\RegistrationController@changePassword');
         Route::any('/user/selectCategories', 'Security\RegistrationController@selectCategories');
+        Route::post('/user/changeCategories', 'Security\RegistrationController@changeUserCategories');
 
         Route::get('/user/list/gback', 'Enterprises\EnterpriseController@backToAdmin');
 
