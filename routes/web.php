@@ -35,6 +35,11 @@ Route::group(['prefix' => config('ems.prefix') . "{namespace}", 'middleware' => 
         Route::post('/authorization/login', 'Security\AuthorizationController@login');
         Route::post('/confirm/code', 'Security\AuthorizationController@checkConfirmCode');
         Route::get('/image', 'Tools\FilesController@getImage');
+        //Reset password routes
+        Route::get('/forgotPassword', 'Security\ResetPasswordController@showForm');
+        Route::post('/sendResetLink', 'Security\ResetPasswordController@sendResetLink');
+        Route::get('/reset/{user_id}/{token}', 'Security\ResetPasswordController@showResetForm');
+        Route::post('/reset', 'Security\ResetPasswordController@reset');
     });
     /*check is user belong to this enterprise, is user active,
      *share menu according to roles, supervisors, users_and_controllers

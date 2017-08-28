@@ -138,6 +138,9 @@
                                 Registration
                             </a>
                             @endif
+                            <a class="btn btn-link" href="{{config('ems.prefix') . $enterprise->namespace}}/security/forgotPassword">
+                                Forgot Your Password?
+                            </a>
                         </div>
                     </div>
                 </form>

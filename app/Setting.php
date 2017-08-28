@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Setting extends Model
 {
     public $timestamps = false;
+    protected $fillable = ['type', 'key', 'value', 'item_id'];
 
     const ENTERPRISESETTINGS  = [
             'auth_type_id' => 1,
