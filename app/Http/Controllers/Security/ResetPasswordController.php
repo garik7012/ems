@@ -9,13 +9,15 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\EmailStat;
 use App\PasswordPolicy;
+use Illuminate\Support\Facades\Session;
 
 class ResetPasswordController extends Controller
 {
     public function showForm($namespace)
     {
-        Enterprise::shareEnterpriseToView($namespace);
-        return view('security.forgotPassword');
+        $ent_id = Enterprise::shareEnterpriseToView($namespace);
+        $is_sms = Setting::getValue(2, $ent_id, 'is_sms_allow');
+        return view('security.forgotPassword', compact('is_sms'));
     }
 
     public function sendResetLink($namespace, Request $request)
@@ -68,6 +70,28 @@ class ResetPasswordController extends Controller
         $user->save();
         Setting::updateValue(3, $user->id, 'reset_pwd_code', '');
         return redirect(config('ems.prefix') . "{$namespace}/login");
+    }
+
+    //if SMS allow
+    public function sendSMSCode($namespace, Request $request)
+    {
+        $ent_id = Enterprise::shareEnterpriseToView($namespace);
+        $user_id = User::where('phone_number', $request->phone_number)->where('enterprise_id', $ent_id)->value('id');
+        if (!$user_id) {
+            return back()->withErrors(['phone_number' => 'wrong number']);
+        }
+        $token = str_random(8);
+        Setting::updateOrCreate(
+            ['type' => 3, 'item_id' => $user_id, 'name' => null, 'key' => 'reset_pwd_code'],
+            ['value' => $token]
+        );
+        //TODO send SMS
+        return view('security.smsCode', compact('user_id', 'token'));
+    }
+
+    public function checkCode($namespace, Request $request)
+    {
+        return redirect(config('ems.prefix') . "{$namespace}/security/reset/" . $request->user_id . '/' . $request->sms_code);
     }
 
     private function getPasswordPolicy($user)

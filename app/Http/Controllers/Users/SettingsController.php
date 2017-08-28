@@ -20,10 +20,14 @@ class SettingsController extends Controller
     public function editUserProfile($namespace, Request $request)
     {
         Enterprise::shareEnterpriseToView($namespace);
+        $rules_for_number = 'required|max:50|unique:users';
+        if ($request->phone_number == Auth::user()->phone_number) {
+            $rules_for_number = 'required';
+        }
         $this->validate($request, [
             'first_name' => 'required|max:50',
             'last_name' => 'required|max:50',
-            'phone_number' => 'required|max:50',
+            'phone_number' => $rules_for_number,
             'date_born' => 'required|date',
             'password' => 'required|string|min:6'
         ]);
@@ -35,7 +39,7 @@ class SettingsController extends Controller
             $user->phone_number = $request->phone_number;
             $user->date_born = $request->date_born;
             $user->save();
-            return redirect()->back();
+            return redirect()->back()->with(['status' => 'success']);
         }
         return redirect()->back()->withErrors(['password' => 'wrong password']);
     }

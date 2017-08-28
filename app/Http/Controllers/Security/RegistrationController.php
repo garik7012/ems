@@ -68,16 +68,10 @@ class RegistrationController extends Controller
         if (Auth::user()) {
             Auth::logout();
         }
-        $user_pass = Setting::where('type', 3)
-            ->where('item_id', $user_id)
-            ->where('key', 'confirmation_code')
-            ->value('value');
+        $user_pass = Setting::getValue(3, $user_id, 'confirmation_code');
         if ($user_pass and $user_pass == $pass) {
             $user = User::findOrFail($user_id);
-            Setting::where('type', 3)
-                ->where('item_id', $user_id)
-                ->where('key', 'is_email_confirmed')
-                ->update(['value' => 1]);
+            Setting::updateValue(3, $user_id, 'is_email_confirmed', 1);
             $password_policy = $this->getPasswordPolicy($user);
             Enterprise::shareEnterpriseToView($namespace);
             return view('enterprise.user.confirmed', compact('user', 'password_policy', 'pass'));
@@ -88,10 +82,7 @@ class RegistrationController extends Controller
     public function finishRegistration(Request $request)
     {
         $user_id = +$request->user_id;
-        $user_pass = Setting::where('type', 3)
-            ->where('item_id', $user_id)
-            ->where('key', 'confirmation_code')
-            ->value('value');
+        $user_pass = Setting::getValue(3, $user_id, 'confirmation_code');
         if ($user_pass and $user_pass == $request->pass) {
             $user = User::findOrFail($request->user_id);
             $password_policy = $this->getPasswordPolicy($user);
@@ -104,11 +95,10 @@ class RegistrationController extends Controller
                 'first_name' => 'required|max:50',
                 'last_name' => 'required|max:50',
                 'login' => $login_validate,
-                'phone_number' => 'required|max:50',
+                'phone_number' => 'required|max:50|unique:users',
                 'date_born' => 'required|date',
                 'password' => "required|string|regex:/${password_pattern}/|confirmed"
             ]);
-            $user = User::findOrFail($request->user_id);
             $user->first_name = $request->first_name;
             $user->last_name = $request->last_name;
             $user->login = $request->login;
@@ -117,14 +107,8 @@ class RegistrationController extends Controller
             $user->date_born = $request->date_born;
             $user->is_active = 1;
             $user->save();
-            Setting::where('type', 3)
-                ->where('item_id', $user->id)
-                ->where('key', 'confirmation_code')
-                ->update(['value' => '']);
-            Setting::where('type', 3)
-                ->where('item_id', $user->id)
-                ->where('key', 'date_last_change_password')
-                ->update(['value' => strtotime('now')]);
+            Setting::updateValue(3, $user->id, 'confirmation_code', '');
+            Setting::updateValue(3, $user_id, 'date_last_change_password', strtotime('now'));
             $ent = Enterprise::where('id', $user->enterprise_id)->value('namespace');
             return redirect(config('ems.prefix') . "{$ent}/login");
         }
@@ -154,10 +138,7 @@ class RegistrationController extends Controller
             ]);
             $user->password = bcrypt($request->password);
             $user->save();
-            Setting::where('type', 3)
-                ->where('item_id', $user->id)
-                ->where('key', 'date_last_change_password')
-                ->update(['value' => strtotime('now')]);
+            Setting::updateValue(3, $user->id, 'date_last_change_password', strtotime('now'));
 
             $request->session()->forget('password_need_to_change');
             Enterprise::shareEnterpriseToView($namespace);
@@ -200,16 +181,9 @@ class RegistrationController extends Controller
 
     private function getPasswordPolicy($user)
     {
-        $password_policy_id = Setting::where('type', 3)
-            ->where('item_id', $user->id)
-            ->where('key', 'password_policy_id')
-            ->value('value');
-        if (!$password_policy_id) {
-            $password_policy_id = Setting::where('type', 2)
-                ->where('item_id', $user->enterprise_id)
-                ->where('key', 'password_policy_id')
-                ->value('value');
-        }
+        $password_policy_id = Setting::getValue(3, $user->id, 'password_policy_id') ?:
+            Setting::getValue(2, $user->enterprise_id, 'password_policy_id');
+
         $password_policy = PasswordPolicy::find($password_policy_id);
 
         return $password_policy;
