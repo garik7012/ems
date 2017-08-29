@@ -44,6 +44,7 @@
                 }
             @endif
         @endforeach
+        @yield('style')
     </style>
     @endif
 </head>

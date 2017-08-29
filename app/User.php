@@ -127,4 +127,20 @@ class User extends Authenticatable
                     ->get();
         return $users;
     }
+
+    public function department()
+    {
+        return $this->belongsTo('App\Department');
+    }
+
+    public function branch()
+    {
+        return $this->belongsTo('App\Branch');
+    }
+
+    public function positions()
+    {
+        return $this->belongsToMany('App\Position', 'users_and_positions');
+    }
+
 }
