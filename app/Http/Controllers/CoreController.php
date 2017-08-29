@@ -44,6 +44,7 @@ class CoreController extends Controller
         $enterprise->save();
 
         Setting::setDefaultEnterpriseSettings($enterprise->id);
+        App\Theme::setDefaultSettings($enterprise->id);
 
         $user = new User;
         $user->enterprise_id = $enterprise->id;

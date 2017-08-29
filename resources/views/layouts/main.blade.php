@@ -29,7 +29,23 @@
         <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
         <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
-
+    @if(isset($enterprise->theme))
+    <!-- enterprise theme styles -->
+    <style>
+        @foreach($enterprise->theme as $theme_settings)
+            @if($theme_settings->key == 'main_background')
+             #page-wrapper {
+                background: {{$theme_settings->value}}
+                }
+            @endif
+            @if($theme_settings->key == 'side_background')
+                .side-nav {
+                background: {{$theme_settings->value}}
+                }
+            @endif
+        @endforeach
+    </style>
+    @endif
 </head>
 
 <body>

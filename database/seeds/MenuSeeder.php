@@ -121,9 +121,9 @@ class MenuSeeder extends Seeder
         ]);
         DB::table('menu')->insert([
             'name' => 'Setting',
-            'action_id' => 13,
+            'action_id' => 73,
             'position' => 18,
-            'is_active' => 0,
+            'is_active' => 1,
         ]);
         DB::table('menu')->insert([
             'name' => 'Roles',

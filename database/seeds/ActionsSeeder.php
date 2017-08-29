@@ -407,5 +407,11 @@ class ActionsSeeder extends Seeder
             'name' => 'show',
             'is_active' => 1,
         ]);
+        //theme
+        DB::table('actions')->insert([
+            'controller_id' => 6,
+            'name' => 'theme',
+            'is_active' => 1,
+        ]);
     }
 }

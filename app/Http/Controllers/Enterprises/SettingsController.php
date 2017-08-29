@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Enterprises;
 
+use App\Theme;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Setting;
@@ -26,6 +27,23 @@ class SettingsController extends Controller
         $enterprise = Enterprise::where('namespace', $namespace)->first();
         Setting::setEnterpriseSecurity($enterprise->id, $request);
         return $this->getSecurity($namespace);
+    }
+
+    public function theme($namespace, Request $request)
+    {
+        $ent_id = Enterprise::shareEnterpriseToView($namespace);
+        if ($request->isMethod('post')) {
+            $hex_pattern = '^#?([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$';
+            $this->validate($request, [
+               'main_background' => ["regex:/${hex_pattern}/"],
+               'side_background' => ["regex:/${hex_pattern}/"]
+            ]);
+            Theme::updateValue($ent_id, 'main_background', $request->main_background);
+            Theme::updateValue($ent_id, 'side_background', $request->side_background);
+            return back();
+        }
+        $theme = Theme::where('enterprise_id', $ent_id)->pluck('value', 'key');
+        return view('enterprise.theme', compact('theme'));
     }
 
 }

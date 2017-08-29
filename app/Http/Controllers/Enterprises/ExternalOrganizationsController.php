@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Enterprises;
 
+use App\Theme;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Enterprise;
@@ -43,6 +44,7 @@ class ExternalOrganizationsController extends Controller
             $external->save();
 
             Setting::setDefaultEnterpriseSettings($external->id);
+            Theme::setDefaultSettings($external->id);
             return redirect(config('ems.prefix') . "{$namespace}/Enterprises/ExternalOrganizations/showList");
         }
         return view('external.create');
