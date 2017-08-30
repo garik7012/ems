@@ -32,7 +32,7 @@
 
                             <div class="form-group">
                                 <div class="col-md-6 col-md-offset-4">
-                                    <a href="{{config('ems.prefix') . $enterprise->namespace}}/Users/Departments/showList/" class="btn btn-primary">
+                                    <a href="{{config('ems.prefix') . $enterprise->namespace}}/Users/Positions/showList/" class="btn btn-primary">
                                         back
                                     </a>
                                     <button type="submit" class="btn btn-success">
