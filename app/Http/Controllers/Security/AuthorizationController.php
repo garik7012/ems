@@ -80,24 +80,27 @@ class AuthorizationController extends Controller
         $user = User::where($this->username(), $request->login)->select('id', 'expire_end_at')->first();
         $ent_id = Enterprise::where('namespace', $request->route('namespace'))->value('id');
         $this->validateLogin($request);
-        $logs = LoginStat::logLogin($ent_id, $user->id, $request);
+        if ($user) {
+            $logs = LoginStat::logLogin($ent_id, $user->id, $request);
+            $end_ban = $this->hasBan($request, $user->id);
+            if ($end_ban) {
+                $hours_mins_left = date('H \h i \m\i\n', $end_ban - strtotime('now'));
 
-        $end_ban = $this->hasBan($request, $user->id);
-        if ($end_ban) {
-            $hours_mins_left = date('H \h i \m\i\n', $end_ban - strtotime('now'));
-            return back()->withErrors(['login' => "This user has ban. Please try again in $hours_mins_left"]);
-        }
-        if ($user->expire_end_at and $user->expire_end_at < date('Y-m-d')) {
-            return back()->withErrors(['login' => "Your account has expired"]);
-        }
-
-        if ($this->attemptLogin($request)) {
-            $logs->is_ok = 1;
-            $logs->save();
-            return $this->sendLoginResponse($request);
-        }
-        if ($user->id) {
-            $this->checkCountLoginAttempts($ent_id, $user->id);
+                return back()->withErrors(['login' => "This user has ban. Please try again in $hours_mins_left"]);
+            }
+            if ($user->expire_end_at and $user->expire_end_at < date('Y-m-d')) {
+                return back()->withErrors(['login' => "Your account has expired"]);
+            }
+            if ($this->attemptLogin($request)) {
+                $logs->is_ok = 1;
+                $logs->save();
+                return $this->sendLoginResponse($request);
+            }
+            if ($user->id) {
+                $this->checkCountLoginAttempts($ent_id, $user->id);
+            }
+        } else {
+            LoginStat::logLogin($ent_id, null, $request);
         }
         return $this->sendFailedLoginResponse($request);
     }

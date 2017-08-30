@@ -36,5 +36,11 @@
         @if ($is_supervisor)
             <h3>You are supervisor</h3>
         @endif
+        <h3>Your roles are:</h3>
+        <ul>
+            @foreach($roles as $role)
+                <li class="dashboard-text">{{$role->name}} ({{$role->description}})</li>
+            @endforeach
+        </ul>
     </div>
 @endsection
