@@ -54,4 +54,12 @@ class Setting extends Model
             ->where('key', $key)
             ->update(['value'=>$value]);
     }
+
+    public static function getStatus($user_id)
+    {
+        return self::firstOrCreate(
+            ['type' => 3, 'item_id' => $user_id, 'key' => 'user_status'],
+            ['value' => '']
+        );
+    }
 }

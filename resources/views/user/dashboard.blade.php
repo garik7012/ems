@@ -7,11 +7,30 @@
     .dashboard-content {
         padding-left: 10px;
     }
+    .dashboard-status {
+        color: blue;
+        cursor: pointer;
+    }
 @endsection
 @section('content')
     <div class="row">
     <div class="col-sm-5 col-sm-offset-1">
         <h2>Welcome {{Auth::user()->first_name}} {{Auth::user()->last_name}}!</h2>
+        <p class="dashboard-text"><b class="dashboard-status">Status: </b> {{$status->value}}</p>
+
+        <form action="" method="post" class="form-inline change_status-form">
+            {{csrf_field()}}
+            <div class="form-group{{ $errors->has('user_status') ? ' has-error' : '' }}">
+            <input type="text" name="user_status" class="form-control" value="{{old('user_status') ?: $status->value}}">
+            <button type="submit" class="btn btn-success">{{$status->value ? 'Change status': 'Set status'}}</button>
+            @if ($errors->has('user_status'))
+                <span class="help-block">
+                    <strong>{{ $errors->first('user_status') }}</strong>
+                </span>
+            @endif
+            </div>
+
+        </form>
         @if(Auth::user()->is_superadmin)
             <h3>You are admin!</h3>
         @endif
@@ -59,4 +78,14 @@
             @endif
         </div>
     </div>
+@endsection
+@section('script')
+    <script>
+        $(document).ready(function () {
+            if(!$('.change_status-form .form-group').hasClass('has-error')) $('.change_status-form').hide();
+            $('.dashboard-status').click(function () {
+                $('.change_status-form').toggle();
+            })
+        })
+    </script>
 @endsection
