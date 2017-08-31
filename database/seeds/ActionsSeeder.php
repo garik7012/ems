@@ -413,5 +413,11 @@ class ActionsSeeder extends Seeder
             'name' => 'theme',
             'is_active' => 1,
         ]);
+        //enterpirse/users
+        DB::table('actions')->insert([
+            'controller_id' => 15,
+            'name' => 'importCSV',
+            'is_active' => 1,
+        ]);
     }
 }

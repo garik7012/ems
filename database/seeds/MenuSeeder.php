@@ -233,5 +233,13 @@ class MenuSeeder extends Seeder
             'position' => 35,
             'is_active' => 1,
         ]);
+        //ent/users/importCSV
+        DB::table('menu')->insert([
+            'name' => 'Import',
+            'parent_id' => 14,
+            'action_id' => 74,
+            'position' => 36,
+            'is_active' => 1,
+        ]);
     }
 }

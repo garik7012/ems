@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\User;
 use App\Enterprise;
-use Session;
+use App\EmailStat;
 use Auth;
 
 class UsersController extends Controller
@@ -117,5 +117,53 @@ class UsersController extends Controller
             return redirect()->back();
         }
         abort('403');
+    }
+
+    public function importCSV($namespace, Request $request)
+    {
+        $ent_id = Enterprise::shareEnterpriseToView($namespace);
+        if ($request->input('back_to_import')) {
+            session()->forget('users_arr');
+        }
+        if ($request->file('users_csv')) {
+            $this->validate($request, [
+               'users_csv' => 'mimes:csv,txt|max:1024'
+            ]);
+            $path = $request->file('users_csv')->getRealPath();
+            $users_arr = [];
+            if (($handle = fopen($path, 'r')) !== false) {
+                while (($data = fgetcsv($handle, 1000, ",")) !== false) {
+                    $users_arr[] = $data;
+                }
+                fclose($handle);
+            }
+            session(compact('users_arr'));
+            return back();
+        }
+        if ($request->input('csv_fields')) {
+            $fields = @array_flip($request->input('fields'));
+            $required_fields = ['email', 'login', 'first_name', 'last_name'];
+            foreach ($required_fields as $r_field) {
+                if (!array_key_exists($r_field, $fields)) {
+                    return back()->with(['missing_field' => $r_field]);
+                }
+            }
+            foreach ($request->input('selected_users') as $arr_index) {
+//                $this->validate($request, [
+//                    'email' => 'unique:users',
+//                    'login' => 'unique:users',
+//                ]);
+                $new_user_id = User::createNewUserCSV($arr_index, $fields, $ent_id);
+                $confirm = Setting::getValue(3, $new_user_id, 'confirmation_code');
+
+                //TODO Send email to user with confirm link
+                $link = "{$_SERVER['SERVER_NAME']}" . config('ems.prefix') .
+                    "$namespace/security/confirm/{$new_user_id}/{$confirm}";
+                $data = base64_encode("To complete your registration please <a href='{$link}'>Click here</a>");
+                EmailStat::logEmail($ent_id, $new_user_id, 'no-reply@domain.com', session('users_arr')[$arr_index][$fields['email']], 'confirm email', $data);
+            }
+            session()->forget('users_arr');
+        }
+        return view('enterprise.user.import');
     }
 }

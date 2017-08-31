@@ -80,6 +80,21 @@ class User extends Authenticatable
         return $user->id;
     }
 
+    public static function createNewUserCSV($arr_index, $fields, $ent_id)
+    {
+        $user = new User;
+        $user->enterprise_id = $ent_id;
+        $user->login = session('users_arr')[$arr_index][$fields['login']];
+        $user->email = session('users_arr')[$arr_index][$fields['email']];
+        $user->first_name = session('users_arr')[$arr_index][$fields['first_name']];
+        $user->last_name = session('users_arr')[$arr_index][$fields['last_name']];
+        $user->is_superadmin = 0;
+        $user->password = bcrypt(str_random(3));
+        $user->save();
+        self::setDefaultUserSettings($user->id);
+        return $user->id;
+    }
+
     public static function setDefaultUserSettings($user_id)
     {
         foreach (self::getDefaultUserSettings() as $key => $value) {
