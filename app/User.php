@@ -82,10 +82,25 @@ class User extends Authenticatable
 
     public static function createNewUserCSV($arr_index, $fields, $ent_id)
     {
+
+        $login = session('users_arr')[$arr_index][$fields['login']];
+        if (filter_var($login, FILTER_VALIDATE_EMAIL)) {
+            return false;
+        }
+        $email = trim(session('users_arr')[$arr_index][$fields['email']]);
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            return false;
+        }
+        //check is user not exist
+        $is_exist = User::where('login', $login)->orWhere('email', $email)->count();
+        if ($is_exist) {
+            return false;
+        }
+
         $user = new User;
         $user->enterprise_id = $ent_id;
-        $user->login = session('users_arr')[$arr_index][$fields['login']];
-        $user->email = session('users_arr')[$arr_index][$fields['email']];
+        $user->login = $login;
+        $user->email = $email;
         $user->first_name = session('users_arr')[$arr_index][$fields['first_name']];
         $user->last_name = session('users_arr')[$arr_index][$fields['last_name']];
         $user->is_superadmin = 0;

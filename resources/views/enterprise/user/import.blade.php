@@ -6,7 +6,17 @@
             <h2>Select fields from CSV file</h2>
             @if (session('missing_field'))
                 <div class="alert alert-danger">
-                    You must select a {{session('missing_field')}} column
+                    You should select the {{session('missing_field')}} column
+                </div>
+            @endif
+            @if (session('success_index'))
+                <div class="alert alert-success">
+                    This users were added
+                </div>
+            @endif
+            @if (session('errors_index'))
+                <div class="alert alert-danger">
+                    This users were not added
                 </div>
             @endif
             <form action="" method="post">
@@ -14,15 +24,15 @@
                 <table class="table table-bordered table-hover table-striped">
                     <thead>
                     <tr>
-                        <th></th>
+                        <th><input type="checkbox" class="form-control check_all" checked></th>
                         @for($i = 0, $users_arr = session('users_arr'); $i<count($users_arr[0]); $i++)
                             <th><select name="fields[]" class="form-control">
                                     <option value="">Select field</option>
-                                    <option value="first_name">First name</option>
-                                    <option value="last_name">Last name</option>
-                                    <option value="login">Login</option>
-                                    <option value="email">Email</option>
-                                    <option value="department">Department name</option>
+                                    <option value="first_name" {{old('fields')[$i] == 'first_name' ? 'selected': ''}}>First name</option>
+                                    <option value="last_name" {{old('fields')[$i] == 'last_name' ? 'selected': ''}}>Last name</option>
+                                    <option value="login" {{old('fields')[$i] == 'login' ? 'selected': ''}}>Login</option>
+                                    <option value="email" {{old('fields')[$i] == 'email' ? 'selected': ''}}>Email</option>
+                                    <option value="department" {{old('fields')[$i] == 'department' ? 'selected': ''}}>Department name</option>
                                 </select>
                             </th>
                         @endfor
@@ -30,9 +40,11 @@
                     </thead>
                     <tbody>
                     @foreach($users_arr as $user)
-                        <tr>
+                        <tr class="{{(session('errors_index') and in_array($loop->index, session('errors_index')))? "danger": ''}}
+                        {{(session('success_index') and in_array($loop->index, session('success_index')))? "success": ''}}">
                             <td>
-                                <input type="checkbox" name="selected_users[]" value="{{$loop->index}}" checked>
+                                <input type="checkbox" name="selected_users[]" value="{{$loop->index}}" {{old('selected_users') ? '': 'checked'}}
+                                        @if(old('selected_users')){{in_array($loop->index, old('selected_users')) ? 'checked': ''}} @endif>
                             </td>
                             @foreach($user as $item)
                                 <td>{{$item}}</td>
@@ -85,4 +97,14 @@
         </div>
     </div>
     @endif
+@endsection
+@section('script')
+<script>
+    $(document).ready(function () {
+        $('.check_all').click(function(){
+            var checked = $(this).prop('checked');
+            $('tbody').find('input:checkbox').prop('checked', checked);
+        })
+    })
+</script>
 @endsection

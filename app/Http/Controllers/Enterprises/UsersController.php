@@ -145,22 +145,27 @@ class UsersController extends Controller
             $required_fields = ['email', 'login', 'first_name', 'last_name'];
             foreach ($required_fields as $r_field) {
                 if (!array_key_exists($r_field, $fields)) {
-                    return back()->with(['missing_field' => $r_field]);
+                    return back()->with(['missing_field' => $r_field])->withInput();
                 }
             }
+            $errors_index = [];
+            $success_index = [];
             foreach ($request->input('selected_users') as $arr_index) {
-//                $this->validate($request, [
-//                    'email' => 'unique:users',
-//                    'login' => 'unique:users',
-//                ]);
                 $new_user_id = User::createNewUserCSV($arr_index, $fields, $ent_id);
-                $confirm = Setting::getValue(3, $new_user_id, 'confirmation_code');
-
-                //TODO Send email to user with confirm link
-                $link = "{$_SERVER['SERVER_NAME']}" . config('ems.prefix') .
-                    "$namespace/security/confirm/{$new_user_id}/{$confirm}";
-                $data = base64_encode("To complete your registration please <a href='{$link}'>Click here</a>");
-                EmailStat::logEmail($ent_id, $new_user_id, 'no-reply@domain.com', session('users_arr')[$arr_index][$fields['email']], 'confirm email', $data);
+                if ($new_user_id) {
+                    $confirm = Setting::getValue(3, $new_user_id, 'confirmation_code');
+                    //TODO Send email to user with confirm link
+                    $link = "{$_SERVER['SERVER_NAME']}".config('ems.prefix').
+                        "$namespace/security/confirm/{$new_user_id}/{$confirm}";
+                    $data = base64_encode("To complete your registration please <a href='{$link}'>Click here</a>");
+                    EmailStat::logEmail($ent_id, $new_user_id, 'no-reply@domain.com', session('users_arr')[$arr_index][$fields['email']], 'confirm email', $data);
+                    $success_index[] = $arr_index;
+                } else {
+                    $errors_index[] = $arr_index;
+                }
+            }
+            if (count($errors_index)) {
+                return back()->with(compact('errors_index', 'success_index'))->withInput();
             }
             session()->forget('users_arr');
         }
