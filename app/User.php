@@ -173,4 +173,8 @@ class User extends Authenticatable
         return $this->belongsToMany('App\Position', 'users_and_positions');
     }
 
+    public function avatar()
+    {
+        return $this->hasOne('App\File')->where('file_type_id', 2);
+    }
 }

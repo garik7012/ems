@@ -6,6 +6,7 @@ use App\File;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
+use Auth;
 
 class FilesController extends Controller
 {
@@ -20,9 +21,12 @@ class FilesController extends Controller
     public function getLogo($namespace, $ent_id)
     {
         $file = File::where('enterprise_id', $ent_id)->value('file_name');
-        if ($file) {
-            return response()->file(storage_path("/app/logos/{$file}"));
-        }
-        return '';
+        return response()->file(storage_path("/app/logos/{$file}"));
+    }
+
+    public function getAvatar($namespace)
+    {
+        $file = Auth::user()->avatar->file_name;
+        return response()->file(storage_path("/app/avatars/{$file}"));
     }
 }

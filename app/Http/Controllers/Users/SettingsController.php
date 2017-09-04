@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers\Users;
 
+use App\File;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\User;
 use App\Enterprise;
 use Auth;
+use Storage;
 use Illuminate\Support\Facades\Hash;
 
 class SettingsController extends Controller
@@ -19,7 +21,28 @@ class SettingsController extends Controller
 
     public function editUserProfile($namespace, Request $request)
     {
-        Enterprise::shareEnterpriseToView($namespace);
+        if ($request->file('avatar')) {
+            $this->validate($request, [
+                'avatar' => 'image|max:1024'
+            ]);
+            $file_name = Auth::user()->id . '.' . $request->file('avatar')->extension();
+            $avatar = Auth::user()->avatar;
+            if ($avatar != null) {
+                Storage::delete($avatar->file_path);
+            } else {
+                $avatar = new File();
+            }
+            $path = Storage::putFileAs('avatars', $request->file('avatar'), $file_name);
+            $avatar->enterprise_id = Auth::user()->enterprise_id;
+            $avatar->file_name = $file_name;
+            $avatar->file_mime_type = $request->file('avatar')->getMimeType();
+            $avatar->file_size = $request->file('avatar')->getSize();
+            $avatar->file_path = $path;
+            $avatar->file_type_id = 2;
+            $avatar->user_id = Auth::user()->id;
+            $avatar->save();
+            return back();
+        }
         $rules_for_number = 'required|max:50|unique:users';
         if ($request->phone_number == Auth::user()->phone_number) {
             $rules_for_number = 'required';

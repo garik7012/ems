@@ -57,7 +57,6 @@ body {
 
 .top-nav>li>a {
     padding-top: 15px;
-    padding-bottom: 15px;
     line-height: 20px;
     color: #999;
 }
@@ -86,7 +85,10 @@ body {
 .top-nav>.open>.dropdown-menu>li>a {
     white-space: normal;
 }
-
+.top-nav .user-avatar {
+    width: 30px;
+    margin-top: -5px;
+}
 ul.message-dropdown {
     padding: 0;
     max-height: 250px;

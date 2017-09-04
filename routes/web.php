@@ -28,6 +28,8 @@ Route::group(['prefix' => config('ems.prefix') . "{namespace}", 'middleware' => 
     Route::get('/login', 'Security\AuthorizationController@showLoginForm');
     //Logo
     Route::get('/logo/{ent_id}', 'Tools\FilesController@getLogo');
+    //get user avatar
+    Route::get('/user/avatar', 'Tools\FilesController@getAvatar');
     //Signup
     Route::any('/register', 'Security\RegistrationController@registerNewUser');
     //email confirmation, finish registration, 2 factor authorization, check confirm code, force change password

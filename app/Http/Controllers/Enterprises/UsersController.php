@@ -11,6 +11,7 @@ use App\User;
 use App\Enterprise;
 use App\EmailStat;
 use Auth;
+use Session;
 
 class UsersController extends Controller
 {

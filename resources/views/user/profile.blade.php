@@ -1,8 +1,6 @@
 @extends('layouts.main')
 @section('page_name', 'User profile')
 @section('content')
-
-
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
             @if (session('status'))
@@ -109,6 +107,40 @@
                                 </button>
                                 <button type="reset" class="btn btn-default">
                                     Reset
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+            <div class="panel panel-default">
+                <div class="panel-heading">User avatar</div>
+                <div class="panel-body">
+                    <form class="form-horizontal" method="post" action="{{config('ems.prefix') . $enterprise->namespace}}/Users/Settings/editUserProfile" enctype="multipart/form-data">
+                        {{ csrf_field() }}
+
+                        <div class="form-group{{ $errors->has('avatar') ? ' has-error' : '' }}">
+                            <label for="avatar" class="col-md-4 control-label">Avatar</label>
+
+                            <div class="col-md-6">
+                                <input id="avatar" type="file" class="form-control" name="avatar" required>
+
+                                @if ($errors->has('avatar'))
+                                    <span class="help-block">
+                                    <strong>{{ $errors->first('avatar') }}</strong>
+                                </span>
+                                @endif
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-6 col-md-offset-4">
+                                <button type="submit" class="btn btn-primary">
+                                    Save Changes
                                 </button>
                             </div>
                         </div>
