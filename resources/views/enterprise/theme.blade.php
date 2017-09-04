@@ -53,6 +53,38 @@
             </div>
         </div>
     </div>
+    <div class="col-md-8 col-md-offset-2">
+        <div class="panel panel-default">
+            <div class="panel-heading">Logo</div>
+            <div class="panel-body">
+                <form class="form-horizontal" method="post" action="logo" enctype="multipart/form-data">
+                    {{ csrf_field() }}
+
+                    <div class="form-group{{ $errors->has('ent_logo') ? ' has-error' : '' }}">
+                        <label for="ent_logo" class="col-md-4 control-label">Logo</label>
+
+                        <div class="col-md-6">
+                            <input id="ent_logo" type="file" class="form-control" name="ent_logo" required>
+
+                            @if ($errors->has('ent_logo'))
+                                <span class="help-block">
+                                    <strong>{{ $errors->first('ent_logo') }}</strong>
+                                </span>
+                            @endif
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-6 col-md-offset-4">
+                            <button type="submit" class="btn btn-primary">
+                                Save Changes
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 @endsection
 @section('script')
     <script>

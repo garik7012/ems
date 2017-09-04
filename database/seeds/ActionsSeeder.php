@@ -407,7 +407,7 @@ class ActionsSeeder extends Seeder
             'name' => 'show',
             'is_active' => 1,
         ]);
-        //theme
+        //theme(enterpirse/setting)
         DB::table('actions')->insert([
             'controller_id' => 6,
             'name' => 'theme',
@@ -417,6 +417,12 @@ class ActionsSeeder extends Seeder
         DB::table('actions')->insert([
             'controller_id' => 15,
             'name' => 'importCSV',
+            'is_active' => 1,
+        ]);
+        //logo(enterpirse/setting)
+        DB::table('actions')->insert([
+            'controller_id' => 6,
+            'name' => 'logo',
             'is_active' => 1,
         ]);
     }
