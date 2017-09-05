@@ -10,7 +10,8 @@
                 </div>
             @endif
             @if (session('success_index'))
-                <div class="alert alert-success">
+                <div class="alert alert-success alert-dismissable">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
                     This users were added
                 </div>
             @endif
