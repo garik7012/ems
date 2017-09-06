@@ -1,8 +1,6 @@
 @extends('layouts.main')
 @section('page_name', 'Create new supervisor')
 @section('content')
-
-
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
             <div class="panel panel-default">
@@ -57,4 +55,22 @@
             </div>
         </div>
     </div>
+@endsection
+@section('script')
+    <script>
+        $(document).ready(function () {
+            function hideSubAsSup() {
+                $('#sub_id option').each(function () {
+                    if ($(this).val() == $('#sup_id').val()) {
+                        $(this).hide();
+                    }
+                });
+            }
+            hideSubAsSup();
+            $('#sup_id').change(function () {
+                $('#sub_id option').show();
+                hideSubAsSup();
+            });
+        })
+    </script>
 @endsection
