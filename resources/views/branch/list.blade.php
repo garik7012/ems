@@ -40,7 +40,7 @@
                 </tbody>
             </table>
             @else
-                <h2>There is no branches</h2>
+                <h2>There are no branches</h2>
             @endif
         </div>
     </div>

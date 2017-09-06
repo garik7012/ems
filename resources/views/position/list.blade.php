@@ -34,7 +34,7 @@
                     </tbody>
                 </table>
             @else
-                <h2>There is no positions</h2>
+                <h2>There are no positions</h2>
             @endif
         </div>
     </div>

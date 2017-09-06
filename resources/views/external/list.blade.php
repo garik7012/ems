@@ -41,7 +41,7 @@
                     </tbody>
                 </table>
             @else
-                <h2>There is no external organization</h2>
+                <h2>There are no external organization</h2>
             @endif
         </div>
     </div>

@@ -1,5 +1,5 @@
 @extends('layouts.main')
-@section('page_name', "Singup")
+@section('page_name', "Signup")
 @section('content')
     <div class="container">
         <div class="row">

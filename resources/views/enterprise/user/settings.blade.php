@@ -15,7 +15,7 @@
                             <label for="Auth_type" class="col-md-4 control-label">Auth type</label>
                             <div class="col-md-6">
                                 <select id="Auth_type" class="form-control" name="auth_type_id">
-                                    <option value='0' {{$user['auth_type_id']==false ? 'selected': ''}}>as en enterprise settings</option>
+                                    <option value='0' {{$user['auth_type_id']==false ? 'selected': ''}}>as in enterprise settings</option>
                                     @foreach($auth_types as $auth_type)
                                         <option value={{$auth_type->id}} {{$user['auth_type_id']==$auth_type->id ? 'selected': ''}}>{{$auth_type->name}}</option>
                                     @endforeach
@@ -27,7 +27,7 @@
                             <label for="pwd_policy" class="col-md-4 control-label">Password policy</label>
                             <div class="col-md-6">
                                 <select id="pwd_policy" class="form-control" name="password_policy_id">
-                                    <option value='0' {{$user['password_policy_id']==false ? 'selected': ''}}>as en enterprise settings</option>
+                                    <option value='0' {{$user['password_policy_id']==false ? 'selected': ''}}>as in enterprise settings</option>
                                     @foreach($password_policies as $password_policy)
                                         <option value={{$password_policy->id}} {{$user['password_policy_id']==$password_policy->id ? 'selected': ''}}>
                                             {{$password_policy->name}}({{$password_policy->description}})

@@ -35,7 +35,7 @@
                     </tbody>
                 </table>
             @else
-                <h2>There is no departments</h2>
+                <h2>There are no departments</h2>
             @endif
         </div>
     </div>

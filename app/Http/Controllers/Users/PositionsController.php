@@ -18,7 +18,10 @@ class PositionsController extends Controller
         $users_and_positions_raw = DB::table('users')->where('users.enterprise_id', $ent_id)
             ->where('users.is_active', 1)
             ->leftJoin('users_and_positions', 'users_and_positions.user_id', '=', 'users.id')
-            ->leftJoin('positions', 'positions.id', '=', 'users_and_positions.position_id')
+            ->leftJoin('positions', function ($join) {
+                $join->on('positions.id', '=', 'users_and_positions.position_id')
+                    ->where('positions.is_active', 1);
+            })
             ->select(
                 'users.id as id',
                 'users.first_name as first_name',
@@ -51,7 +54,7 @@ class PositionsController extends Controller
             }
             return back();
         }
-        $positions = Position::where('enterprise_id', $ent_id)->get();
+        $positions = Position::where('enterprise_id', $ent_id)->where('positions.is_active', 1)->get();
         $user_positions = UsersAndPosition::where('enterprise_id', $ent_id)
             ->where('user_id', $user->id)
             ->pluck('position_id')->toArray();

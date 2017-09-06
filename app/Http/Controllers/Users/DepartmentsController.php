@@ -16,7 +16,10 @@ class DepartmentsController extends Controller
         $ent_id = Enterprise::shareEnterpriseToView($namespace);
         $users_and_departments = DB::table('users')->where('users.enterprise_id', $ent_id)
             ->where('users.is_active', 1)
-            ->leftJoin('departments', 'departments.id', '=', 'users.department_id')
+            ->leftJoin('departments', function ($join) {
+                $join->on('departments.id', '=', 'users.department_id')
+                    ->where('departments.is_active', 1);
+            })
             ->select(
                 'users.id as id',
                 'users.first_name as first_name',
