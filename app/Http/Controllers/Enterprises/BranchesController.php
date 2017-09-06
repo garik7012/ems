@@ -19,7 +19,7 @@ class BranchesController extends Controller
             $this->validateRequest($request);
             $branch = new Branch();
             $this->saveBranch($branch, $request, $ent_id);
-            return redirect()->back();
+            return redirect(config('ems.prefix') . "{$namespace}/Enterprises/Branches/showList");
         }
 
         return view('branch.create');

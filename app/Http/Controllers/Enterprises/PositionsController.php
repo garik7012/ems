@@ -18,7 +18,7 @@ class PositionsController extends Controller
             $this->validateRequest($request);
             $position = new Position();
             $this->savePosition($position, $request, $ent_id);
-            return redirect()->back();
+            return redirect(config('ems.prefix') . "{$namespace}/Enterprises/Positions/showList");
         }
         $positions = Position::where('enterprise_id', $ent_id)->where('is_active', 1)->get();
         return view('position.create', compact('positions'));

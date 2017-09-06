@@ -52,7 +52,7 @@ class PositionsController extends Controller
                     }
                 }
             }
-            return back();
+            return redirect(config('ems.prefix') . "{$namespace}/Users/Positions/showList");
         }
         $positions = Position::where('enterprise_id', $ent_id)->where('positions.is_active', 1)->get();
         $user_positions = UsersAndPosition::where('enterprise_id', $ent_id)

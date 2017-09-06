@@ -18,7 +18,7 @@ class DepartmentsController extends Controller
             $this->validateRequest($request);
             $department = new Department();
             $this->saveDepartment($department, $request, $ent_id);
-            return redirect()->back();
+            return redirect(config('ems.prefix') . "{$namespace}/Enterprises/Departments/showList");
         }
         $departments= Department::where('enterprise_id', $ent_id)->where('is_active', 1)->get();
         return view('department.create', compact('departments'));

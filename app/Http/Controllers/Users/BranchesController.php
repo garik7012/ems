@@ -39,7 +39,7 @@ class BranchesController extends Controller
             }
             $user->branch_id = $branch;
             $user->save();
-            return back();
+            return redirect(config('ems.prefix') . "{$namespace}/Users/Branches/showList");
         }
         $branches = Branch::where('is_active', 1)->where('enterprise_id', $ent_id)->get();
         return view('branch.user', compact('branches', 'user'));

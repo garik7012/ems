@@ -42,7 +42,7 @@ class DepartmentsController extends Controller
             }
             $user->department_id = $department;
             $user->save();
-            return back();
+            return redirect(config('ems.prefix') . "{$namespace}/Users/Departments/showList");
         }
         $departments = Department::where('is_active', 1)->where('enterprise_id', $ent_id)->get();
         return view('department.user', compact('departments', 'user'));
