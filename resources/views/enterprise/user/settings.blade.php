@@ -1,8 +1,9 @@
 @extends('layouts.main')
 @section('page_name', 'User profile')
+@section('custom-css')
+    @include('layouts.plugins.cssdate')
+@endsection
 @section('content')
-
-
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
             <div class="panel panel-default">
@@ -65,4 +66,14 @@
             </div>
         </div>
     </div>
+@endsection
+@section('script')
+    <script src="/js/plugins/jquery-ui.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            if ( $('[type="date"]').prop('type') != 'date' ) {
+                $('[type="date"]').datepicker();
+            }
+        })
+    </script>
 @endsection

@@ -1,5 +1,8 @@
 @extends('layouts.main')
 @section('page_name', 'User profile')
+@section('custom-css')
+    @include('layouts.plugins.cssdate')
+@endsection
 @section('content')
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
@@ -150,4 +153,7 @@
             </div>
         </div>
     </div>
+@endsection
+@section('script')
+    @include('layouts.plugins.jsdate')
 @endsection

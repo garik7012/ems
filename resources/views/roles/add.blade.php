@@ -1,5 +1,8 @@
 @extends('layouts.main')
 @section('page_name', "Add new role")
+@section('custom-css')
+    @include('layouts.plugins.cssdate')
+@endsection
 @section('content')
     <div class="col-md-8 col-md-offset-2">
         <div class="panel panel-default">
@@ -66,6 +69,7 @@
     </div>
 @endsection
 @section('script')
+    <script src="/js/plugins/jquery-ui.min.js"></script>
     <script>
         $(document).ready(function () {
            $('.role_date').hide();
@@ -76,6 +80,10 @@
                $('.role_date').show();
                $('input[name=is_never_expires]').attr('checked', false);
            }
+            //Any browser that does not support the input type date will default to the standard type, which is text
+            if ( $('[type="date"]').prop('type') != 'date' ) {
+                $('[type="date"]').datepicker();
+            }
         });
     </script>
 @endsection

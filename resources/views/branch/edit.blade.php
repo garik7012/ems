@@ -15,8 +15,8 @@
 
                             @if ($errors->has('name'))
                                 <span class="help-block">
-                                        <strong>{{ $errors->first('name') }}</strong>
-                                    </span>
+                                    <strong>{{ $errors->first('name') }}</strong>
+                                </span>
                             @endif
                         </div>
                     </div>
@@ -25,12 +25,18 @@
                         <label for="country" class="col-md-4 control-label">Country</label>
 
                         <div class="col-md-6">
-                            <input id="country" type="text" class="form-control" name="country" value="{{ old('country') ?: $branch->country }}" required>
+                            <select id="country" class="form-control" name="country" required>
+                                <option value=""></option>
+                                @foreach(config('ems.countries') as $country)
+                                    <option value="{{$country}}" @if(old('country')){{old('country') == $country ? 'selected': ''}}
+                                            @else {{$branch->country == $country ? 'selected': ''}}@endif>{{$country}}</option>
+                                @endforeach
+                            </select>
 
                             @if ($errors->has('country'))
                                 <span class="help-block">
-                                        <strong>{{ $errors->first('country') }}</strong>
-                                    </span>
+                                    <strong>{{ $errors->first('country') }}</strong>
+                                </span>
                             @endif
                         </div>
                     </div>
@@ -43,8 +49,8 @@
 
                             @if ($errors->has('city'))
                                 <span class="help-block">
-                                        <strong>{{ $errors->first('city') }}</strong>
-                                    </span>
+                                    <strong>{{ $errors->first('city') }}</strong>
+                                </span>
                             @endif
                         </div>
                     </div>
@@ -57,8 +63,8 @@
 
                             @if ($errors->has('postal_code'))
                                 <span class="help-block">
-                                        <strong>{{ $errors->first('postal_code') }}</strong>
-                                    </span>
+                                    <strong>{{ $errors->first('postal_code') }}</strong>
+                                </span>
                             @endif
                         </div>
                     </div>
@@ -71,8 +77,8 @@
 
                             @if ($errors->has('address_1'))
                                 <span class="help-block">
-                                        <strong>{{ $errors->first('address_1') }}</strong>
-                                    </span>
+                                    <strong>{{ $errors->first('address_1') }}</strong>
+                                </span>
                             @endif
                         </div>
                     </div>
@@ -85,8 +91,8 @@
 
                             @if ($errors->has('address_2'))
                                 <span class="help-block">
-                                        <strong>{{ $errors->first('address_2') }}</strong>
-                                    </span>
+                                    <strong>{{ $errors->first('address_2') }}</strong>
+                                </span>
                             @endif
                         </div>
                     </div>
@@ -99,8 +105,8 @@
 
                             @if ($errors->has('latitude'))
                                 <span class="help-block">
-                                        <strong>{{ $errors->first('latitude') }}</strong>
-                                    </span>
+                                    <strong>{{ $errors->first('latitude') }}</strong>
+                                </span>
                             @endif
                         </div>
                     </div>
@@ -113,8 +119,8 @@
 
                             @if ($errors->has('longitude'))
                                 <span class="help-block">
-                                        <strong>{{ $errors->first('longitude') }}</strong>
-                                    </span>
+                                    <strong>{{ $errors->first('longitude') }}</strong>
+                                </span>
                             @endif
                         </div>
                     </div>

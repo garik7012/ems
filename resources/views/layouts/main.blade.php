@@ -19,6 +19,7 @@
 
     <!-- Custom CSS -->
     <link href="{{ asset('css/sb-admin.css') }}" rel="stylesheet">
+    @yield('custom-css')
 
     <!-- Custom Fonts -->
     <link href="{{ asset('font-awesome/css/font-awesome.min.css') }}" rel="stylesheet" type="text/css">
@@ -30,7 +31,6 @@
         <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
     @if(isset($enterprise->theme))
-    <!-- enterprise theme styles -->
     <style>
         @foreach($enterprise->theme as $theme_settings)
             @if($theme_settings->key == 'main_background')

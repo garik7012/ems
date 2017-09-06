@@ -1,5 +1,8 @@
 @extends('layouts.main')
 @section('page_name', 'Finish registration')
+@section('custom-css')
+    @include('layouts.plugins.cssdate')
+@endsection
 @section('content')
     <div class="container">
         <div class="row">
@@ -131,5 +134,7 @@
             </div>
         </div>
     </div>
-
+@endsection
+@section('script')
+    @include('layouts.plugins.jsdate')
 @endsection

@@ -27,8 +27,12 @@
                                 <label for="country" class="col-md-4 control-label">Country</label>
 
                                 <div class="col-md-6">
-                                    <input id="country" type="text" class="form-control" name="country" value="{{ old('country') }}" required>
-
+                                    <select id="country" class="form-control" name="country" required>
+                                        <option value=""></option>
+                                        @foreach(config('ems.countries') as $country)
+                                            <option value="{{$country}}" {{old('country') == $country ? 'selected': ''}}>{{$country}}</option>
+                                        @endforeach
+                                    </select>
                                     @if ($errors->has('country'))
                                         <span class="help-block">
                                         <strong>{{ $errors->first('country') }}</strong>

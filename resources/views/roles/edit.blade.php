@@ -1,5 +1,8 @@
 @extends('layouts.main')
 @section('page_name', "Edit role")
+@section('custom-css')
+    @include('layouts.plugins.cssdate')
+@endsection
 @section('content')
     <div class="col-md-8 col-md-offset-2">
         <div class="panel panel-default">
@@ -87,6 +90,7 @@
     </div>
 @endsection
 @section('script')
+    <script src="/js/plugins/jquery-ui.min.js"></script>
     <script>
         $(document).ready(function() {
             if ($('input[name=is_never_expires]').is(':checked')) {
@@ -100,6 +104,10 @@
             if ($('.role_date label').hasClass('has-error')) {
                 $('.role_date').show();
                 $('input[name=is_never_expires]').attr('checked', false);
+            }
+            //if input type=date not support
+            if ( $('[type="date"]').prop('type') != 'date' ) {
+                $('[type="date"]').datepicker();
             }
         })
     </script>
