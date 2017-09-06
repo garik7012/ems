@@ -3,6 +3,7 @@
 @section('content')
     <div class="col-lg-12">
         <h2>Users and their branch</h2>
+        @if(isset($users_and_branches))
         <div class="table-responsive">
             <table class="table table-bordered table-hover table-striped">
                 <thead>
@@ -30,5 +31,8 @@
                 </tbody>
             </table>
         </div>
+        @else
+        <h3>No branches yet</h3>
+        @endif
     </div>
 @endsection

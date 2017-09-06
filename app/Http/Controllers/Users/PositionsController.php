@@ -15,6 +15,10 @@ class PositionsController extends Controller
     public function showList($namespace)
     {
         $ent_id = Enterprise::shareEnterpriseToView($namespace);
+        $count_positions = Position::where('enterprise_id', $ent_id)->where('is_active', 1)->count();
+        if ($count_positions == 0) {
+            return view('position.users');
+        }
         $users_and_positions_raw = DB::table('users')->where('users.enterprise_id', $ent_id)
             ->where('users.is_active', 1)
             ->leftJoin('users_and_positions', 'users_and_positions.user_id', '=', 'users.id')

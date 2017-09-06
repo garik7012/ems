@@ -3,6 +3,7 @@
 @section('content')
     <div class="col-lg-12">
         <h2>Users and positions list</h2>
+        @if(isset($users_and_positions))
         <div class="table-responsive">
             <table class="table table-bordered table-hover table-striped">
                 <thead>
@@ -34,5 +35,8 @@
                 </tbody>
             </table>
         </div>
+        @else
+            <h3>No positions yet</h3>
+        @endif
     </div>
 @endsection

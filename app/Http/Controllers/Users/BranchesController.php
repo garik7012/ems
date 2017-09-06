@@ -14,6 +14,10 @@ class BranchesController extends Controller
     public function showList($namespace)
     {
         $ent_id = Enterprise::shareEnterpriseToView($namespace);
+        $count_branches = Branch::where('enterprise_id', $ent_id)->where('is_active', 1)->count();
+        if ($count_branches == 0) {
+            return view('branch.users');
+        }
         $users_and_branches = DB::table('users')->where('users.enterprise_id', $ent_id)
             ->where('users.is_active', 1)
             ->leftJoin('branches', 'branches.id', '=', 'users.branch_id')

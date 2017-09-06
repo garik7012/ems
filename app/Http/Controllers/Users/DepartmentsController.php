@@ -14,6 +14,10 @@ class DepartmentsController extends Controller
     public function showList($namespace)
     {
         $ent_id = Enterprise::shareEnterpriseToView($namespace);
+        $count_departments = Department::where('enterprise_id', $ent_id)->where('is_active', 1)->count();
+        if ($count_departments == 0) {
+            return view('department.users');
+        }
         $users_and_departments = DB::table('users')->where('users.enterprise_id', $ent_id)
             ->where('users.is_active', 1)
             ->leftJoin('departments', function ($join) {
