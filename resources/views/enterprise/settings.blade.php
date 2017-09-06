@@ -1,6 +1,53 @@
 @extends('layouts.main')
-@section('page_name', 'Theme Settings')
+@section('page_name', 'Enterprise settings')
 @section('content')
+    <div class="col-md-8 col-md-offset-2">
+        <div class="panel panel-default">
+            <div class="panel-heading">Company information</div>
+            <div class="panel-body">
+                <form class="form-horizontal" method="post" action="saveSettings">
+                    {{ csrf_field() }}
+
+                    <div class="form-group{{ $errors->has('ent_name') ? ' has-error' : '' }}">
+                        <label for="ent_name" class="col-md-4 control-label">Enterprise name</label>
+
+                        <div class="col-md-6">
+                            <input id="ent_name" type="text" class="form-control" name="ent_name" value="{{old('ent_name') ?: $enterprise->name}}" required>
+                            @if ($errors->has('ent_name'))
+                                <span class="help-block">
+                                    <strong>{{ $errors->first('ent_name') }}</strong>
+                                </span>
+                            @endif
+                        </div>
+                    </div>
+
+                    <div class="form-group{{ $errors->has('description') ? ' has-error' : '' }}">
+                        <label for="description" class="col-md-4 control-label">Description</label>
+
+                        <div class="col-md-6">
+                            <input id="description" type="text" class="form-control" name="description" value="{{old('description') ?: $enterprise->description}}" required>
+                            @if ($errors->has('description'))
+                                <span class="help-block">
+                                    <strong>{{ $errors->first('description') }}</strong>
+                                </span>
+                            @endif
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-6 col-md-offset-4">
+                            <button type="submit" class="btn btn-primary">
+                                Save Changes
+                            </button>
+                            <button type="reset" class="btn btn-default">
+                                Reset
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
     <div class="col-md-8 col-md-offset-2">
         <div class="panel panel-default">
             <div class="panel-heading">Theme settings</div>

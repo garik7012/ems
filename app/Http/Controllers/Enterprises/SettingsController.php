@@ -31,21 +31,24 @@ class SettingsController extends Controller
         return $this->getSecurity($namespace);
     }
 
+    public function showSettings($namespace, Request $request)
+    {
+        $ent_id = Enterprise::shareEnterpriseToView($namespace);
+        $theme = Theme::where('enterprise_id', $ent_id)->pluck('value', 'key');
+        return view('enterprise.settings', compact('theme'));
+    }
+
     public function theme($namespace, Request $request)
     {
         $ent_id = Enterprise::shareEnterpriseToView($namespace);
-        if ($request->isMethod('post')) {
-            $hex_pattern = '^#?([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$';
-            $this->validate($request, [
-               'main_background' => ["regex:/${hex_pattern}/"],
-               'side_background' => ["regex:/${hex_pattern}/"]
-            ]);
-            Theme::updateValue($ent_id, 'main_background', $request->main_background);
-            Theme::updateValue($ent_id, 'side_background', $request->side_background);
-            return back();
-        }
-        $theme = Theme::where('enterprise_id', $ent_id)->pluck('value', 'key');
-        return view('enterprise.theme', compact('theme'));
+        $hex_pattern = '^#?([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$';
+        $this->validate($request, [
+            'main_background' => ["regex:/${hex_pattern}/"],
+            'side_background' => ["regex:/${hex_pattern}/"]
+        ]);
+        Theme::updateValue($ent_id, 'main_background', $request->main_background);
+        Theme::updateValue($ent_id, 'side_background', $request->side_background);
+        return back();
     }
 
     public function logo($namespace, Request $request)
@@ -75,4 +78,16 @@ class SettingsController extends Controller
         return back();
     }
 
+    public function saveSettings($namespace, Request $request)
+    {
+        $this->validate($request, [
+            'ent_name' => 'required|max:255',
+            'description' => 'required|max:255'
+        ]);
+        Enterprise::whereNamespace($namespace)->update([
+           'name' => $request->ent_name,
+            'description' => $request->description
+        ]);
+        return back();
+    }
 }

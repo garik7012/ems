@@ -407,10 +407,10 @@ class ActionsSeeder extends Seeder
             'name' => 'show',
             'is_active' => 1,
         ]);
-        //theme(enterpirse/setting)
+        //enterpirse/setting
         DB::table('actions')->insert([
             'controller_id' => 6,
-            'name' => 'theme',
+            'name' => 'showSettings',
             'is_active' => 1,
         ]);
         //enterpirse/users
@@ -419,10 +419,20 @@ class ActionsSeeder extends Seeder
             'name' => 'importCSV',
             'is_active' => 1,
         ]);
-        //logo(enterpirse/setting)
+        //enterpirse/setting
+        DB::table('actions')->insert([
+            'controller_id' => 6,
+            'name' => 'theme',
+            'is_active' => 1,
+        ]);
         DB::table('actions')->insert([
             'controller_id' => 6,
             'name' => 'logo',
+            'is_active' => 1,
+        ]);
+        DB::table('actions')->insert([
+            'controller_id' => 6,
+            'name' => 'saveSettings',
             'is_active' => 1,
         ]);
     }

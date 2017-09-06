@@ -61,7 +61,7 @@ class AuthorizationController extends Controller
         }
         $this->wrongConfirmAttempt();
         Auth::logout();
-        return redirect()->back();
+        return redirect()->back()->with(['wrong-confirm' => true]);
     }
 
     public function userNotActive()

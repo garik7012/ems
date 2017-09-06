@@ -92,6 +92,12 @@
             </div>
         </div>
     @else
+    @if(session('wrong-confirm'))
+        <div class="alert alert-danger alert-dismissable">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            Wrong confirmation code. Please login and try again
+        </div>
+    @endif
     <div class="col-md-8 col-md-offset-2">
         <div class="panel panel-default">
             <div class="panel-heading">Login</div>
