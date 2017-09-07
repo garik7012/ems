@@ -34,7 +34,7 @@ class SupervisorsController extends Controller
             if (count($request->users_id)) {
                 User::where('parent_id', $id)->update(['parent_id' => null]);
                 User::whereIn('id', $request->users_id)->update(['parent_id' => $id]);
-                return back();
+                return redirect(config('ems.prefix') . "{$namespace}/Enterprises/Supervisors/showList");
             }
             return back();
         }
@@ -68,7 +68,7 @@ class SupervisorsController extends Controller
             }
             if ($sup_id and count($subs_id)) {
                 User::whereIn('id', $subs_id)->update(['parent_id' => $sup_id]);
-                return back();
+                return redirect(config('ems.prefix') . "{$namespace}/Enterprises/Supervisors/showList");
             }
             return back()->withErrors(['subs_id' => 'Select subordinates. You cannot be your own supervisor']);
         }

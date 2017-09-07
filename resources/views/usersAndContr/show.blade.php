@@ -17,6 +17,7 @@
                 </tr>
                 </thead>
                 <tbody>
+
                 @foreach($u_and_c as $item)
                     <tr>
                         <td>{{$item->id}}</td>
@@ -24,7 +25,7 @@
                         <td>{{$item->module}}.{{$item->controller}}</td>
                         <td>
                         @foreach($item->fields as $field)
-                            {{$field . ':' . $item->item_name[0]->$field}};
+                            <span title="{{$field}}">{{$item->item_name[0]->$field or $item->item_name->$field}}</span>;
                         @endforeach
                         </td>
 
