@@ -62,6 +62,7 @@ class RolesController extends Controller
                 $role_action->action_id = $action;
                 $role_action->save();
             }
+            return redirect(config('ems.prefix') . "$namespace/Enterprises/Roles/ShowRoles");
         }
 
         //show creation form;
@@ -95,6 +96,19 @@ class RolesController extends Controller
             $role->name = $request->name;
             $role->description = $request->description;
             $role->enterprise_id = $ent_id;
+            if (!$request->is_never_expires) {
+                $this->validate($request, [
+                    'expire_begin_at' => 'required',
+                    'expire_end_at' => 'required'
+                ]);
+                $role->expire_begin_at = $request->expire_begin_at;
+                $role->expire_end_at = $request->expire_end_at;
+                $role->is_never_expires = 0;
+            } else {
+                $role->expire_begin_at = null;
+                $role->expire_end_at = null;
+                $role->is_never_expires = 1;
+            }
             $role->save();
             RolesAndActions::where('enterprise_id', $ent_id)->where('role_id', $role_id)->delete();
             foreach ($request->actions as $action) {
@@ -104,7 +118,7 @@ class RolesController extends Controller
                 $role_action->action_id = $action;
                 $role_action->save();
             }
-            return redirect()->back();
+            return redirect()->back()->with(['success' => true]);
         }
         $ent_id = Enterprise::shareEnterpriseToView($namespace);
         $role = Role::findOrFail($role_id);

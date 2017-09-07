@@ -42,6 +42,7 @@ class PositionsController extends Controller
         if ($request->isMethod('post')) {
             $this->validateRequest($request);
             $this->savePosition($position, $request, $ent_id);
+            return back()->with(['success' => true]);
         }
         $positions = Position::where('enterprise_id', $ent_id)->orderBy('id')->get();
         return view('position.edit', compact('position', 'positions'));

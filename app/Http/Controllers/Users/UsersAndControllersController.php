@@ -57,7 +57,7 @@ class UsersAndControllersController extends Controller
         if ($request->isMethod('post')) {
             $user_and_c->item_id = $request->item_id;
             $user_and_c->save();
-            return back();
+            return back()->with(['success' => true]);
         }
 
         if ($controller->table == 'users') {

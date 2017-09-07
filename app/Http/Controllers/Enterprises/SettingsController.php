@@ -17,18 +17,18 @@ class SettingsController extends Controller
 {
     public function getSecurity($namespace)
     {
-        $enterprise = Enterprise::where('namespace', $namespace)->first();
-        $enSec = Setting::where('type', 2)->where('item_id', $enterprise->id)->pluck('value', 'key');
+        $ent_id = Enterprise::shareEnterpriseToView($namespace);
+        $enSec = Setting::where('type', 2)->where('item_id', $ent_id)->pluck('value', 'key');
         $auth_types = AuthType::all();
         $password_policies = PasswordPolicy::orderBy('id')->get();
-        return view('enterprise.security', compact('enterprise', 'enSec', 'auth_types', 'password_policies'));
+        return view('enterprise.security', compact('enSec', 'auth_types', 'password_policies'));
     }
 
     public function setSecurity($namespace, Request $request)
     {
-        $enterprise = Enterprise::where('namespace', $namespace)->first();
-        Setting::setEnterpriseSecurity($enterprise->id, $request);
-        return $this->getSecurity($namespace);
+        $ent_id = Enterprise::shareEnterpriseToView($namespace);
+        Setting::setEnterpriseSecurity($ent_id, $request);
+        return back()->with(['success' => true]);
     }
 
     public function showSettings($namespace, Request $request)
@@ -48,7 +48,7 @@ class SettingsController extends Controller
         ]);
         Theme::updateValue($ent_id, 'main_background', $request->main_background);
         Theme::updateValue($ent_id, 'side_background', $request->side_background);
-        return back();
+        return back()->with(['success' => true]);
     }
 
     public function logo($namespace, Request $request)
@@ -75,7 +75,7 @@ class SettingsController extends Controller
             $logo->user_id = Auth::user()->id;
             $logo->save();
         }
-        return back();
+        return back()->with(['success' => true]);
     }
 
     public function saveSettings($namespace, Request $request)
@@ -88,6 +88,6 @@ class SettingsController extends Controller
            'name' => $request->ent_name,
             'description' => $request->description
         ]);
-        return back();
+        return back()->with(['success' => true]);
     }
 }

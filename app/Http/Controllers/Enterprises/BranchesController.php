@@ -43,6 +43,7 @@ class BranchesController extends Controller
         if ($request->isMethod('post')) {
             $this->validateRequest($request);
             $this->saveBranch($branch, $request, $ent_id);
+            return back()->with(['success' => true]);
         }
         return view('branch.edit', compact('branch'));
     }

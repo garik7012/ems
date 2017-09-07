@@ -99,7 +99,7 @@ class FirewallController extends Controller
             $ent_firewall->note = $request->note;
             $ent_firewall->priority = $request->priority;
             $ent_firewall->save();
-            return back();
+            return back()->with(['success' => true]);
         }
         $user = User::where('id', $ent_firewall->user_id)->select('first_name', 'last_name', 'login')->first();
         return view('firewall.edit', compact('user', 'ent_firewall'));

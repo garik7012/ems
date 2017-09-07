@@ -5,6 +5,12 @@
 @endsection
 @section('content')
     <div class="col-md-8 col-md-offset-2">
+        @if (session('success'))
+            <div class="alert alert-success alert-dismissable">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                Changes were successfully saved
+            </div>
+        @endif
         <div class="panel panel-default">
             <div class="panel-heading">Edit role</div>
             <div class="panel-body">

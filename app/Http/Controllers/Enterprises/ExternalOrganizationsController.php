@@ -88,7 +88,7 @@ class ExternalOrganizationsController extends Controller
             $external->name = $request->name;
             $external->description = $request->description;
             $external->save();
-            return back();
+            return back()->with(['success' => true]);
         }
 
         return view('external.edit', compact('external'));

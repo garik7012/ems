@@ -42,6 +42,7 @@ class DepartmentsController extends Controller
         if ($request->isMethod('post')) {
             $this->validateRequest($request);
             $this->saveDepartment($department, $request, $ent_id);
+            return back()->with(['success' => true]);
         }
         $departments = Department::where('enterprise_id', $ent_id)->orderBy('id')->get();
         return view('department.edit', compact('department', 'departments'));

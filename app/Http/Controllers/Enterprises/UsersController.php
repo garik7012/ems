@@ -70,7 +70,7 @@ class UsersController extends Controller
         Setting::updateValue(3, $request->user_id, 'auth_type_id', $request->auth_type_id);
         User::where('id', $request->user_id)->update(['expire_end_at' => $request->expire_end_at]);
 
-        return redirect()->back();
+        return redirect()->back()->with(['success' => true]);
     }
 
     public function showUserProfile($namespace, $user_id)
