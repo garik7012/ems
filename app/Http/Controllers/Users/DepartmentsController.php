@@ -11,12 +11,16 @@ use App\Enterprise;
 
 class DepartmentsController extends Controller
 {
-    public function showList($namespace)
+    public function showList($namespace, Request $request)
     {
         $ent_id = Enterprise::shareEnterpriseToView($namespace);
         $count_departments = Department::where('enterprise_id', $ent_id)->where('is_active', 1)->count();
         if ($count_departments == 0) {
             return view('department.users');
+        }
+        $page_c = 0;
+        if ($request->has('page')) {
+            $page_c = ($request->page - 1) * 25;
         }
         $users_and_departments = DB::table('users')->where('users.enterprise_id', $ent_id)
             ->where('users.is_active', 1)
@@ -31,8 +35,9 @@ class DepartmentsController extends Controller
                 'users.login as login',
                 'departments.name as department'
             )
-            ->get();
-        return view('department.users', compact('users_and_departments'));
+            ->orderBy('users.id', 'desc')
+            ->paginate(25);
+        return view('department.users', compact('users_and_departments', 'page_c'));
     }
 
     public function editUsersDepartment($namespace, $user_id, Request $request)
@@ -42,7 +47,7 @@ class DepartmentsController extends Controller
         if ($request->isMethod('post')) {
             $department = $request->department_id;
             if ($department) {
-                $department = Department::where('id', $request->department_id)->where('enterprise_id', $ent_id)->firstOrFail()->id;
+                $department = Department::where('id', $department)->where('enterprise_id', $ent_id)->firstOrFail()->id;
             }
             $user->department_id = $department;
             $user->save();

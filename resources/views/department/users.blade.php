@@ -8,7 +8,7 @@
             <table class="table table-bordered table-hover table-striped">
                 <thead>
                 <tr>
-                    <th>User ID</th>
+                    <th>#</th>
                     <th>Login</th>
                     <th>First name</th>
                     <th>Last name</th>
@@ -20,7 +20,7 @@
                 @foreach($users_and_departments as $item)
 
                     <tr>
-                        <td width="150">{{$item->id}}</td>
+                        <td width="150">{{$loop->iteration + $page_c}}</td>
                         <td width="150">{{$item->login}}</td>
                         <td width="150">{{$item->first_name}}</td>
                         <td width="150">{{$item->last_name}}</td>
@@ -34,5 +34,8 @@
         @else
             <h3>No departments yet</h3>
         @endif
+        <div class="show-pagination">
+            {{$users_and_departments->render()}}
+        </div>
     </div>
 @endsection

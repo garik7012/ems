@@ -11,16 +11,23 @@ use App\Enterprise;
 
 class BranchesController extends Controller
 {
-    public function showList($namespace)
+    public function showList($namespace, Request $request)
     {
         $ent_id = Enterprise::shareEnterpriseToView($namespace);
         $count_branches = Branch::where('enterprise_id', $ent_id)->where('is_active', 1)->count();
         if ($count_branches == 0) {
             return view('branch.users');
         }
+        $page_c = 0;
+        if ($request->has('page')) {
+            $page_c = ($request->page - 1) * 25;
+        }
         $users_and_branches = DB::table('users')->where('users.enterprise_id', $ent_id)
             ->where('users.is_active', 1)
-            ->leftJoin('branches', 'branches.id', '=', 'users.branch_id')
+            ->leftJoin('branches', function ($join) {
+                $join->on('branches.id', '=', 'users.branch_id')
+                    ->where('branches.is_active', 1);
+            })
             ->select(
                 'users.id as id',
                 'users.first_name as first_name',
@@ -28,8 +35,9 @@ class BranchesController extends Controller
                 'users.login as login',
                 'branches.name as branch'
             )
-            ->get();
-        return view('branch.users', compact('users_and_branches'));
+            ->orderBy('users.id', 'desc')
+            ->paginate(25);
+        return view('branch.users', compact('users_and_branches', 'page_c'));
     }
 
     public function editUsersBranch($namespace, $user_id, Request $request)
