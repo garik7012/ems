@@ -16,38 +16,33 @@ class RolesController extends Controller
     public function showList($namespace, Request $request)
     {
         $ent_id = Enterprise::shareEnterpriseToView($namespace);
+        //if user from users and controllers we show only allowed item(s)
         if ($request->has_item_id) {
-            $users = User::where('is_active', 1)->where('enterprise_id', $ent_id)->whereIn('id', $request->has_item_id)->get();
+            $users_and_roles = User::with('roles')->where('is_active', 1)
+                ->where('enterprise_id', $ent_id)
+                ->whereIn('id', $request->has_item_id)
+                ->orderBy('id')
+                ->paginate(25);
         } else {
-            $users = User::where('is_active', 1)->where('enterprise_id', $ent_id)->get();
+            $users_and_roles = User::with('roles')->where('is_active', 1)
+                ->where('enterprise_id', $ent_id)
+                ->where('is_superadmin', 0)
+                ->orderBy('id')
+                ->paginate(25);
         }
 
-        $user_and_roles = [];
-        $i = 0;
-        foreach ($users as $user) {
-            $roles = [];
-            $user_and_roles[$i]['user'] = $user;
-            $user_roles_id = UsersAndRoles::where('user_id', $user->id)->where('enterprise_id', $ent_id)->get();
-            foreach ($user_roles_id as $item) {
-                $role = Role::where('id', $item->role_id)->where('enterprise_id', $ent_id)
-                    ->where('is_active', 1)
-                    ->select('name', 'description')
-                    ->get()->toArray();
-                if (count($role)) {
-                    $roles[] = $role[0];
-                }
-            }
-            $user_and_roles[$i]['roles'] = $roles;
-            $i++;
-        }
+        //in the note we will show is user superadmin or in user and controllers
         $supervisors_id = User::where('parent_id', '>', 0)
             ->where('enterprise_id', $ent_id)
             ->where('is_active', 1)
             ->pluck('parent_id')->toArray();
         $u_and_c = UsersAndController::where('enterprise_id', $ent_id)->pluck('user_id')->toArray();
-        $users_and_roles = $user_and_roles;
 
-        return view('roles.usersRoles', compact('users_and_roles', 'supervisors_id', 'u_and_c'));
+        $page_c = 0;
+        if ($request->has('page')) {
+            $page_c = ($request->page - 1) * 25;
+        }
+        return view('roles.usersRoles', compact('users_and_roles', 'supervisors_id', 'u_and_c', 'page_c'));
     }
 
     public function showRolesOfUser($namespace, $user_id)

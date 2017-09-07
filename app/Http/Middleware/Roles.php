@@ -41,6 +41,7 @@ class Roles
             } else {
                 $subs_id = [];
             }
+            //To get all permissions actions we search by user id and his subs;
             $subs_id[] = Auth::user()->id;
             $actions = DB::table('users_and_roles')->whereIn('users_and_roles.user_id', $subs_id)
                 ->join('roles', 'roles.id', '=', 'users_and_roles.role_id')->where('roles.is_active', 1)
@@ -56,7 +57,9 @@ class Roles
                 ->get();
 
             $permission_paths = [];
+            //make permission paths from actions
             $this->addToPermissionPath($actions, $permission_paths);
+            // also user has permission actions without roles from menu(if menu item is for all user)
             $menu_for_all_user = DB::table('menu')->where('menu.is_for_all_users', 1)
                 ->join('actions', 'actions.id', '=', 'menu.action_id')->where('actions.is_active', 1)
                 ->select('actions.name', 'actions.controller_id')
@@ -69,6 +72,7 @@ class Roles
                     ->pluck('controller_id')
                     ->toArray();
                 if (count($user_controllers)) {
+                    //we get item(s) id only when current controller and module match $user_controllers
                     $item_id = DB::table('controllers')->whereIn('controllers.id', $user_controllers)
                         ->where('controllers.is_active', 1)
                         ->where('controllers.name', $request->route('controller'))
@@ -80,6 +84,7 @@ class Roles
                         ->toArray();
 
                     if (count($item_id) and $request->route('parametr') == null) {
+                        //we will show only item(s) permissions in list. Therefore, we send the item_id to not re-query
                         $request->has_item_id = $item_id;
                         return $next($request);
                     } elseif (count($item_id) and in_array($request->route('parametr'), $item_id)) {

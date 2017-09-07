@@ -12,31 +12,23 @@ use App\User;
 
 class PositionsController extends Controller
 {
-    public function showList($namespace)
+    public function showList($namespace, Request $request)
     {
         $ent_id = Enterprise::shareEnterpriseToView($namespace);
         $count_positions = Position::where('enterprise_id', $ent_id)->where('is_active', 1)->count();
         if ($count_positions == 0) {
             return view('position.users');
         }
-        $users_and_positions_raw = DB::table('users')->where('users.enterprise_id', $ent_id)
-            ->where('users.is_active', 1)
-            ->leftJoin('users_and_positions', 'users_and_positions.user_id', '=', 'users.id')
-            ->leftJoin('positions', function ($join) {
-                $join->on('positions.id', '=', 'users_and_positions.position_id')
-                    ->where('positions.is_active', 1);
-            })
-            ->select(
-                'users.id as id',
-                'users.first_name as first_name',
-                'users.last_name as last_name',
-                'users.login as login',
-                'positions.name as position'
-            )
+        $page_c = 0;
+        if ($request->has('page')) {
+            $page_c = ($request->page - 1) * 25;
+        }
+        $users_and_positions = User::with('positions')->where('enterprise_id', $ent_id)
+            ->where('is_active', 1)
             ->orderBy('id')
-            ->get();
-        $users_and_positions = $users_and_positions_raw->groupBy('id')->toArray();
-        return view('position.users', compact('users_and_positions'));
+            ->paginate(25);
+
+        return view('position.users', compact('users_and_positions', 'page_c'));
     }
 
     public function editUsersPositions($namespace, $user_id, Request $request)

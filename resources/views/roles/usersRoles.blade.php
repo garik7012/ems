@@ -7,7 +7,7 @@
             <table class="table table-bordered table-hover table-striped">
                 <thead>
                 <tr>
-                    <th>User ID</th>
+                    <th>#</th>
                     <th>Login</th>
                     <th>First name</th>
                     <th>Last name</th>
@@ -17,29 +17,32 @@
                 </tr>
                 </thead>
                 <tbody>
-                @foreach($users_and_roles as $item)
+                @foreach($users_and_roles as $user)
 
                     <tr>
-                        <td width="150">{{$item['user']->id}}</td>
-                        <td width="150">{{$item['user']->login}}</td>
-                        <td width="150">{{$item['user']->first_name}}</td>
-                        <td width="150">{{$item['user']->last_name}}</td>
+                        <td width="150">{{$loop->iteration + $page_c}}</td>
+                        <td width="150">{{$user->login}}</td>
+                        <td width="150">{{$user->first_name}}</td>
+                        <td width="150">{{$user->last_name}}</td>
 
-                        <td>@foreach($item['roles'] as $role)
+                        <td>@foreach($user->roles as $role)
                             @if($role)
                                 <span class="text-primary users-roles" title="{{$role['description']}}">{{$role['name']}}; </span>
                             @endif
                             @endforeach
                         </td>
-                        <td><a href="{{config('ems.prefix') . $enterprise->namespace}}/Users/Roles/showRolesOfUser/{{$item['user']->id}}">Change</a></td>
+                        <td><a href="{{config('ems.prefix') . $enterprise->namespace}}/Users/Roles/showRolesOfUser/{{$user->id}}">Change</a></td>
                         <td>
-                            {{in_array($item['user']->id, $supervisors_id) ? 'Supervisor; ': ''}}
-                            {{in_array($item['user']->id, $u_and_c) ? 'In users and controllers': ''}}
+                            {{in_array($user->id, $supervisors_id) ? 'Supervisor; ': ''}}
+                            {{in_array($user->id, $u_and_c) ? 'In users and controllers': ''}}
                         </td>
                     </tr>
                 @endforeach
                 </tbody>
             </table>
+        </div>
+        <div class="show-pagination">
+            {{$users_and_roles->render()}}
         </div>
     </div>
 @endsection

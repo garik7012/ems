@@ -177,4 +177,9 @@ class User extends Authenticatable
     {
         return $this->hasOne('App\File')->where('file_type_id', 2);
     }
+
+    public function roles()
+    {
+        return $this->belongsToMany('App\Role', 'users_and_roles');
+    }
 }
