@@ -14,7 +14,8 @@ class FilesController extends Controller
     {
         $categories_id = session('categories_grid');
         $cat_id = $categories_id[$request->id - 1];
-        $path = "/app/public/categories/{$cat_id}/" . random_int(1, 3) . ".jpg";
+        $category = config('ems.categories')[$cat_id];
+        $path = "/app/categories/$category/" . random_int(1, 3) . ".jpg";
         return response()->file(storage_path($path));
     }
 

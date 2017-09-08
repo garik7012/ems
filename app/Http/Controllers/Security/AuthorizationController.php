@@ -344,7 +344,7 @@ class AuthorizationController extends Controller
         }
         Session::put(['categories_user' => compact('count_cat', 'categories_ids')]);
         while ($count_cat < 9) {
-            $rand_id = random_int(1, 24);
+            $rand_id = random_int(0, 23);
             if (in_array($rand_id, $categories_ids)) {
                 continue;
             }

@@ -247,5 +247,31 @@ return [
         "Yemen",
         "Zambia",
         "Zimbabwe"
+    ],
+    'categories' => [
+        'ball',
+        'cactus',
+        'chair',
+        'door',
+        'horses',
+        'panda',
+        'river',
+        'ship',
+        'bike',
+        'cars',
+        'curtain',
+        'duck',
+        'lightning',
+        'plane',
+        'rose',
+        'skyscraper',
+        'bus',
+        'cats',
+        'dogs',
+        'forest',
+        'mountains',
+        'raccoon',
+        'sakura',
+        'waterfall'
     ]
 ];

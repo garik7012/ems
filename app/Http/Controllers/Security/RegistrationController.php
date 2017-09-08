@@ -170,9 +170,9 @@ class RegistrationController extends Controller
     public function changeUserCategories($namespace, Request $request)
     {
         $this->validate($request, [
-            'first_cat' => 'required|different:third_cat|numeric|min:1|max:24',
-            'second_cat' => 'required|different:first_cat|numeric|min:1|max:24',
-            'third_cat' => 'required|different:second_cat|numeric|min:1|max:24'
+            'first_cat' => 'required|different:third_cat|numeric|min:0|max:23',
+            'second_cat' => 'required|different:first_cat|numeric|min:0|max:23',
+            'third_cat' => 'required|different:second_cat|numeric|min:0|max:23'
         ]);
         $cat_ids = $request->first_cat . ', ' . $request->second_cat . ', ' . $request->third_cat;
         Setting::updateValue(3, Auth::user()->id, 'auth_category_id', $cat_ids);

@@ -100,8 +100,8 @@
                                 <div class="col-md-6">
                                     <select id="first_cat" class="form-control" name="first_cat" required>
                                         <option value="">Select first category</option>
-                                        @for($i=1; $i<25; $i++)
-                                            <option value="{{$i}}" {{old('first_cat') == $i ? 'selected': ''}} {{@$categories[0] == $i ? 'selected': ''}}>category {{$i}}</option>
+                                        @for($i=0; $i<24; $i++)
+                                            <option value="{{$i}}" {{old('first_cat') == $i ? 'selected': ''}} {{@$categories[0] == $i ? 'selected': ''}}>{{config('ems.categories')[$i]}}</option>
                                         @endfor
                                     </select>
                                     @if ($errors->has('first_cat'))
@@ -118,8 +118,8 @@
                                 <div class="col-md-6">
                                     <select id="second_cat" class="form-control" name="second_cat" required>
                                         <option value="">Select second category</option>
-                                        @for($i=1; $i<25; $i++)
-                                            <option value="{{$i}}" {{old('second_cat') == $i ? 'selected': ''}} {{@$categories[1] == $i ? 'selected': ''}}>category {{$i}}</option>
+                                        @for($i=0; $i<24; $i++)
+                                            <option value="{{$i}}" {{old('first_cat') == $i ? 'selected': ''}} {{@$categories[1] == $i ? 'selected': ''}}>{{config('ems.categories')[$i]}}</option>
                                         @endfor
                                     </select>
                                     @if ($errors->has('second_cat'))
@@ -136,8 +136,8 @@
                                 <div class="col-md-6">
                                     <select id="third_cat" class="form-control" name="third_cat" required>
                                         <option value="">Select third category</option>
-                                        @for($i=1; $i<25; $i++)
-                                            <option value="{{$i}}" {{old('third_cat') == $i ? 'selected': ''}} {{@$categories[2] == $i ? 'selected': ''}}>category {{$i}}</option>
+                                        @for($i=0; $i<24; $i++)
+                                            <option value="{{$i}}" {{old('first_cat') == $i ? 'selected': ''}} {{@$categories[2] == $i ? 'selected': ''}}>{{config('ems.categories')[$i]}}</option>
                                         @endfor
                                     </select>
                                     @if ($errors->has('third_cat'))
